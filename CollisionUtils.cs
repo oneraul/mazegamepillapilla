@@ -113,5 +113,25 @@ namespace MazeGamePillaPilla
 
             return minOverlapAxis * minOverlap;
         }
+
+        public static bool RayMapIntersectionTest(VisibilityRay ray, Cell[,] maze)
+        {
+            // TODO
+            // Optimize testing only against the possible instersection cells instead of the whole maze.
+            // Use the Bresenham Line-Drawing Algorithm to find de cells to check.
+
+            foreach (Cell cell in maze)
+            {
+                if (ray.AabbAabbIntersectionTest(cell))
+                {
+                    if (ray.SatIntersectionTest(cell))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
     }
 }

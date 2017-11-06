@@ -16,7 +16,6 @@ namespace MazeGamePillaPilla
         private PathfindingNodeHorizontal[,] horizontalNodes;
         private PathfindingNodeVertical[,] verticalNodes;
         private Matrix cameraMatrix;
-        private VisibilityTest visibilityTest;
 
         public void Draw(SpriteBatch spritebatch)
         {
@@ -72,8 +71,6 @@ namespace MazeGamePillaPilla
             {
                 node.DrawNavigationPosition(spritebatch, pixel);
             }*/
-
-            visibilityTest.Draw(spritebatch, pixel);
 
             spritebatch.End();
         }
@@ -144,6 +141,7 @@ namespace MazeGamePillaPilla
 
             // store them all in a single array
             tmp.Clear();
+            /*
             for (int i = 0; i < verticalNodes.GetLength(0); i++)
             {
                 for (int j = 0; j < verticalNodes.GetLength(1); j++)
@@ -152,12 +150,10 @@ namespace MazeGamePillaPilla
                     tmp.AddIfNotNull(verticalNodes[i, j]);
                 }
             }
+            */
+            foreach (PathfindingNode node in horizontalNodes) { tmp.AddIfNotNull(node); }
+            foreach (PathfindingNode node in verticalNodes) { tmp.AddIfNotNull(node); }
             nodes = tmp.ToArray();
-
-            Vector2 from = new Vector2(2.5f * Tile.Size, 2.5f * Tile.Size);
-            Vector2 to = new Vector2(18.5f * Tile.Size, 14.5f * Tile.Size);
-            visibilityTest = new VisibilityTest(from, to);
-            visibilityTest.Test(maze);
         }
 
         public void Exit()
@@ -205,9 +201,7 @@ namespace MazeGamePillaPilla
                     Pj player = Pjs["Player"];
                     Vector2 to = new Vector2(player.x, player.y);
                     Vector2 from = new Vector2(pj.x, pj.y);
-                    pj.path = Pathfinder.CalculatePath(nodes, horizontalNodes, verticalNodes, from, to);
-                    pj.path.Insert(0, to);
-                    Pathfinder.SmoothPath(pj.path, maze);
+                    pj.path = Pathfinder.CalculatePath(nodes, horizontalNodes, verticalNodes, from, to, maze);
                 }
             }
         }

@@ -19,7 +19,7 @@ namespace MazeGamePillaPilla
             }
         }
 
-        static public List<Vector2> CalculatePath(PathfindingNode[] map, PathfindingNodeHorizontal[,] horizontalMap, PathfindingNodeVertical[,] verticalMap, Vector2 originPos, Vector2 goalPos)
+        static public List<Vector2> CalculatePath(PathfindingNode[] map, PathfindingNodeHorizontal[,] horizontalMap, PathfindingNodeVertical[,] verticalMap, Vector2 originPos, Vector2 goalPos, Cell[,] maze)
         {
             ClearNodesState(map);
 
@@ -41,7 +41,7 @@ namespace MazeGamePillaPilla
 
                 if(currentNode.IsGoal(GoalI, GoalJ))
                 {
-                    return BuildPath(currentNode);
+                    return BuildPath(currentNode, goalPos, maze);
                 }
 
                 explored.Add(currentNode);
@@ -100,7 +100,7 @@ namespace MazeGamePillaPilla
             return bestNode;
         }
 
-        static private List<Vector2> BuildPath(PathfindingNode lastNode)
+        static private List<Vector2> BuildPath(PathfindingNode lastNode, Vector2 goalPosition, Cell[,] maze)
         {
             List<Vector2> path = new List<Vector2>();
             PathfindingNode currentNode = lastNode;
@@ -110,6 +110,9 @@ namespace MazeGamePillaPilla
                 path.Add(currentNode.NavigationPosition);
                 currentNode = currentNode.Previous;
             }
+            path.Insert(0, goalPosition);
+
+            SmoothPath(path, maze);
 
             return path;
         }
@@ -123,17 +126,23 @@ namespace MazeGamePillaPilla
             }
         }
 
-        static public void SmoothPath(List<Vector2> path, Cell[,] maze)
+        static private void SmoothPath(List<Vector2> path, Cell[,] maze)
         {
-            /*
             for (int i = 0; i < path.Count; i++)
             {
-                while (i+2 < path.Count && false) // there is visibility from i to i+2
+                while (i+2 < path.Count)
                 {
-                    path.RemoveAt(i+1);
+                    VisibilityRay ray = new VisibilityRay(path[i], path[i+2]);
+                    if (!CollisionUtils.RayMapIntersectionTest(ray, maze))
+                    {
+                        path.RemoveAt(i + 1);
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
             }
-            */
         }
     }
 }
