@@ -112,7 +112,7 @@ namespace MazeGamePillaPilla
             }
             path.Insert(0, goalPosition);
 
-            SmoothPath(path, maze);
+            SmoothPath(ref path, maze);
 
             return path;
         }
@@ -126,7 +126,7 @@ namespace MazeGamePillaPilla
             }
         }
 
-        static private void SmoothPath(List<Vector2> path, Cell[,] maze)
+        static private void SmoothPath(ref List<Vector2> path, Cell[,] maze)
         {
             for (int i = 0; i < path.Count; i++)
             {
