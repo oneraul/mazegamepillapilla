@@ -56,7 +56,7 @@ namespace MazeGamePillaPilla
             spritebatch.GraphicsDevice.Clear(new Color(77f / 255, 174f / 255, 183f / 255));
 
             spritebatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, cameraMatrix);
-            spritebatch.Draw(pixel, new Rectangle(0, 0, maze.GetLength(1) * Tile.Size, maze.GetLength(0) * Tile.Size), new Color(182f / 255, 186f / 255, 159f / 255));
+            spritebatch.Draw(pixel, new Rectangle(Tile.Size, Tile.Size, (maze.GetLength(1)-2) * Tile.Size, (maze.GetLength(0)-2) * Tile.Size), new Color(182f / 255, 186f / 255, 159f / 255));
 
             foreach (IDrawable drawable in SortDrawables())
             {
@@ -81,18 +81,13 @@ namespace MazeGamePillaPilla
             spritebatch.End();
         }
 
-        public void Enter()
-        {
-            
-        }
+        public void Enter() {}
 
-        public void Exit()
-        {
-        }
+        public void Exit() {}
 
         public void Initialize(GraphicsDevice GraphicsDevice, ContentManager Content)
         {
-            cameraMatrix = Matrix.CreateTranslation(400 - Tile.Size * 11, Tile.Size, 0);
+            cameraMatrix = Matrix.CreateTranslation(400 - Tile.Size * 12, Tile.Size * 0, 0);
 
             Tile.Init(GraphicsDevice);
 
@@ -109,12 +104,58 @@ namespace MazeGamePillaPilla
             Pj.effect = Content.Load<Effect>("pj_shader");
             Pj.effect.Parameters["u_lut"].SetValue(Pj.PaletteTexture);
             SprintPowerUp.pixel = pixel;
+            SprintBuff.texture = Content.Load<Texture2D>("circle");
 
             this.Pjs = new Dictionary<string, Pj>();
             Pjs.Add("Player", new TestPj("Player", PlayerControllerIndex.Keyboard, 18.5f * Tile.Size, 2.5f * Tile.Size, 1));
 
             Drops = new List<Drop>();
             Drops.Add(new SurpriseBoxDrop(270, 305));
+
+            Random rng = new Random();
+            for (int i = 0; i < 30; i++) SpawnSurpriseBox(rng);
+        }
+
+        private void SpawnSurpriseBox(Random rng)
+        {
+            int x = rng.Next(2 * Tile.Size, (maze.GetLength(1) - 1) * Tile.Size);
+            int y = rng.Next(2 * Tile.Size, (maze.GetLength(0) - 1) * Tile.Size);
+            SurpriseBoxDrop box = new SurpriseBoxDrop(x, y);
+
+            bool isFree(SurpriseBoxDrop drop)
+            {
+                foreach (Vector2 vertex in drop.GetVertices())
+                {
+                    int currentCellX = (int)(vertex.X / Tile.Size);
+                    int currentCellY = (int)(vertex.Y / Tile.Size);
+
+                    if (currentCellX >= 0 && currentCellX < maze.GetLength(1)
+                    && currentCellY >= 0 && currentCellY < maze.GetLength(0))
+                    {
+                        Cell cell = maze[currentCellY, currentCellX];
+                        if (drop.AabbAabbIntersectionTest(cell))
+                        {
+                            if (drop.SatIntersectionTest(cell))
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+
+                return true;
+            }
+
+            int iteraciones = 0;
+            while (!isFree(box))
+            {
+                iteraciones++;
+                x = rng.Next(2 * Tile.Size, (maze.GetLength(1) - 1) * Tile.Size);
+                y = rng.Next(2 * Tile.Size, (maze.GetLength(0) - 1) * Tile.Size);
+                box.SetPosition(x, y);
+            }
+            //System.Diagnostics.Debug.WriteLine(iteraciones);
+            Drops.Add(new SurpriseBoxDrop(x, y));
         }
 
         public void Update(float dt)
@@ -153,9 +194,7 @@ namespace MazeGamePillaPilla
             pj.Buffs.Add(new SprintBuff(pj));
         }
 
-        public void Draw(SpriteBatch spritebatch, Matrix cameraMatrix)
-        {
-        }
+        public void Draw(SpriteBatch spritebatch, Matrix cameraMatrix) {}
     }
 
     abstract class Buff
@@ -193,6 +232,7 @@ namespace MazeGamePillaPilla
     {
         private static float duration = 5;
         private static float velocityBuffAmount = 500;
+        public static Texture2D texture;
 
         private Pj pj;
 
@@ -209,7 +249,7 @@ namespace MazeGamePillaPilla
 
         public override void Draw(SpriteBatch spritebatch, Matrix cameraMatrix)
         {
-            spritebatch.Draw(SprintPowerUp.pixel, new Rectangle(100, 100, 100, 100), Color.Red);
+            spritebatch.Draw(SprintBuff.texture, new Rectangle((int)(pj.x-16), (int)(pj.y-16), 32, 32), Color.Red);
         }
 
         public override void End()
@@ -222,27 +262,28 @@ namespace MazeGamePillaPilla
     {
         private static Vector2[] ProjectionAxes = new Vector2[] { Vector2.UnitX, Vector2.UnitY };
 
-        private Rectangle Aabb;
-        private Vector2[] vertices;
         public Action<Pj> Callback { get; private set; }
+        private int x;
+        private int y;
+        private int radius;
 
         protected Drop(int x, int y, int radius, Action<Pj> callback)
         {
-            Aabb = new Rectangle(x - radius, y - radius, radius * 2, radius * 2);
-            vertices = new Vector2[]
-            {
-                new Vector2(x+radius, y-radius),
-                new Vector2(x+radius, y+radius),
-                new Vector2(x-radius, y+radius),
-                new Vector2(x-radius, y-radius)
-            };
-
+            this.x = x;
+            this.y = y;
+            this.radius = radius;
             this.Callback = callback;
+        }
+
+        public void SetPosition(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
         }
 
         public Rectangle GetAABB()
         {
-            return Aabb;
+            return new Rectangle(x - radius, y - radius, radius * 2, radius * 2);
         }
 
         public Vector2[] GetSatProjectionAxes()
@@ -252,17 +293,23 @@ namespace MazeGamePillaPilla
 
         public Vector2[] GetVertices()
         {
-            return vertices;
+            return new Vector2[]
+            {
+                new Vector2(x+radius, y-radius),
+                new Vector2(x+radius, y+radius),
+                new Vector2(x-radius, y+radius),
+                new Vector2(x-radius, y-radius)
+            };
         }
 
         public void Draw(SpriteBatch spritebatch, Matrix cameraMatrix)
         {
-            spritebatch.Draw(SprintPowerUp.pixel, Aabb, Color.GreenYellow);
+            spritebatch.Draw(SprintPowerUp.pixel, GetAABB(), Color.GreenYellow);
         }
 
         public float GetSortY()
         {
-            return Aabb.Center.Y;
+            return y;
         }
     }
 

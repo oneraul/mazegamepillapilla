@@ -25,7 +25,7 @@ namespace MazeGamePillaPilla
         {
             if (Id == 0) return;
 
-            const int height = 20;
+            const int height = 1;//20;
             for (int h = 0; h < height; h++)
             {
                 Color color = (h == height-1) ? new Color(153f / 255, 186f / 255, 0) : new Color(118f / 255, 166f / 255, 19f / 255);

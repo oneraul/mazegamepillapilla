@@ -164,26 +164,36 @@ namespace MazeGamePillaPilla
                 return;
             }
 
-            x += v * input.Horizontal;
-            y += v * input.Vertical;
+            // Multisampling to avoid tunneling when the speed is to high
+            float baseV = 150;
+            int numberOfSamples = (int)(v / baseV);
 
-            x = MathHelper.Clamp(x, hw + 1, maze.GetLength(1) * Tile.Size - hw - 1);
-            y = MathHelper.Clamp(y, hh + 1, maze.GetLength(0) * Tile.Size - hh - 1);
-
-            rotation = ((float)Math.Atan2(input.Vertical, input.Horizontal) + MathHelper.TwoPi) % MathHelper.TwoPi;
-            currentAnimation = Animations[(int)AnimationID.Running];
-
-            // Collision
-            Vector2 dir = new Vector2(input.Horizontal, input.Vertical);
-            dir.Normalize();
-            foreach (Cell cell in GetSurroundingCells(maze, dir))
+            float remainingV = v;
+            for (int i = 0; i < numberOfSamples; i++)
             {
-                if (this.AabbAabbIntersectionTest(cell))
+                x += Math.Min(baseV, remainingV) * input.Horizontal;
+                y += Math.Min(baseV, remainingV) * input.Vertical;
+
+                x = MathHelper.Clamp(x, Tile.Size*2 + hw + 1, maze.GetLength(1) * Tile.Size - hw - Tile.Size*2 - 1);
+                y = MathHelper.Clamp(y, Tile.Size*2 + hh + 1, maze.GetLength(0) * Tile.Size - hh - Tile.Size*2 - 1);
+
+                rotation = ((float)Math.Atan2(input.Vertical, input.Horizontal) + MathHelper.TwoPi) % MathHelper.TwoPi;
+                currentAnimation = Animations[(int)AnimationID.Running];
+
+                // Collision
+                Vector2 dir = new Vector2(input.Horizontal, input.Vertical);
+                dir.Normalize();
+                foreach (Cell cell in GetSurroundingCells(maze, dir))
                 {
-                    Vector2 mtv = this.SatIntersectionTestGetMtv(cell) ?? Vector2.Zero;
-                    x -= mtv.X;
-                    y -= mtv.Y;
+                    if (this.AabbAabbIntersectionTest(cell))
+                    {
+                        Vector2 mtv = this.SatIntersectionTestGetMtv(cell) ?? Vector2.Zero;
+                        x -= mtv.X;
+                        y -= mtv.Y;
+                    }
                 }
+
+                remainingV -= baseV;
             }
         }
 

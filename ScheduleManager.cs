@@ -14,6 +14,15 @@ namespace MazeGamePillaPilla
             actions.Add(action);
         }
 
+        public static void ScheduleInLoop(float timer, Action action)
+        {
+            Action looper = () =>
+            {
+                ScheduleManager.Schedule(timer, action);
+                action();
+            };
+        }
+
         public static void Update(float dt)
         {
             for (int i = timers.Count-1; i >= 0; i--)
