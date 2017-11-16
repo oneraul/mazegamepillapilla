@@ -60,7 +60,11 @@ namespace MazeGamePillaPilla
 
                 if (movement.LengthSquared() == 0)
                 {
-                    if (action == false && oldStateValid)
+                    if (action)
+                    {
+                        return new InputPacket(this.ID, this.InputSequenceNumber, 0, 0, true);
+                    }
+                    else if (oldStateValid)
                     {
                         oldStateValid = false;
                         return new InputPacket(this.ID, this.InputSequenceNumber, 0, 0, false);

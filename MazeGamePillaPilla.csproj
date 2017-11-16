@@ -69,6 +69,7 @@
     <Compile Include="MapData.cs" />
     <Compile Include="MenuGuiManager.cs" />
     <Compile Include="NetMessage.cs" />
+    <Compile Include="ObjectsScreen.cs" />
     <Compile Include="Pathfinder.cs" />
     <Compile Include="PathFinderScreen.cs" />
     <Compile Include="PathfindingNode.cs" />

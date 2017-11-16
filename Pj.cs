@@ -32,6 +32,9 @@ namespace MazeGamePillaPilla
         internal Animation[] Animations;
         internal Animation currentAnimation;
 
+        public IPowerUp PowerUp;
+        public List<Buff> Buffs;
+
 
         protected enum AnimationID { Idle, Running }
 
@@ -53,6 +56,8 @@ namespace MazeGamePillaPilla
 
             paletteParameter = Pj.effect.Parameters["u_palette"];
             effectPass = Pj.effect.Techniques[0].Passes[0];
+
+            Buffs = new List<Buff>();
         }
 
 
@@ -122,7 +127,6 @@ namespace MazeGamePillaPilla
                 case 4: color = Color.DarkOrange; break;
             }
 
-            //batch.Draw(ColliderTexture, new Vector2(x - hw, y - hh), color);
             batch.Draw(ColliderTexture, GetAABB(), color);
             batch.End();
 
@@ -134,6 +138,12 @@ namespace MazeGamePillaPilla
             batch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, cameraMatrix);
 
             batch.DrawString(Button.Font, this.ID, new Vector2(x - Button.Font.MeasureString(this.ID).X / 2, y - 40), Color.White);
+
+
+            foreach (Buff buff in Buffs)
+            {
+                buff.Draw(batch, cameraMatrix);
+            }
         }
 
 
