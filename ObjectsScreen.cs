@@ -113,7 +113,7 @@ namespace MazeGamePillaPilla
             Drops.Add(new SurpriseBoxDrop(270, 305));
 
             Random rng = new Random();
-            for (int i = 0; i < 30; i++) SpawnSurpriseBox(rng);
+            ScheduleManager.ScheduleInLoop(3, () => SpawnSurpriseBox(rng));
         }
 
         private void SpawnSurpriseBox(Random rng)

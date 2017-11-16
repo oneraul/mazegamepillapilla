@@ -16,11 +16,8 @@ namespace MazeGamePillaPilla
 
         public static void ScheduleInLoop(float timer, Action action)
         {
-            Action looper = () =>
-            {
-                ScheduleManager.Schedule(timer, action);
-                action();
-            };
+            LoopAction loop = new LoopAction(timer, action);
+            Schedule(timer, loop.Handle());
         }
 
         public static void Update(float dt)
@@ -41,6 +38,29 @@ namespace MazeGamePillaPilla
         {
             timers.Clear();
             actions.Clear();
+        }
+
+
+        struct LoopAction
+        {
+            float time;
+            Action action;
+
+            public LoopAction(float time, Action action)
+            {
+                this.time = time;
+                this.action = action;
+            }
+
+            public Action Handle()
+            {
+                LoopAction self = this;
+                return () =>
+                {
+                    self.action();
+                    ScheduleManager.Schedule(self.time, self.Handle());
+                };
+            }
         }
     }
 }
