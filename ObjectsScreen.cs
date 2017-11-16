@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,8 +10,9 @@ namespace MazeGamePillaPilla
     {
         private Cell[,] maze;
         private Texture2D pixel;
-        private Dictionary<string, Pj> Pjs;
         private Matrix cameraMatrix;
+        private Dictionary<string, Pj> Pjs;
+        private List<Drop> Drops;
 
         public void Draw(SpriteBatch spritebatch)
         {
@@ -60,6 +62,11 @@ namespace MazeGamePillaPilla
                 drawable.Draw(spritebatch, cameraMatrix);
             }
 
+            foreach (Drop drop in Drops)
+            {
+                drop.Draw(spritebatch, cameraMatrix);
+            }
+
             spritebatch.End();
 
             spritebatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
@@ -104,11 +111,28 @@ namespace MazeGamePillaPilla
 
             this.Pjs = new Dictionary<string, Pj>();
             Pjs.Add("Player", new TestPj("Player", PlayerControllerIndex.Keyboard, 18.5f * Tile.Size, 2.5f * Tile.Size, 1));
+
+            Drops = new List<Drop>();
+            Drops.Add(new SurpriseBoxDrop(270, 305));
         }
 
         public void Update(float dt)
         {
             foreach (Pj pj in Pjs.Values) pj.Update(dt, maze);
+
+            for (int i = Drops.Count-1; i >= 0; i--)
+            {
+                Drop drop = Drops[i];
+                foreach (Pj pj in Pjs.Values)
+                {
+                    if (drop.AabbAabbIntersectionTest(pj))
+                    {
+                        drop.Callback(pj);
+                        Drops.RemoveAt(i);
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -191,5 +215,59 @@ namespace MazeGamePillaPilla
         {
             pj.v -= velocityBuffAmount;
         }
+    }
+
+    abstract class Drop : IIntersectable
+    {
+        private static Vector2[] ProjectionAxes = new Vector2[] { Vector2.UnitX, Vector2.UnitY };
+
+        private Rectangle Aabb;
+        private Vector2[] vertices;
+        public Action<Pj> Callback { get; private set; }
+
+        protected Drop(int x, int y, int radius, Action<Pj> callback)
+        {
+            Aabb = new Rectangle(x - radius, y - radius, radius * 2, radius * 2);
+            vertices = new Vector2[]
+            {
+                new Vector2(x+radius, y-radius),
+                new Vector2(x+radius, y+radius),
+                new Vector2(x-radius, y+radius),
+                new Vector2(x-radius, y-radius)
+            };
+
+            this.Callback = callback;
+        }
+
+        public Rectangle GetAABB()
+        {
+            return Aabb;
+        }
+
+        public Vector2[] GetSatProjectionAxes()
+        {
+            return ProjectionAxes;
+        }
+
+        public Vector2[] GetVertices()
+        {
+            return vertices;
+        }
+
+        public void Draw(SpriteBatch spritebatch, Matrix cameraMatrix)
+        {
+            spritebatch.Draw(SprintPowerUp.pixel, Aabb, Color.GreenYellow);
+        }
+    }
+
+    class SurpriseBoxDrop : Drop
+    {
+        private static int radius = 10;
+
+        public SurpriseBoxDrop(int x, int y) : base(x, y, radius, (pj) =>
+        {
+            pj.PowerUp = new SprintPowerUp();
+
+        }) {}
     }
 }
