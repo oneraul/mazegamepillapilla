@@ -174,8 +174,8 @@ namespace MazeGamePillaPilla
                 x += Math.Min(baseV, remainingV) * input.Horizontal;
                 y += Math.Min(baseV, remainingV) * input.Vertical;
 
-                x = MathHelper.Clamp(x, Tile.Size*2 + hw + 1, maze.GetLength(1) * Tile.Size - hw - Tile.Size*2 - 1);
-                y = MathHelper.Clamp(y, Tile.Size*2 + hh + 1, maze.GetLength(0) * Tile.Size - hh - Tile.Size*2 - 1);
+                x = MathHelper.Clamp(x, Tile.Size + hw + 1, maze.GetLength(1) * Tile.Size - hw - Tile.Size - 1);
+                y = MathHelper.Clamp(y, Tile.Size + hh + 1, maze.GetLength(0) * Tile.Size - hh - Tile.Size - 1);
 
                 rotation = ((float)Math.Atan2(input.Vertical, input.Horizontal) + MathHelper.TwoPi) % MathHelper.TwoPi;
                 currentAnimation = Animations[(int)AnimationID.Running];

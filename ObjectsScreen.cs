@@ -56,7 +56,7 @@ namespace MazeGamePillaPilla
             spritebatch.GraphicsDevice.Clear(new Color(77f / 255, 174f / 255, 183f / 255));
 
             spritebatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, cameraMatrix);
-            spritebatch.Draw(pixel, new Rectangle(Tile.Size, Tile.Size, (maze.GetLength(1)-2) * Tile.Size, (maze.GetLength(0)-2) * Tile.Size), new Color(182f / 255, 186f / 255, 159f / 255));
+            spritebatch.Draw(pixel, new Rectangle(0, 0, maze.GetLength(1) * Tile.Size, maze.GetLength(0) * Tile.Size), new Color(182f / 255, 186f / 255, 159f / 255));
 
             foreach (IDrawable drawable in SortDrawables())
             {
@@ -87,7 +87,7 @@ namespace MazeGamePillaPilla
 
         public void Initialize(GraphicsDevice GraphicsDevice, ContentManager Content)
         {
-            cameraMatrix = Matrix.CreateTranslation(400 - Tile.Size * 12, Tile.Size * 0, 0);
+            cameraMatrix = Matrix.CreateTranslation(400 - Tile.Size * 11, Tile.Size, 0);
 
             Tile.Init(GraphicsDevice);
 
