@@ -143,7 +143,7 @@ namespace MazeGamePillaPilla
             batch.Draw(texture, position, Color.White);
         }
 
-        internal float GetSortY()
+        public float GetSortY()
         {
             return Y + Tile.SortY;
         }

@@ -147,6 +147,12 @@ namespace MazeGamePillaPilla
         }
 
 
+        public float GetSortY()
+        {
+            return y;
+        }
+
+
         internal abstract void ApplyInputOnTheServer(InputPacket input, Cell[,] maze);
 
 

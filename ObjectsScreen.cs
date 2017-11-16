@@ -20,25 +20,26 @@ namespace MazeGamePillaPilla
             {
                 List<IDrawable> drawables = new List<IDrawable>();
 
-                List<Pj> pjsToInsert = new List<Pj>();
-                pjsToInsert.AddRange(Pjs.Values);
-                pjsToInsert.Sort((a, b) => b.y.CompareTo(a.y));
+                List<IDrawable> itemsToInsert = new List<IDrawable>();
+                itemsToInsert.AddRange(Pjs.Values);
+                itemsToInsert.Sort((a, b) => b.GetSortY().CompareTo(a.GetSortY()));
 
                 int mazeW = maze.GetLength(1);
                 int mazeH = maze.GetLength(0);
                 for (int y = 0; y < mazeH; y++)
                 {
-                    for (int i = pjsToInsert.Count - 1; i >= 0; i--)
+                    for (int i = itemsToInsert.Count - 1; i >= 0; i--)
                     {
-                        Pj pj = pjsToInsert[i];
+                        IDrawable item = itemsToInsert[i];
+                        Rectangle itemAabb = ((IIntersectable)item).GetAABB();
 
-                        Cell leftCell = maze[y, (int)((pj.x - pj.hw) / Tile.Size)];
-                        Cell rightCell = maze[y, (int)((pj.x + pj.hw) / Tile.Size)];
+                        Cell leftCell = maze[y, (int)((itemAabb.Left) / Tile.Size)];
+                        Cell rightCell = maze[y, (int)((itemAabb.Right) / Tile.Size)];
 
-                        if (pj.y < leftCell.GetSortY() && pj.y < rightCell.GetSortY())
+                        if (item.GetSortY() < leftCell.GetSortY() && item.GetSortY() < rightCell.GetSortY())
                         {
-                            drawables.Add(pj);
-                            pjsToInsert.RemoveAt(i);
+                            drawables.Add(item);
+                            itemsToInsert.RemoveAt(i);
                         }
                     }
 
@@ -217,7 +218,7 @@ namespace MazeGamePillaPilla
         }
     }
 
-    abstract class Drop : IIntersectable
+    abstract class Drop : IIntersectable, IDrawable
     {
         private static Vector2[] ProjectionAxes = new Vector2[] { Vector2.UnitX, Vector2.UnitY };
 
@@ -257,6 +258,11 @@ namespace MazeGamePillaPilla
         public void Draw(SpriteBatch spritebatch, Matrix cameraMatrix)
         {
             spritebatch.Draw(SprintPowerUp.pixel, Aabb, Color.GreenYellow);
+        }
+
+        public float GetSortY()
+        {
+            return Aabb.Center.Y;
         }
     }
 

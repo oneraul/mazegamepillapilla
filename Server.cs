@@ -246,7 +246,7 @@ namespace MazeGamePillaPilla
                 updateAccumulator -= TickRate;
                 server.PollEvents();
 
-                foreach (Pj pj in game.Pjs.Values ?? Enumerable.Empty<Pj>())
+                foreach (Pj pj in game?.Pjs.Values ?? Enumerable.Empty<Pj>())
                 {
                     if (lastProcessedInputs[pj.ID] > lastSentSnapshots[pj.ID])
                     {
