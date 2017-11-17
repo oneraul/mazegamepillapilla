@@ -121,6 +121,7 @@ namespace MazeGamePillaPilla
             SprintPowerUp.pixel = pixel;
             SprintPowerUp.GuiTexture = Content.Load<Texture2D>("sprint");
             SprintBuff.texture = Content.Load<Texture2D>("circle");
+            SurpriseBoxDrop.modelTexture = Content.Load<Texture2D>("surpriseBox");
 
             this.Pjs = new Dictionary<string, Pj>();
             Pjs.Add("Player", new TestPj("Player", PlayerControllerIndex.Keyboard, 18.5f * Tile.Size, 2.5f * Tile.Size, 1));
@@ -191,6 +192,9 @@ namespace MazeGamePillaPilla
             for (int i = Drops.Count-1; i >= 0; i--)
             {
                 Drop drop = Drops[i];
+
+                drop.Update(dt);
+
                 foreach (Pj pj in Pjs.Values)
                 {
                     if (drop.AabbAabbIntersectionTest(pj))
@@ -332,25 +336,47 @@ namespace MazeGamePillaPilla
             };
         }
 
-        public void Draw(SpriteBatch spritebatch, Matrix cameraMatrix)
-        {
-            spritebatch.Draw(SprintPowerUp.pixel, GetAABB(), Color.GreenYellow);
-        }
+        public abstract void Draw(SpriteBatch spritebatch, Matrix cameraMatrix);
 
         public float GetSortY()
         {
             return y;
         }
+
+        public virtual void Update(float dt) {}
     }
 
     class SurpriseBoxDrop : Drop
     {
+        public static Texture2D modelTexture;
         private static int radius = 10;
+
+        private AnimationFrame model;
+        private float rotation;
 
         public SurpriseBoxDrop(int x, int y) : base(x, y, radius, (pj) =>
         {
             pj.PowerUp = new SprintPowerUp();
+        })
+        {
+            int layers = 16;
+            int side = 16;
+            model = new AnimationFrame(layers);
+            for (int i = 0; i < layers; i++)
+            {
+                model.Rectangles[i] = new Rectangle(i * layers, 0, side, side);
+            }
+        }
 
-        }) {}
+        public override void Draw(SpriteBatch spritebatch, Matrix cameraMatrix)
+        {
+            spritebatch.Draw(SprintPowerUp.pixel, GetAABB(), Color.GreenYellow);
+            model.Draw(modelTexture, spritebatch, GetAABB().Center.X, GetAABB().Center.Y, rotation, 1, 8, 8);
+        }
+
+        public override void Update(float dt)
+        {
+            rotation = (float)((rotation + dt) % (Math.PI * 2));
+        }
     }
 }
