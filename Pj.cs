@@ -7,7 +7,7 @@ namespace MazeGamePillaPilla
 {
     abstract class Pj : IDrawable, IIntersectable
     {
-        internal enum Type { Local, Remote, Bot }
+        public enum Type { Local, Remote, Bot }
 
 
         private static Vector2[] ProjectionAxes = new Vector2[] { Vector2.UnitX, Vector2.UnitY };
@@ -20,17 +20,19 @@ namespace MazeGamePillaPilla
         private EffectParameter paletteParameter;
         private EffectPass effectPass;
 
-        internal string ID;
-        internal float x;
-        internal float y;
-        internal float v = 150;
-        internal float rotation = MathHelper.PiOver2;   // in radians, range [0, 2*pi)
-        internal float hw = (0.5f * Tile.Size) / 2;
-        internal float hh = (0.5f * Tile.Size) / 2;
+        public string ID;
+        public float x;
+        public float y;
+        public float v = 150;
+        public float rotation = MathHelper.PiOver2;   // in radians, range [0, 2*pi)
+        public float hw = (0.5f * Tile.Size) / 2;
+        public float hh = (0.5f * Tile.Size) / 2;
 
-        internal int palette;
-        internal Animation[] Animations;
-        internal Animation currentAnimation;
+        public bool CanTraverseWalls;
+
+        public int palette;
+        public Animation[] Animations;
+        public Animation currentAnimation;
 
         public IPowerUp PowerUp;
         public List<Buff> Buffs;
@@ -61,7 +63,7 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal abstract void Update(float dt, Cell[,] maze);
+        public abstract void Update(float dt, Cell[,] maze);
 
 
         protected void SetIdle()
@@ -136,10 +138,6 @@ namespace MazeGamePillaPilla
             batch.End();
 
             batch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, cameraMatrix);
-
-            batch.DrawString(Button.Font, this.ID, new Vector2(x - Button.Font.MeasureString(this.ID).X / 2, y - 40), Color.White);
-
-
             foreach (Buff buff in Buffs)
             {
                 buff.Draw(batch, cameraMatrix);
@@ -153,10 +151,10 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal abstract void ApplyInputOnTheServer(InputPacket input, Cell[,] maze);
+        public abstract void ApplyInputOnTheServer(InputPacket input, Cell[,] maze);
 
 
-        internal void ApplyInput(InputPacket input, Cell[,] maze)
+        public void ApplyInput(InputPacket input, Cell[,] maze)
         {
             if (input.Horizontal == 0 && input.Vertical == 0)
             {
@@ -174,22 +172,25 @@ namespace MazeGamePillaPilla
                 x += Math.Min(baseV, remainingV) * input.Horizontal;
                 y += Math.Min(baseV, remainingV) * input.Vertical;
 
-                x = MathHelper.Clamp(x, Tile.Size + hw + 1, maze.GetLength(1) * Tile.Size - hw - Tile.Size - 1);
-                y = MathHelper.Clamp(y, Tile.Size + hh + 1, maze.GetLength(0) * Tile.Size - hh - Tile.Size - 1);
+                x = MathHelper.Clamp(x, Tile.Size + hw + 3, maze.GetLength(1) * Tile.Size - hw - Tile.Size - 3);
+                y = MathHelper.Clamp(y, Tile.Size + hh + 3, maze.GetLength(0) * Tile.Size - hh - Tile.Size - 3);
 
                 rotation = ((float)Math.Atan2(input.Vertical, input.Horizontal) + MathHelper.TwoPi) % MathHelper.TwoPi;
                 currentAnimation = Animations[(int)AnimationID.Running];
 
-                // Collision
-                Vector2 dir = new Vector2(input.Horizontal, input.Vertical);
-                dir.Normalize();
-                foreach (Cell cell in GetSurroundingCells(maze, dir))
+                if (!CanTraverseWalls)
                 {
-                    if (this.AabbAabbIntersectionTest(cell))
+                    // Collision
+                    Vector2 dir = new Vector2(input.Horizontal, input.Vertical);
+                    dir.Normalize();
+                    foreach (Cell cell in GetSurroundingCells(maze, dir))
                     {
-                        Vector2 mtv = this.SatIntersectionTestGetMtv(cell) ?? Vector2.Zero;
-                        x -= mtv.X;
-                        y -= mtv.Y;
+                        if (this.AabbAabbIntersectionTest(cell))
+                        {
+                            Vector2 mtv = this.SatIntersectionTestGetMtv(cell) ?? Vector2.Zero;
+                            x -= mtv.X;
+                            y -= mtv.Y;
+                        }
                     }
                 }
 
@@ -198,7 +199,7 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal abstract void ProcessServerUpdate(StatePacket packet, Cell[,] maze);
+        public abstract void ProcessServerUpdate(StatePacket packet, Cell[,] maze);
 
         public Vector2[] GetVertices()
         {

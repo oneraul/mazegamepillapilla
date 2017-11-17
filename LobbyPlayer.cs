@@ -2,11 +2,11 @@
 {
     class LobbyPlayer
     {
-        internal string Name;
-        internal string CharacterID;
-        internal PlayerControllerIndex PlayerControllerIndex;
+        public string Name;
+        public string CharacterID;
+        public PlayerControllerIndex PlayerControllerIndex;
 
-        internal LobbyPlayer(string characterID, PlayerControllerIndex playerControllerIndex)
+        public LobbyPlayer(string characterID, PlayerControllerIndex playerControllerIndex)
         {
             CharacterID = characterID;
             PlayerControllerIndex = playerControllerIndex;

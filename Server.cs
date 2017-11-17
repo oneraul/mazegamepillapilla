@@ -8,9 +8,9 @@ namespace MazeGamePillaPilla
 {
     class Server
     {
-        internal float TickRate { get; private set; }
-        internal int Port { get; private set; }
-        internal int MaxClients { get; private set; }
+        public float TickRate { get; private set; }
+        public int Port { get; private set; }
+        public int MaxClients { get; private set; }
 
         private EventBasedNetListener listener;
         private NetManager server;
@@ -20,7 +20,7 @@ namespace MazeGamePillaPilla
 
         private List<NetPeer> peersNotReadyToStartYet;
 
-        internal Server()
+        public Server()
         {
             Port = 9050;
             MaxClients = 4;
@@ -44,7 +44,7 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal void Close()
+        public void Close()
         {
             NetDataWriter writer = new NetDataWriter();
             writer.Put((int)NetMessage.ServerClosed);
@@ -55,7 +55,7 @@ namespace MazeGamePillaPilla
 
         // Lobby ------------------------
 
-        internal void LobbyUpdate(float dt)
+        public void LobbyUpdate(float dt)
         {
             server.PollEvents();
 
@@ -222,9 +222,9 @@ namespace MazeGamePillaPilla
         // Gameplay ---------------------
 
         private float updateAccumulator;
-        internal GameScreen game;
-        internal Dictionary<string, long> lastProcessedInputs;
-        internal Dictionary<string, long> lastSentSnapshots;
+        public GameScreen game;
+        public Dictionary<string, long> lastProcessedInputs;
+        public Dictionary<string, long> lastSentSnapshots;
 
 
         private void SetGameplay()
@@ -238,7 +238,7 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal void GameplayUpdate(float dt)
+        public void GameplayUpdate(float dt)
         {
             updateAccumulator += dt;
             if (updateAccumulator >= TickRate)
@@ -277,7 +277,7 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal void GoToScoresScreen()
+        public void GoToScoresScreen()
         {
             NetDataWriter writer = new NetDataWriter();
             writer.Put((int)NetMessage.GoToScoresScreen);

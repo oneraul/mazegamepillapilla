@@ -12,7 +12,7 @@ namespace MazeGamePillaPilla
         public int Animation;
 
 
-        internal StatePacket(string CharacterID, long InputSequenceNumber, float X, float Y, float Rotation, int Palette, int Animation)
+        public StatePacket(string CharacterID, long InputSequenceNumber, float X, float Y, float Rotation, int Palette, int Animation)
         {
             this.CharacterID = CharacterID;
             this.InputSequenceNumber = InputSequenceNumber;
@@ -24,7 +24,7 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal StatePacket(NetDataReader dataReader)
+        public StatePacket(NetDataReader dataReader)
         {
             this.CharacterID = dataReader.GetString();
             this.InputSequenceNumber = dataReader.GetLong();
@@ -36,7 +36,7 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal StatePacket(string CharacterID, long InputSequenceNumber, Pj pj)
+        public StatePacket(string CharacterID, long InputSequenceNumber, Pj pj)
         {
             this.CharacterID = CharacterID;
             this.InputSequenceNumber = InputSequenceNumber;
@@ -48,7 +48,7 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal NetDataWriter Serialize()
+        public NetDataWriter Serialize()
         {
             NetDataWriter writer = new NetDataWriter();
 

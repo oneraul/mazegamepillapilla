@@ -14,12 +14,27 @@ namespace MazeGamePillaPilla
             this.PlayerControllerIndex = playerControllerIndex;
         }
 
-        internal override void ApplyInputOnTheServer(InputPacket input, Cell[,] maze) {}
+        public override void ApplyInputOnTheServer(InputPacket input, Cell[,] maze) {}
 
-        internal override void ProcessServerUpdate(StatePacket packet, Cell[,] maze) {}
+        public override void ProcessServerUpdate(StatePacket packet, Cell[,] maze) {}
 
-        internal override void Update(float dt, Cell[,] maze)
+        public override void Update(float dt, Cell[,] maze)
         {
+            currentAnimation.Update(dt);
+
+            ///////////////////////
+            for (int i = Buffs.Count - 1; i >= 0; i--)
+            {
+                Buff buff = Buffs[i];
+                buff.Update(dt);
+                if (buff.ToBeRemoved)
+                {
+                    buff.End();
+                    Buffs.RemoveAt(i);
+                }
+            }
+            ///////////////////////
+
             InputPacket? PackageInputData()
             {
                 bool action = Input.Controllers[this.PlayerControllerIndex].IsPressed(InputKeys.Action);
@@ -54,7 +69,7 @@ namespace MazeGamePillaPilla
 
             ApplyInput(inputData, maze);
 
-            // this is not implemented yet in the Pj class
+            ///////////////////////////////
             if (inputData.Action)
             {
                 if (this.PowerUp != null)
@@ -63,21 +78,7 @@ namespace MazeGamePillaPilla
                     this.PowerUp = null;
                 }
             }
-
-            for (int i = Buffs.Count-1; i >= 0; i--)
-            {
-                Buff buff = Buffs[i];
-                buff.Update(dt);
-                if (buff.ToBeRemoved)
-                {
-                    buff.End();
-                    Buffs.RemoveAt(i);
-                }
-            }
-
-            //--------------------------------------
-
-            currentAnimation.Update(dt);
+            /////////////////////////////////
         }
     }
 }

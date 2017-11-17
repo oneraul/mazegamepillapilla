@@ -27,14 +27,14 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal LoadGameScreen(int PlayersCount, int MapId, Client client) : this(PlayersCount, MapId)
+        public LoadGameScreen(int PlayersCount, int MapId, Client client) : this(PlayersCount, MapId)
         {
             this.client = client;
             gameScreen = new GameScreen(client);
         }
 
 
-        internal LoadGameScreen(int PlayersCount, int MapId, Client client, Server server) : this(PlayersCount, MapId)
+        public LoadGameScreen(int PlayersCount, int MapId, Client client, Server server) : this(PlayersCount, MapId)
         {
             this.client = client;
             this.server = server;

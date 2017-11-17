@@ -9,7 +9,7 @@ namespace MazeGamePillaPilla
         private EventBasedNetListener listener;
         private NetManager client;
 
-        internal Client()
+        public Client()
         {
             string Ip = "localhost";
             int Port = 9050;
@@ -24,7 +24,7 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal void Close()
+        public void Close()
         {
             NetDataWriter writer = new NetDataWriter();
             writer.Put((int)NetMessage.ClientClosed);
@@ -34,13 +34,13 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal void Send(NetDataWriter writer, SendOptions sendOptions)
+        public void Send(NetDataWriter writer, SendOptions sendOptions)
         {
             client.SendToAll(writer, sendOptions);
         }
 
 
-        internal void LobbyUpdate(float dt)
+        public void LobbyUpdate(float dt)
         {
             client.PollEvents();
         }
@@ -141,7 +141,7 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal void RequestNewPlayer(int playerIndex)
+        public void RequestNewPlayer(int playerIndex)
         {
             NetDataWriter writer = new NetDataWriter();
             writer.Put((int)NetMessage.AddPlayer);
@@ -150,7 +150,7 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal void RequestStartGame()
+        public void RequestStartGame()
         {
             NetDataWriter writer = new NetDataWriter();
             writer.Put((int)NetMessage.PrepareToStartGame);
@@ -158,7 +158,7 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal void SignalReadyToStart()
+        public void SignalReadyToStart()
         {
             NetDataWriter writer = new NetDataWriter();
             writer.Put((int)NetMessage.ReadyToStart);
@@ -168,7 +168,7 @@ namespace MazeGamePillaPilla
         // ================================
 
 
-        internal void SendReadyToStart()
+        public void SendReadyToStart()
         {
             NetDataWriter writer = new NetDataWriter();
             writer.Put((int)NetMessage.ReadyToStart);
@@ -188,7 +188,7 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal void GameplayUpdate(float dt)
+        public void GameplayUpdate(float dt)
         {
             client.PollEvents();
         }

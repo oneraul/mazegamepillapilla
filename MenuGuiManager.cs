@@ -10,10 +10,10 @@ namespace MazeGamePillaPilla
         private Button currentButton;
         private Button.CurrentState currentButtonState = Button.CurrentState.Hover;
         public event EventHandler<EventArgs> BackButtonPressed;
-        internal PlayerControllerIndex? PlayerControllerIndex { get; private set; }
+        public PlayerControllerIndex? PlayerControllerIndex { get; private set; }
         
-        internal MenuGuiManager() {}
-        internal MenuGuiManager(PlayerControllerIndex index) => PlayerControllerIndex = index;
+        public MenuGuiManager() {}
+        public MenuGuiManager(PlayerControllerIndex index) => PlayerControllerIndex = index;
 
 
         public void Enter()
@@ -85,7 +85,7 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal void Draw(SpriteBatch spritebatch)
+        public void Draw(SpriteBatch spritebatch)
         {
             foreach (Button button in buttons)
             {
@@ -110,12 +110,12 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal void AddButton(Button button)
+        public void AddButton(Button button)
         {
             if (!buttons.Contains(button)) buttons.Add(button);
         }
 
-        internal void RemoveButton(Button button)
+        public void RemoveButton(Button button)
         {
             if (buttons.Contains(button))
             {
@@ -132,12 +132,12 @@ namespace MazeGamePillaPilla
             }
         }
 
-        internal Button GetButton(int index)
+        public Button GetButton(int index)
         {
             return buttons[index];
         }
 
-        internal void SetCurrentButton(Button button)
+        public void SetCurrentButton(Button button)
         {
             if (buttons.Contains(button)) currentButton = button;
         }

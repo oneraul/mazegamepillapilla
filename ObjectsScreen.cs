@@ -60,6 +60,7 @@ namespace MazeGamePillaPilla
             }
 
 
+            // Draw the game onto a texture
             spritebatch.GraphicsDevice.SetRenderTarget(renderTarget);
             {
                 spritebatch.GraphicsDevice.Clear(backgroundColor);
@@ -75,22 +76,44 @@ namespace MazeGamePillaPilla
                 spritebatch.End();
             }
 
+            // Post-process the texture and draw it to the back buffer
             spritebatch.GraphicsDevice.SetRenderTarget(null);
             spritebatch.GraphicsDevice.Clear(Color.Crimson);
             {
                 spritebatch.Begin();
-
                 spritebatch.Draw(renderTarget, renderTargetRectangle, biomeTintColor);
+
+                spritebatch.End();
+            }
+
+            // Draw extra gameplay elements (projected into world space but not affected by post-processing)
+            {
+                spritebatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, cameraMatrix);
+                foreach (Pj pj in Pjs.Values)
+                {
+                    spritebatch.DrawString(Button.Font, pj.ID, new Vector2(pj.x - Button.Font.MeasureString(pj.ID).X / 2, pj.y - 40), Color.White);
+                }
+                spritebatch.End();
+            }
+
+            // Draw GUI
+            {
+                spritebatch.Begin();
+
+                int screenWidth = spritebatch.GraphicsDevice.PresentationParameters.BackBufferWidth;
+                int sideMargin = 230;       // the distance from the side of the screen to the first portrait
+                int portraitPadding = 15;   // the separation from one portrait to the next
+                int portraitWidth = (screenWidth - sideMargin * 2 - (Pjs.Count - 1) * portraitPadding) / Pjs.Count;
+                int y = spritebatch.GraphicsDevice.PresentationParameters.BackBufferHeight - portraitWidth;
 
                 int i = 0;
                 foreach (Pj pj in Pjs.Values)
                 {
-                    spritebatch.DrawString(Button.Font, pj.ID, new Vector2(100 + i * 50, 520), Color.White);
+                    spritebatch.Draw(pixel, new Rectangle(sideMargin + i * (portraitWidth + portraitPadding), y, portraitWidth, portraitWidth), new Color(Color.Black, 0.16f));
+                    if (pj.PowerUp != null) spritebatch.Draw(pj.PowerUp.GetIcon(), 
+                        new Rectangle(sideMargin + i * (portraitWidth + portraitPadding) + 5, y + 5, portraitWidth-10, portraitWidth-10), pj.PowerUp.GetColor());
 
-                    if (pj.PowerUp != null)
-                    {
-                        pj.PowerUp.Draw(spritebatch, i);
-                    }
+                    spritebatch.DrawString(Button.Font, pj.ID, new Vector2(sideMargin + i * (portraitWidth + portraitPadding), y), Color.White);
 
                     i++;
                 }
@@ -119,8 +142,10 @@ namespace MazeGamePillaPilla
             Pj.effect = Content.Load<Effect>("pj_shader");
             Pj.effect.Parameters["u_lut"].SetValue(Pj.PaletteTexture);
             SprintPowerUp.pixel = pixel;
-            SprintPowerUp.GuiTexture = Content.Load<Texture2D>("sprint");
+            SprintPowerUp.Icon = Content.Load<Texture2D>("sprint");
+            TraverseWallsPowerUp.Icon = Content.Load<Texture2D>("traverseWalls");
             SprintBuff.texture = Content.Load<Texture2D>("circle");
+            TraverseWallsBuff.texture = Content.Load<Texture2D>("circle");
             SurpriseBoxDrop.modelTexture = Content.Load<Texture2D>("surpriseBox");
 
             this.Pjs = new Dictionary<string, Pj>();
@@ -137,11 +162,11 @@ namespace MazeGamePillaPilla
             // Initialize rendering stuff
             renderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight);
             renderTargetRectangle = new Rectangle(0, 0, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight);
-            cameraMatrix = Matrix.CreateTranslation(400 - Tile.Size * 11, Tile.Size, 0);
+            cameraMatrix = Matrix.CreateTranslation(GraphicsDevice.PresentationParameters.BackBufferWidth/2 - Tile.Size * 11, Tile.Size, 0);
             floorRectangle = new Rectangle(0, 0, maze.GetLength(1) * Tile.Size, maze.GetLength(0) * Tile.Size);
             floorColor = new Color(182f / 255, 186f / 255, 159f / 255);
             backgroundColor = new Color(77f / 255, 174f / 255, 183f / 255);
-            biomeTintColor = Color.White;
+            biomeTintColor = Color.Wheat;
         }
 
         private void SpawnSurpriseBox(Random rng)
@@ -212,23 +237,35 @@ namespace MazeGamePillaPilla
     interface IPowerUp
     {
         void Action(Pj pj);
-        void Draw(SpriteBatch spritebatch, int pjIndex);
+        Texture2D GetIcon();
+        Color GetColor();
     }
 
     class SprintPowerUp : IPowerUp
     {
         public static Texture2D pixel;
-        public static Texture2D GuiTexture;
+        public static Texture2D Icon;
 
         public void Action(Pj pj)
         {
             pj.Buffs.Add(new SprintBuff(pj));
         }
 
-        public void Draw(SpriteBatch spritebatch, int pjIndex)
+        public Texture2D GetIcon() => Icon;
+        public Color GetColor() => Color.Crimson;
+    }
+
+    class TraverseWallsPowerUp : IPowerUp
+    {
+        public static Texture2D Icon;
+
+        public void Action(Pj pj)
         {
-            spritebatch.Draw(GuiTexture, new Rectangle(100 + pjIndex * 50, 550, 40, 40), Color.Red);
+            pj.Buffs.Add(new TraverseWallsBuff(pj));
         }
+
+        public Texture2D GetIcon() => Icon;
+        public Color GetColor() => Color.Aqua;
     }
 
     abstract class Buff
@@ -264,8 +301,8 @@ namespace MazeGamePillaPilla
 
     class SprintBuff : DurationBuff
     {
-        private static float duration = 5;
-        private static float velocityBuffAmount = 250;
+        private static float duration = 2.5f;
+        private static float velocityBuffAmount = 300;
         public static Texture2D texture;
 
         private Pj pj;
@@ -283,12 +320,41 @@ namespace MazeGamePillaPilla
 
         public override void Draw(SpriteBatch spritebatch, Matrix cameraMatrix)
         {
-            spritebatch.Draw(SprintBuff.texture, new Rectangle((int)(pj.x-16), (int)(pj.y-16), 32, 32), Color.Red);
+            spritebatch.Draw(SprintBuff.texture, new Rectangle((int)(pj.x - 16), (int)(pj.y - 16), 32, 32), Color.Crimson);
         }
 
         public override void End()
         {
             pj.v -= velocityBuffAmount;
+        }
+    }
+
+    class TraverseWallsBuff : DurationBuff
+    {
+        private static float duration = 2.5f;
+        public static Texture2D texture;
+
+        private Pj pj;
+
+        public TraverseWallsBuff(Pj pj) : base(duration)
+        {
+            this.pj = pj;
+            this.Activate();
+        }
+
+        public override void Activate()
+        {
+            pj.CanTraverseWalls = true;
+        }
+
+        public override void Draw(SpriteBatch spritebatch, Matrix cameraMatrix)
+        {
+            spritebatch.Draw(SprintBuff.texture, new Rectangle((int)(pj.x - 16), (int)(pj.y - 16), 32, 32), Color.Aqua);
+        }
+
+        public override void End()
+        {
+            pj.CanTraverseWalls = false;
         }
     }
 
@@ -348,6 +414,8 @@ namespace MazeGamePillaPilla
 
     class SurpriseBoxDrop : Drop
     {
+        private static Random rng = new Random();
+
         public static Texture2D modelTexture;
         private static int radius = 10;
 
@@ -356,7 +424,12 @@ namespace MazeGamePillaPilla
 
         public SurpriseBoxDrop(int x, int y) : base(x, y, radius, (pj) =>
         {
-            pj.PowerUp = new SprintPowerUp();
+            int roll = rng.Next(2);
+            switch (roll)
+            {
+                case 0: pj.PowerUp = new SprintPowerUp(); break;
+                case 1: pj.PowerUp = new TraverseWallsPowerUp(); break;
+            }
         })
         {
             int layers = 16;

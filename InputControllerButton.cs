@@ -5,10 +5,10 @@ namespace MazeGamePillaPilla
 {
     abstract class InputControllerButton
     {
-        internal PlayerControllerIndex PlayerIndex { get; private set; }
-        internal InputKeys Button { get; private set; }
-        internal bool IsPressed { get; set; }
-        internal float KeyRepeatAccumulator { private get; set; }
+        public PlayerControllerIndex PlayerIndex { get; private set; }
+        public InputKeys Button { get; private set; }
+        public bool IsPressed { get; set; }
+        public float KeyRepeatAccumulator { private get; set; }
         protected bool wasPressed;
 
         protected InputControllerButton(PlayerControllerIndex PlayerIndex, InputKeys id)
@@ -66,12 +66,12 @@ namespace MazeGamePillaPilla
 
         private Buttons[] _buttons;
 
-        internal GamepadInputButtonController(PlayerControllerIndex PlayerIndex, InputKeys id) : base(PlayerIndex, id)
+        public GamepadInputButtonController(PlayerControllerIndex PlayerIndex, InputKeys id) : base(PlayerIndex, id)
         {
             _buttons = keyBindings[id];
         }
 
-        internal void Update(float dt, GamePadState gamepadState)
+        public void Update(float dt, GamePadState gamepadState)
         {
             wasPressed = IsPressed;
             IsPressed = false;
@@ -100,7 +100,7 @@ namespace MazeGamePillaPilla
 
         private Keys[] _keys;
 
-        internal KeyboardInputButtonController(InputKeys id) : base(PlayerControllerIndex.Keyboard, id)
+        public KeyboardInputButtonController(InputKeys id) : base(PlayerControllerIndex.Keyboard, id)
         {
             _keys = keyBindings[id];
 
@@ -110,7 +110,7 @@ namespace MazeGamePillaPilla
             };
         }
 
-        internal void Update(float dt, KeyboardState keyboardState)
+        public void Update(float dt, KeyboardState keyboardState)
         {
             wasPressed = IsPressed;
             IsPressed = false;

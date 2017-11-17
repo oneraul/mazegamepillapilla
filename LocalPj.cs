@@ -7,13 +7,13 @@ namespace MazeGamePillaPilla
 {
     class LocalPj : Pj
     {
-        internal PlayerControllerIndex PlayerControllerIndex { get; private set; }
-        internal List<InputPacket> PendingInputs;
-        internal long InputSequenceNumber;
+        public PlayerControllerIndex PlayerControllerIndex { get; private set; }
+        public List<InputPacket> PendingInputs;
+        public long InputSequenceNumber;
         private bool oldStateValid;
 
 
-        internal LocalPj(string ID, PlayerControllerIndex playerControllerIndex, float x, float y, int palette) : base(ID, x, y, palette)
+        public LocalPj(string ID, PlayerControllerIndex playerControllerIndex, float x, float y, int palette) : base(ID, x, y, palette)
         {
             PlayerControllerIndex = playerControllerIndex;
             PendingInputs = new List<InputPacket>();
@@ -21,13 +21,13 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal override void Update(float dt, Cell[,] maze)
+        public override void Update(float dt, Cell[,] maze)
         {
             currentAnimation.Update(dt);
         }
 
 
-        internal override void ProcessServerUpdate(StatePacket packet, Cell[,] maze)
+        public override void ProcessServerUpdate(StatePacket packet, Cell[,] maze)
         {
             x = packet.X;
             y = packet.Y;
@@ -45,13 +45,13 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal override void ApplyInputOnTheServer(InputPacket input, Cell[,] maze)
+        public override void ApplyInputOnTheServer(InputPacket input, Cell[,] maze)
         {
             // already applied locally as client-side prediction
         }
 
 
-        internal void ProcessInput(float dt, Client client, Cell[,] maze)
+        public void ProcessInput(float dt, Client client, Cell[,] maze)
         {
             InputPacket? PackageInputData()
             {

@@ -7,12 +7,12 @@ namespace MazeGamePillaPilla
 {
     class Button
     {
-        internal static SpriteFont Font { get; private set; }
+        public static SpriteFont Font { get; private set; }
         private static Texture2D NormalTexture;
         private static Texture2D HoverTexture;
         private static Texture2D ActiveTexture;
 
-        internal static void Initialize(ContentManager Content)
+        public static void Initialize(ContentManager Content)
         {
             Button.Font          = Content.Load<SpriteFont>("font");
             Button.NormalTexture = Content.Load<Texture2D>("button_normal");
@@ -21,29 +21,29 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal enum CurrentState
+        public enum CurrentState
         {
             Normal, Hover, Active
         }
 
 
-        internal int X { get; private set; }
-        internal int Y { get; private set; }
-        internal int Width { get; private set; }
-        internal int Height { get; private set; }
+        public int X { get; private set; }
+        public int Y { get; private set; }
+        public int Width { get; private set; }
+        public int Height { get; private set; }
         private Texture2D normalTexture;
         private Texture2D hoverTexture;
         private Texture2D activeTexture;
         private string text;
 
-        internal Button NextButtonUp { get; set; }
-        internal Button NextButtonLeft { get; set; }
-        internal Button NextButtonDown { get; set; }
-        internal Button NextButtonRight { get; set; }
+        public Button NextButtonUp { get; set; }
+        public Button NextButtonLeft { get; set; }
+        public Button NextButtonDown { get; set; }
+        public Button NextButtonRight { get; set; }
 
-        internal EventHandler Click;
+        public EventHandler Click;
 
-        internal Button(int x, int y, int width, int height, string text = "", Texture2D normalTexture = null, Texture2D hoverTexture = null, Texture2D activeTexture = null)
+        public Button(int x, int y, int width, int height, string text = "", Texture2D normalTexture = null, Texture2D hoverTexture = null, Texture2D activeTexture = null)
         {
             X = x;
             Y = y;
@@ -57,7 +57,7 @@ namespace MazeGamePillaPilla
             NextButtonUp = NextButtonLeft = NextButtonDown = NextButtonRight = this;
         }
         
-        internal void DrawNormal(SpriteBatch spritebatch)
+        public void DrawNormal(SpriteBatch spritebatch)
         {
             Rectangle rectangle = new Rectangle(X, Y, Width, Height);
             spritebatch.Draw(normalTexture, rectangle, Color.White);
@@ -67,7 +67,7 @@ namespace MazeGamePillaPilla
             spritebatch.DrawString(Button.Font, text, position, Color.White);
         }
 
-        internal void DrawHover(SpriteBatch spritebatch)
+        public void DrawHover(SpriteBatch spritebatch)
         {
             Rectangle rectangle = new Rectangle(X, Y, Width, Height);
             spritebatch.Draw(hoverTexture, rectangle, Color.White);
@@ -77,7 +77,7 @@ namespace MazeGamePillaPilla
             spritebatch.DrawString(Button.Font, text, position, Color.White);
         }
 
-        internal void DrawActive(SpriteBatch spritebatch)
+        public void DrawActive(SpriteBatch spritebatch)
         {
             Rectangle rectangle = new Rectangle(X, Y, Width, Height);
             spritebatch.Draw(activeTexture, rectangle, Color.White);

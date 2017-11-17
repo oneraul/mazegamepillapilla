@@ -17,9 +17,9 @@ namespace MazeGamePillaPilla
         private float Timer;
         private int CurrentFrame;
 
-        internal int ID { get; }
+        public int ID { get; }
 
-        internal Animation(int id, Texture2D texture, int frames, int layers, int width, int height)
+        public Animation(int id, Texture2D texture, int frames, int layers, int width, int height)
         {
             ID = id;
             Texture = texture;
@@ -45,20 +45,20 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal void Reset()
+        public void Reset()
         {
             Timer = 0;
             CurrentFrame = 0;
         }
 
 
-        internal void Draw(SpriteBatch batch, float x, float y, float rotation, float scale, float originX, float originY)
+        public void Draw(SpriteBatch batch, float x, float y, float rotation, float scale, float originX, float originY)
         {
             Frames[CurrentFrame].Draw(Texture, batch, x, y, rotation, scale, originX, originY);
         }
 
 
-        internal void Update(float dt)
+        public void Update(float dt)
         {
             Timer += dt;
             if (Timer >= FrameDuration)
@@ -76,14 +76,14 @@ namespace MazeGamePillaPilla
 
     class AnimationFrame
     {
-        internal Rectangle[] Rectangles;
+        public Rectangle[] Rectangles;
 
-        internal AnimationFrame(int layers)
+        public AnimationFrame(int layers)
         {
             Rectangles = new Rectangle[layers];
         }
 
-        internal void Draw(Texture2D texture, SpriteBatch batch, float x, float y, float rotation, float scale, float originX, float originY)
+        public void Draw(Texture2D texture, SpriteBatch batch, float x, float y, float rotation, float scale, float originX, float originY)
         {
             for(int i = 0; i < Rectangles.Length; i++)
             {

@@ -17,7 +17,7 @@ namespace MazeGamePillaPilla
         private int clientsCount;
         private Texture2D pixel;
 
-        internal LobbyScreen(ContentManager Content)
+        public LobbyScreen(ContentManager Content)
         {
             content = new ContentManager(Content.ServiceProvider, "Content"); // TODO has to be disposed
             pixel = content.Load<Texture2D>("pixel");
@@ -127,9 +127,9 @@ namespace MazeGamePillaPilla
 
     class ServerLobbyScreen : LobbyScreen, IScreen
     {
-        internal Server Server { get; private set; }
+        public Server Server { get; private set; }
 
-        internal ServerLobbyScreen(ContentManager Content) : base(Content)
+        public ServerLobbyScreen(ContentManager Content) : base(Content)
         {
             Server = new Server();
 

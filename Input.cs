@@ -28,11 +28,11 @@ namespace MazeGamePillaPilla
 
     class Input
     {
-        internal static Dictionary<PlayerControllerIndex, InputController> Controllers;
-        internal static float KeyRepeatDelay { get; private set; }
+        public static Dictionary<PlayerControllerIndex, InputController> Controllers;
+        public static float KeyRepeatDelay { get; private set; }
 
 
-        internal static void Initialize()
+        public static void Initialize()
         {
             Controllers = new Dictionary<PlayerControllerIndex, InputController>()
             {
@@ -50,7 +50,7 @@ namespace MazeGamePillaPilla
         }
 
         
-        internal static void SetKeyRepeatDelay(float delay)
+        public static void SetKeyRepeatDelay(float delay)
         {
             KeyRepeatDelay = delay;
             foreach (InputController controller in Controllers.Values)
@@ -60,7 +60,7 @@ namespace MazeGamePillaPilla
         }
 
         
-        internal static void Update(float dt)
+        public static void Update(float dt)
         {
             foreach (InputController controller in Controllers.Values)
             {
@@ -69,15 +69,15 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal static event EventHandler<InputStateEventArgs> Pressed;
-        internal static event EventHandler<InputStateEventArgs> Released;
+        public static event EventHandler<InputStateEventArgs> Pressed;
+        public static event EventHandler<InputStateEventArgs> Released;
 
-        internal static void RaisePressedEvent(object source, InputStateEventArgs args)
+        public static void RaisePressedEvent(object source, InputStateEventArgs args)
         {
             Pressed?.Invoke(source, args);
         }
 
-        internal static void RaiseReleasedEvent(object source, InputStateEventArgs args)
+        public static void RaiseReleasedEvent(object source, InputStateEventArgs args)
         {
             Released?.Invoke(source, args);
         }
@@ -86,10 +86,10 @@ namespace MazeGamePillaPilla
 
     class InputStateEventArgs : EventArgs
     {
-        internal PlayerControllerIndex PlayerIndex;
-        internal InputKeys Button;
+        public PlayerControllerIndex PlayerIndex;
+        public InputKeys Button;
 
-        internal InputStateEventArgs(PlayerControllerIndex PlayerIndex, InputKeys Button)
+        public InputStateEventArgs(PlayerControllerIndex PlayerIndex, InputKeys Button)
         {
             this.PlayerIndex = PlayerIndex;
             this.Button = Button;

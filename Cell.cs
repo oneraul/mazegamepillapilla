@@ -10,7 +10,7 @@ namespace MazeGamePillaPilla
     {
         private readonly static Random rand = new Random();
 
-        internal static Cell[,] ParseData(ContentManager Content, int[,] mapData)
+        public static Cell[,] ParseData(ContentManager Content, int[,] mapData)
         {
             int mazeH = mapData.GetLength(0);
             int mazeW = mapData.GetLength(1);

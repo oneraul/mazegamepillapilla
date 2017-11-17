@@ -7,7 +7,7 @@ namespace MazeGamePillaPilla
     static class ScreenManager
     {
         private static Stack<IScreen> screensStack;
-        internal static IScreen CurrentScreen { get; private set; }
+        public static IScreen CurrentScreen { get; private set; }
 
         private static GraphicsDevice _GraphicsDevice;
         private static ContentManager _Content;
@@ -19,14 +19,14 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal static void Initialize(GraphicsDevice GraphicsDevice, ContentManager Content)
+        public static void Initialize(GraphicsDevice GraphicsDevice, ContentManager Content)
         {
             _GraphicsDevice = GraphicsDevice;
             _Content = Content;
         }
 
 
-        internal static void PushScreen(IScreen screen)
+        public static void PushScreen(IScreen screen)
         {
             CurrentScreen?.Exit();
 
@@ -37,7 +37,7 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal static void PopScreen()
+        public static void PopScreen()
         {
             CurrentScreen.Exit();
 
@@ -47,14 +47,14 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal static void ReplaceCurrent(IScreen screen)
+        public static void ReplaceCurrent(IScreen screen)
         {
             screensStack.Pop();
             PushScreen(screen);
         }
 
 
-        internal static void GoBackToMainMenu()
+        public static void GoBackToMainMenu()
         {
             for (int i = screensStack.Count-1; i > 0; --i)
             {

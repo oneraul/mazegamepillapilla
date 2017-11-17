@@ -5,7 +5,7 @@ namespace MazeGamePillaPilla
 {
     class Tile
     {
-        internal readonly static int Size = 32;
+        public readonly static int Size = 32;
         public static Tile[] Tileset { get; private set; }
 
         public int Id { get; protected set; }

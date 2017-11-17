@@ -4,9 +4,9 @@ namespace MazeGamePillaPilla
 {
     class MapData
     {
-        internal static int MapsCount { get; } = 2;
+        public static int MapsCount { get; } = 2;
 
-        internal static int[,] GetMap(int id)
+        public static int[,] GetMap(int id)
         {
             switch (id)
             {

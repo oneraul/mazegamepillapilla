@@ -4,26 +4,26 @@ namespace MazeGamePillaPilla
 {
     class LobbyPlayerEventArgs : EventArgs
     {
-        internal string PlayerID;
-        internal PlayerControllerIndex ControllerIndex;
-        internal Pj.Type Type;
-        internal float X;
-        internal float Y;
+        public string PlayerID;
+        public PlayerControllerIndex ControllerIndex;
+        public Pj.Type Type;
+        public float X;
+        public float Y;
     }
 
     class LobbyClientsCountEventArgs : EventArgs
     {
-        internal int ClientsCount;
+        public int ClientsCount;
     }
 
     class LobbyOptionsArgs : EventArgs
     {
-        internal int PlayersCount;
-        internal int Map;
+        public int PlayersCount;
+        public int Map;
     }
 
     class GameplayUpdateEventArgs : EventArgs
     {
-        internal StatePacket Packet;
+        public StatePacket Packet;
     }
 }

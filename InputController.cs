@@ -6,7 +6,7 @@ namespace MazeGamePillaPilla
 {
     abstract class InputController
     {
-        internal PlayerControllerIndex Index { get; private set; }
+        public PlayerControllerIndex Index { get; private set; }
         protected Dictionary<InputKeys, InputControllerButton> buttons;
         protected Vector2 directionVector;
 
@@ -16,14 +16,14 @@ namespace MazeGamePillaPilla
             directionVector = new Vector2();
         }
 
-        internal bool IsPressed(InputKeys button)
+        public bool IsPressed(InputKeys button)
         {
             return buttons[button].IsPressed;
         }
 
-        internal abstract void Update(float dt);
+        public abstract void Update(float dt);
 
-        internal void ResetKeyRepeatAccumulators()
+        public void ResetKeyRepeatAccumulators()
         {
             foreach (InputControllerButton inputButtonController in buttons.Values)
             {
@@ -37,13 +37,13 @@ namespace MazeGamePillaPilla
             directionVector.Y = y;
         }
 
-        internal Vector2 GetDirectionVector() => new Vector2(directionVector.X, directionVector.Y);
+        public Vector2 GetDirectionVector() => new Vector2(directionVector.X, directionVector.Y);
     }
 
 
     class GamepadInputController : InputController
     {
-        internal GamepadInputController(PlayerControllerIndex index) : base(index)
+        public GamepadInputController(PlayerControllerIndex index) : base(index)
         {
             buttons = new Dictionary<InputKeys, InputControllerButton>()
             {
@@ -56,7 +56,7 @@ namespace MazeGamePillaPilla
             };
         }
 
-        internal override void Update(float dt)
+        public override void Update(float dt)
         {
             GamePadState gamepadState = GamePad.GetState((PlayerIndex)this.Index);
             foreach (GamepadInputButtonController button in buttons.Values)
@@ -72,7 +72,7 @@ namespace MazeGamePillaPilla
 
     class KeyboardInputController : InputController
     {
-        internal KeyboardInputController() : base(PlayerControllerIndex.Keyboard)
+        public KeyboardInputController() : base(PlayerControllerIndex.Keyboard)
         {
             buttons = new Dictionary<InputKeys, InputControllerButton>()
             {
@@ -85,7 +85,7 @@ namespace MazeGamePillaPilla
             };
         }
 
-        internal override void Update(float dt)
+        public override void Update(float dt)
         {
             KeyboardState keyboardState = Keyboard.GetState();
             foreach (KeyboardInputButtonController button in buttons.Values)

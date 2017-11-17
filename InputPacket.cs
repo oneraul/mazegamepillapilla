@@ -10,7 +10,7 @@ namespace MazeGamePillaPilla
         public bool Action;
 
 
-        internal InputPacket(string CharacterID, long InputSequenceNumber, float Horizontal, float Vertical, bool Action)
+        public InputPacket(string CharacterID, long InputSequenceNumber, float Horizontal, float Vertical, bool Action)
         {
             this.CharacterID = CharacterID;
             this.InputSequenceNumber = InputSequenceNumber + 1;
@@ -20,7 +20,7 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal InputPacket(NetDataReader dataReader)
+        public InputPacket(NetDataReader dataReader)
         {
             CharacterID = dataReader.GetString();
             InputSequenceNumber = dataReader.GetLong();
@@ -30,7 +30,7 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal NetDataWriter Serialize()
+        public NetDataWriter Serialize()
         {
             NetDataWriter writer = new NetDataWriter();
 

@@ -8,15 +8,15 @@ namespace MazeGamePillaPilla
     class GameScreen : IScreen
     {
         protected Matrix cameraMatrix;
-        internal Cell[,] maze;
-        internal Texture2D pixel;
+        public Cell[,] maze;
+        public Texture2D pixel;
 
-        internal Dictionary<string, Pj> Pjs;
-        internal List<LocalPj> LocalPlayers;
+        public Dictionary<string, Pj> Pjs;
+        public List<LocalPj> LocalPlayers;
 
         private Client client;
 
-        internal GameScreen(Client client)
+        public GameScreen(Client client)
         {
             this.client = client;
             Pjs = new Dictionary<string, Pj>();
@@ -112,7 +112,7 @@ namespace MazeGamePillaPilla
     {
         private Server server;
 
-        internal ServerGameScreen(Client client, Server server) : base(client)
+        public ServerGameScreen(Client client, Server server) : base(client)
         {
             this.server = server;
         }

@@ -4,15 +4,15 @@ namespace MazeGamePillaPilla
 {
     class RemotePj : Pj
     {
-        internal float oldX;
-        internal float oldY;
-        internal float newX;
-        internal float newY;
-        internal float oldRotation;
-        internal float newRotation;
-        internal float interpolationTimer;
+        public float oldX;
+        public float oldY;
+        public float newX;
+        public float newY;
+        public float oldRotation;
+        public float newRotation;
+        public float interpolationTimer;
 
-        internal RemotePj(string ID, float x, float y, int palette) : base(ID, x, y, palette)
+        public RemotePj(string ID, float x, float y, int palette) : base(ID, x, y, palette)
         {
             oldX = newX = x;
             oldY = newY = y;
@@ -20,7 +20,7 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal override void Update(float dt, Cell[,] maze)
+        public override void Update(float dt, Cell[,] maze)
         {
             currentAnimation.Update(dt);
 
@@ -33,7 +33,7 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal override void ProcessServerUpdate(StatePacket packet, Cell[,] maze)
+        public override void ProcessServerUpdate(StatePacket packet, Cell[,] maze)
         {
             // no interpolation
             /*
@@ -56,7 +56,7 @@ namespace MazeGamePillaPilla
         }
 
 
-        internal override void ApplyInputOnTheServer(InputPacket input, Cell[,] maze)
+        public override void ApplyInputOnTheServer(InputPacket input, Cell[,] maze)
         {
             ApplyInput(input, maze);
         }
