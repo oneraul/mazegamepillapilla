@@ -12,7 +12,6 @@ namespace MazeGamePillaPilla
         public TestPj(string ID, PlayerControllerIndex playerControllerIndex, float x, float y, int palette) : base(ID, x, y, palette)
         {
             this.PlayerControllerIndex = playerControllerIndex;
-            this.PowerUp = new SprintPowerUp();
         }
 
         internal override void ApplyInputOnTheServer(InputPacket input, Cell[,] maze) {}

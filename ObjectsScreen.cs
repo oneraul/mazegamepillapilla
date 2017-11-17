@@ -10,6 +10,12 @@ namespace MazeGamePillaPilla
     {
         private Cell[,] maze;
         private Texture2D pixel;
+        private RenderTarget2D renderTarget;
+        private Rectangle renderTargetRectangle;
+        private Rectangle floorRectangle;
+        private Color floorColor;
+        private Color backgroundColor;
+        private Color biomeTintColor;
         private Matrix cameraMatrix;
         private Dictionary<string, Pj> Pjs;
         private List<Drop> Drops;
@@ -22,6 +28,7 @@ namespace MazeGamePillaPilla
 
                 List<IDrawable> itemsToInsert = new List<IDrawable>();
                 itemsToInsert.AddRange(Pjs.Values);
+                itemsToInsert.AddRange(Drops);
                 itemsToInsert.Sort((a, b) => b.GetSortY().CompareTo(a.GetSortY()));
 
                 int mazeW = maze.GetLength(1);
@@ -33,8 +40,8 @@ namespace MazeGamePillaPilla
                         IDrawable item = itemsToInsert[i];
                         Rectangle itemAabb = ((IIntersectable)item).GetAABB();
 
-                        Cell leftCell = maze[y, (int)((itemAabb.Left) / Tile.Size)];
-                        Cell rightCell = maze[y, (int)((itemAabb.Right) / Tile.Size)];
+                        Cell leftCell = maze[y, itemAabb.Left / Tile.Size];
+                        Cell rightCell = maze[y, itemAabb.Right / Tile.Size];
 
                         if (item.GetSortY() < leftCell.GetSortY() && item.GetSortY() < rightCell.GetSortY())
                         {
@@ -53,32 +60,42 @@ namespace MazeGamePillaPilla
             }
 
 
-            spritebatch.GraphicsDevice.Clear(new Color(77f / 255, 174f / 255, 183f / 255));
-
-            spritebatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, cameraMatrix);
-            spritebatch.Draw(pixel, new Rectangle(0, 0, maze.GetLength(1) * Tile.Size, maze.GetLength(0) * Tile.Size), new Color(182f / 255, 186f / 255, 159f / 255));
-
-            foreach (IDrawable drawable in SortDrawables())
+            spritebatch.GraphicsDevice.SetRenderTarget(renderTarget);
             {
-                drawable.Draw(spritebatch, cameraMatrix);
-            }
+                spritebatch.GraphicsDevice.Clear(backgroundColor);
 
-            foreach (Drop drop in Drops)
-            {
-                drop.Draw(spritebatch, cameraMatrix);
-            }
+                spritebatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, cameraMatrix);
+                spritebatch.Draw(pixel, floorRectangle, floorColor);
 
-            spritebatch.End();
-
-            spritebatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
-            foreach (Pj pj in Pjs.Values)
-            {
-                if (pj.PowerUp != null)
+                foreach (IDrawable drawable in SortDrawables())
                 {
-                    spritebatch.Draw(pixel, new Rectangle(100, 550, 40, 40), Color.Red);
+                    drawable.Draw(spritebatch, cameraMatrix);
                 }
+
+                spritebatch.End();
             }
-            spritebatch.End();
+
+            spritebatch.GraphicsDevice.SetRenderTarget(null);
+            spritebatch.GraphicsDevice.Clear(Color.Crimson);
+            {
+                spritebatch.Begin();
+
+                spritebatch.Draw(renderTarget, renderTargetRectangle, biomeTintColor);
+
+                int i = 0;
+                foreach (Pj pj in Pjs.Values)
+                {
+                    spritebatch.DrawString(Button.Font, pj.ID, new Vector2(100 + i * 50, 520), Color.White);
+
+                    if (pj.PowerUp != null)
+                    {
+                        pj.PowerUp.Draw(spritebatch, i);
+                    }
+
+                    i++;
+                }
+                spritebatch.End();
+            }
         }
 
         public void Enter() {}
@@ -87,8 +104,6 @@ namespace MazeGamePillaPilla
 
         public void Initialize(GraphicsDevice GraphicsDevice, ContentManager Content)
         {
-            cameraMatrix = Matrix.CreateTranslation(400 - Tile.Size * 11, Tile.Size, 0);
-
             Tile.Init(GraphicsDevice);
 
             // load maze
@@ -104,16 +119,28 @@ namespace MazeGamePillaPilla
             Pj.effect = Content.Load<Effect>("pj_shader");
             Pj.effect.Parameters["u_lut"].SetValue(Pj.PaletteTexture);
             SprintPowerUp.pixel = pixel;
+            SprintPowerUp.GuiTexture = Content.Load<Texture2D>("sprint");
             SprintBuff.texture = Content.Load<Texture2D>("circle");
 
             this.Pjs = new Dictionary<string, Pj>();
             Pjs.Add("Player", new TestPj("Player", PlayerControllerIndex.Keyboard, 18.5f * Tile.Size, 2.5f * Tile.Size, 1));
+            Pjs.Add("Bot1", new AiPj("Bot1", 2.5f * Tile.Size, 2.5f * Tile.Size, 2));
+            Pjs.Add("Bot2", new AiPj("Bot2", 2.5f * Tile.Size, 4.5f * Tile.Size, 0));
+            Pjs.Add("Bot3", new AiPj("Bot3", 2.5f * Tile.Size, 6.5f * Tile.Size, 3));
 
             Drops = new List<Drop>();
-            Drops.Add(new SurpriseBoxDrop(270, 305));
 
             Random rng = new Random();
             ScheduleManager.ScheduleInLoop(3, () => SpawnSurpriseBox(rng));
+
+            // Initialize rendering stuff
+            renderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight);
+            renderTargetRectangle = new Rectangle(0, 0, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight);
+            cameraMatrix = Matrix.CreateTranslation(400 - Tile.Size * 11, Tile.Size, 0);
+            floorRectangle = new Rectangle(0, 0, maze.GetLength(1) * Tile.Size, maze.GetLength(0) * Tile.Size);
+            floorColor = new Color(182f / 255, 186f / 255, 159f / 255);
+            backgroundColor = new Color(77f / 255, 174f / 255, 183f / 255);
+            biomeTintColor = Color.White;
         }
 
         private void SpawnSurpriseBox(Random rng)
@@ -154,7 +181,6 @@ namespace MazeGamePillaPilla
                 y = rng.Next(2 * Tile.Size, (maze.GetLength(0) - 1) * Tile.Size);
                 box.SetPosition(x, y);
             }
-            //System.Diagnostics.Debug.WriteLine(iteraciones);
             Drops.Add(new SurpriseBoxDrop(x, y));
         }
 
@@ -182,19 +208,23 @@ namespace MazeGamePillaPilla
     interface IPowerUp
     {
         void Action(Pj pj);
-        void Draw(SpriteBatch spritebatch, Matrix cameraMatrix);
+        void Draw(SpriteBatch spritebatch, int pjIndex);
     }
 
     class SprintPowerUp : IPowerUp
     {
         public static Texture2D pixel;
+        public static Texture2D GuiTexture;
 
         public void Action(Pj pj)
         {
             pj.Buffs.Add(new SprintBuff(pj));
         }
 
-        public void Draw(SpriteBatch spritebatch, Matrix cameraMatrix) {}
+        public void Draw(SpriteBatch spritebatch, int pjIndex)
+        {
+            spritebatch.Draw(GuiTexture, new Rectangle(100 + pjIndex * 50, 550, 40, 40), Color.Red);
+        }
     }
 
     abstract class Buff
@@ -231,7 +261,7 @@ namespace MazeGamePillaPilla
     class SprintBuff : DurationBuff
     {
         private static float duration = 5;
-        private static float velocityBuffAmount = 500;
+        private static float velocityBuffAmount = 250;
         public static Texture2D texture;
 
         private Pj pj;
