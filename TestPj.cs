@@ -14,7 +14,7 @@ namespace MazeGamePillaPilla
             this.PlayerControllerIndex = playerControllerIndex;
         }
 
-        public override void ApplyInputOnTheServer(InputPacket input, Cell[,] maze) {}
+        public override void ApplyInputOnTheServer(InputPacket input, GameScreen gameScreen) {}
 
         public override void ProcessServerUpdate(StatePacket packet, Cell[,] maze) {}
 

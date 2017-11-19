@@ -74,6 +74,9 @@
     <Compile Include="PathFinderScreen.cs" />
     <Compile Include="PathfindingNode.cs" />
     <Compile Include="Pj.cs" />
+    <Compile Include="PowerUps\BananaDrop.cs" />
+    <Compile Include="PowerUps\BananaPowerUp.cs" />
+    <Compile Include="PowerUps\BananaStunBuff.cs" />
     <Compile Include="PowerUps\Buff.cs" />
     <Compile Include="PowerUps\Drop.cs" />
     <Compile Include="PowerUps\DurationBuff.cs" />

@@ -8,17 +8,19 @@ namespace MazeGamePillaPilla
 {
     class ObjectsScreen : IScreen
     {
-        private Cell[,] maze;
-        private Texture2D pixel;
-        private RenderTarget2D renderTarget;
-        private Rectangle renderTargetRectangle;
-        private Rectangle floorRectangle;
-        private Color floorColor;
-        private Color backgroundColor;
-        private Color biomeTintColor;
-        private Matrix cameraMatrix;
-        private Dictionary<string, Pj> Pjs;
-        private List<Drop> Drops;
+        public static ObjectsScreen Instance { get;  private set; }
+
+        public Cell[,] maze;
+        public Texture2D pixel;
+        public RenderTarget2D renderTarget;
+        public Rectangle renderTargetRectangle;
+        public Rectangle floorRectangle;
+        public Color floorColor;
+        public Color backgroundColor;
+        public Color biomeTintColor;
+        public Matrix cameraMatrix;
+        public Dictionary<string, Pj> Pjs;
+        public List<Drop> Drops;
 
         public void Draw(SpriteBatch spritebatch)
         {
@@ -121,9 +123,15 @@ namespace MazeGamePillaPilla
             }
         }
 
-        public void Enter() {}
+        public void Enter()
+        {
+            ObjectsScreen.Instance = this;
+        }
 
-        public void Exit() {}
+        public void Exit()
+        {
+            ObjectsScreen.Instance = null;
+        }
 
         public void Initialize(GraphicsDevice GraphicsDevice, ContentManager Content)
         {
@@ -147,6 +155,8 @@ namespace MazeGamePillaPilla
             SprintBuff.texture = Content.Load<Texture2D>("circle");
             TraverseWallsBuff.texture = Content.Load<Texture2D>("circle");
             SurpriseBoxDrop.modelTexture = Content.Load<Texture2D>("surpriseBox");
+            BananaPowerUp.Icon = Content.Load<Texture2D>("bananaIcon");
+            BananaDrop.modelTexture = Content.Load<Texture2D>("bananaDrop");
 
             this.Pjs = new Dictionary<string, Pj>();
             Pjs.Add("Player", new TestPj("Player", PlayerControllerIndex.Keyboard, 18.5f * Tile.Size, 2.5f * Tile.Size, 1));

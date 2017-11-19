@@ -30,6 +30,7 @@ namespace MazeGamePillaPilla
         public float hh = (0.5f * Tile.Size) / 2;
 
         public bool CanTraverseWalls;
+        public bool Stunned;
 
         public int palette;
         public Animation[] Animations;
@@ -152,12 +153,12 @@ namespace MazeGamePillaPilla
         }
 
 
-        public abstract void ApplyInputOnTheServer(InputPacket input, Cell[,] maze);
+        public abstract void ApplyInputOnTheServer(InputPacket input, GameScreen gameScreen);
 
 
         public void ApplyInput(InputPacket input, Cell[,] maze)
         {
-            if (input.Horizontal == 0 && input.Vertical == 0)
+            if (Stunned || (input.Horizontal == 0 && input.Vertical == 0))
             {
                 SetIdle();
                 return;

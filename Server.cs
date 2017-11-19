@@ -270,7 +270,7 @@ namespace MazeGamePillaPilla
                     if (game.Pjs.TryGetValue(inputPacket.CharacterID, out Pj pj))
                     {
                         lastProcessedInputs[inputPacket.CharacterID] = inputPacket.InputSequenceNumber;
-                        pj.ApplyInputOnTheServer(inputPacket, game.maze);
+                        pj.ApplyInputOnTheServer(inputPacket, game);
                     }
                     break;
             }
