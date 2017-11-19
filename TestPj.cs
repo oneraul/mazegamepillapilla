@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using MazeGamePillaPilla.PowerUps;
 
 namespace MazeGamePillaPilla
 {

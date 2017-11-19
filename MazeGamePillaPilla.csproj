@@ -74,6 +74,15 @@
     <Compile Include="PathFinderScreen.cs" />
     <Compile Include="PathfindingNode.cs" />
     <Compile Include="Pj.cs" />
+    <Compile Include="PowerUps\Buff.cs" />
+    <Compile Include="PowerUps\Drop.cs" />
+    <Compile Include="PowerUps\DurationBuff.cs" />
+    <Compile Include="PowerUps\IPowerUp.cs" />
+    <Compile Include="PowerUps\SprintBuff.cs" />
+    <Compile Include="PowerUps\SprintPowerUp.cs" />
+    <Compile Include="PowerUps\SurpriseBoxDrop.cs" />
+    <Compile Include="PowerUps\TraverseWallsBuff.cs" />
+    <Compile Include="PowerUps\TraverseWallsPowerUp.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemotePj.cs" />
