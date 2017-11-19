@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using MazeGamePillaPilla.PowerUps;
 
 namespace MazeGamePillaPilla
 {
@@ -70,6 +71,23 @@ namespace MazeGamePillaPilla
                 Pj.PaletteTexture = Content.Load<Texture2D>("pj_palette");
                 Pj.effect = Content.Load<Effect>("pj_shader");
                 Pj.effect.Parameters["u_lut"].SetValue(Pj.PaletteTexture);
+                SprintPowerUp.pixel = Content.Load<Texture2D>("pixel");
+                SprintPowerUp.Icon = Content.Load<Texture2D>("sprint");
+                TraverseWallsPowerUp.Icon = Content.Load<Texture2D>("traverseWalls");
+                SprintBuff.texture = Content.Load<Texture2D>("circle");
+                TraverseWallsBuff.texture = Content.Load<Texture2D>("circle");
+                SurpriseBoxDrop.modelTexture = Content.Load<Texture2D>("surpriseBox");
+                BananaPowerUp.Icon = Content.Load<Texture2D>("bananaIcon");
+                BananaDrop.modelTexture = Content.Load<Texture2D>("bananaDrop");
+
+                // Initialize rendering stuff
+                gameScreen.renderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight);
+                gameScreen.renderTargetRectangle = new Rectangle(0, 0, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight);
+                gameScreen.cameraMatrix = Matrix.CreateTranslation(GraphicsDevice.PresentationParameters.BackBufferWidth / 2 - Tile.Size * 11, Tile.Size, 0);
+                gameScreen.floorRectangle = new Rectangle(0, 0, gameScreen.maze.GetLength(1) * Tile.Size, gameScreen.maze.GetLength(0) * Tile.Size);
+                gameScreen.floorColor = new Color(182f / 255, 186f / 255, 159f / 255);
+                gameScreen.backgroundColor = new Color(77f / 255, 174f / 255, 183f / 255);
+                gameScreen.biomeTintColor = Color.Wheat;
 
                 // instantiate the characters
                 while (gameScreen.Pjs.Count < ExpectedPlayers)

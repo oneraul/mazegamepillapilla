@@ -4,16 +4,22 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MazeGamePillaPilla.PowerUps
 {
+    public enum DropTypes
+    {
+        SurpriseBoxDrop,
+        BananaDrop,
+    }
+
     abstract class Drop : IIntersectable, IDrawable
     {
         private static Vector2[] ProjectionAxes = new Vector2[] { Vector2.UnitX, Vector2.UnitY };
 
-        public Action<Pj> Callback { get; private set; }
+        public Action<Pj, Server> Callback { get; private set; }
         private int x;
         private int y;
         private int radius;
 
-        protected Drop(int x, int y, int radius, Action<Pj> callback)
+        protected Drop(int x, int y, int radius, Action<Pj, Server> callback)
         {
             this.x = x;
             this.y = y;

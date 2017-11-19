@@ -195,7 +195,12 @@ namespace MazeGamePillaPilla
 
 
         public event EventHandler<GameplayUpdateEventArgs> CharacterUpdated;
-
+        public event EventHandler<GameplayDropEventArgs> DropAdded;
+        public event EventHandler<GameplayDropEventArgs> DropRemoved;
+        public event EventHandler<GameplayBuffEventArgs> BuffAdded;
+        public event EventHandler<GameplayBuffEventArgs> BuffRemoved;
+        public event EventHandler<GameplayPowerUpEventArgs> PowerUpAdded;
+        public event EventHandler<GameplayPowerUpEventArgs> PowerUpRemoved;
 
         private void OnGameplayNetworkReceived(NetPeer peer, NetDataReader dataReader)
         {
@@ -213,6 +218,54 @@ namespace MazeGamePillaPilla
                 case NetMessage.GoToScoresScreen:
                     this.SetLobby();
                     ScreenManager.ReplaceCurrent(new ScoresScreen());
+                    break;
+
+                case NetMessage.AddDrop:
+                    DropAdded?.Invoke(this, new GameplayDropEventArgs()
+                    {
+                        Id = dataReader.GetInt(),
+                        Type = dataReader.GetInt(),
+                        X = dataReader.GetInt(),
+                        Y = dataReader.GetInt()
+                    });
+                    break;
+
+                case NetMessage.RemoveDrop:
+                    DropRemoved?.Invoke(this, new GameplayDropEventArgs()
+                    {
+                        Id = dataReader.GetInt(),
+                    });
+                    break;
+
+                case NetMessage.AddBuff:
+                    BuffAdded?.Invoke(this, new GameplayBuffEventArgs()
+                    {
+                        BuffId = dataReader.GetInt(),
+                        PlayerId = dataReader.GetString()
+                    });
+                    break;
+
+                case NetMessage.RemoveBuff:
+                    BuffRemoved?.Invoke(this, new GameplayBuffEventArgs()
+                    {
+                        PlayerId = dataReader.GetString(),
+                        BuffId = dataReader.GetInt()
+                    });
+                    break;
+
+                case NetMessage.AddPowerUp:
+                    PowerUpAdded?.Invoke(this, new GameplayPowerUpEventArgs()
+                    {
+                        PlayerId = dataReader.GetString(),
+                        Type = dataReader.GetInt()
+                    });
+                    break;
+
+                case NetMessage.RemovePowerUp:
+                    PowerUpRemoved?.Invoke(this, new GameplayPowerUpEventArgs()
+                    {
+                        PlayerId = dataReader.GetString(),
+                    });
                     break;
             }
         }

@@ -12,4 +12,11 @@ namespace MazeGamePillaPilla.PowerUps
         public virtual void End() { }
         public virtual void Draw(SpriteBatch spritebatch, Matrix cameraMatrix) { }
     }
+
+    public enum BuffTypes
+    {
+        SprintBuff,
+        TraverseWallsBuff,
+        BananaStunBuff,
+    }
 }

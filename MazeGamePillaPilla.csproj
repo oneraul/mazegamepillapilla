@@ -69,7 +69,6 @@
     <Compile Include="MapData.cs" />
     <Compile Include="MenuGuiManager.cs" />
     <Compile Include="NetMessage.cs" />
-    <Compile Include="ObjectsScreen.cs" />
     <Compile Include="Pathfinder.cs" />
     <Compile Include="PathFinderScreen.cs" />
     <Compile Include="PathfindingNode.cs" />
@@ -94,7 +93,6 @@
     <Compile Include="ScreenManager.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="StatePacket.cs" />
-    <Compile Include="TestPj.cs" />
     <Compile Include="Tile.cs" />
     <Compile Include="VisibilityRay.cs" />
   </ItemGroup>

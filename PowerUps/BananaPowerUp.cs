@@ -6,9 +6,10 @@ namespace MazeGamePillaPilla.PowerUps
 {
     class BananaPowerUp : IPowerUp
     {
+        public static int Type = (int)PowerUpTypes.BananaPowerUp;
         public static Texture2D Icon;
 
-        public void Action(Pj pj)
+        public void Action(Pj pj, Server server)
         {
             float angle = pj.rotation - MathHelper.PiOver2;
             Vector2 opositeDirectionOfThePlayer = new Vector2((float)Math.Sin(angle), -(float)Math.Cos(angle));
@@ -16,7 +17,7 @@ namespace MazeGamePillaPilla.PowerUps
             int x = (int)(pj.x + dropDistance * opositeDirectionOfThePlayer.X);
             int y = (int)(pj.y + dropDistance * opositeDirectionOfThePlayer.Y);
 
-            ObjectsScreen.Instance.Drops.Add(new BananaDrop(x, y));
+            server.AddDrop((int)DropTypes.BananaDrop, x, y);
         }
 
         public Texture2D GetIcon() => Icon;

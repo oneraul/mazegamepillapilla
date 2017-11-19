@@ -7,9 +7,9 @@ namespace MazeGamePillaPilla.PowerUps
     {
         public static Texture2D Icon;
 
-        public void Action(Pj pj)
+        public void Action(Pj pj, Server server)
         {
-            pj.Buffs.Add(new TraverseWallsBuff(pj));
+            server.AddBuff((int)BuffTypes.TraverseWallsBuff, pj);
         }
 
         public Texture2D GetIcon() => Icon;

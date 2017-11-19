@@ -26,4 +26,24 @@ namespace MazeGamePillaPilla
     {
         public StatePacket Packet;
     }
+
+    class GameplayDropEventArgs : EventArgs
+    {
+        public int Id;
+        public int Type;
+        public int X;
+        public int Y;
+    }
+
+    class GameplayBuffEventArgs : EventArgs
+    {
+        public string PlayerId;
+        public int BuffId;
+    }
+
+    class GameplayPowerUpEventArgs : EventArgs
+    {
+        public string PlayerId;
+        public int Type;
+    }
 }

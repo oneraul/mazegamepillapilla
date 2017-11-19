@@ -56,9 +56,9 @@ namespace MazeGamePillaPilla
         }
 
 
-        public override void ApplyInputOnTheServer(InputPacket input, Cell[,] maze)
+        public override void ApplyInputOnTheServer(InputPacket input, GameScreen gameScreen)
         {
-            ApplyInput(input, maze);
+            ApplyInput(input, gameScreen.maze);
         }
     }
 }

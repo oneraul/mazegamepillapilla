@@ -12,9 +12,9 @@ namespace MazeGamePillaPilla.PowerUps
         private AnimationFrame model;
         private float rotation;
 
-        public BananaDrop(int x, int y) : base(x, y, radius, (pj) =>
+        public BananaDrop(int x, int y) : base(x, y, radius, (pj, server) =>
         {
-            pj.Buffs.Add(new BananaStunBuff(pj));
+            server.AddBuff((int)BuffTypes.BananaStunBuff, pj);
         })
         {
             int layers = 16;

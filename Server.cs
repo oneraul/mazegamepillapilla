@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using LiteNetLib;
 using LiteNetLib.Utils;
+using MazeGamePillaPilla.PowerUps;
 
 namespace MazeGamePillaPilla
 {
@@ -222,6 +223,7 @@ namespace MazeGamePillaPilla
         // Gameplay ---------------------
 
         private float updateAccumulator;
+        private int dropsCount;
         public GameScreen game;
         public Dictionary<string, long> lastProcessedInputs;
         public Dictionary<string, long> lastSentSnapshots;
@@ -254,6 +256,35 @@ namespace MazeGamePillaPilla
                         StatePacket statePacket = new StatePacket(pj.ID, lastProcessedInputs[pj.ID], pj);
                         server.SendToAll(statePacket.Serialize(), SendOptions.Unreliable);
                     }
+
+                    for (int i = pj.Buffs.Count - 1; i >= 0; i--)
+                    {
+                        Buff buff = pj.Buffs[i];
+                        buff.Update(TickRate);
+                        if (buff.ToBeRemoved)
+                        {
+                            RemoveBuff(pj, i);
+                        }
+                    }
+                }
+
+                List<int> dropsToRemove = new List<int>();
+                foreach (KeyValuePair<int, Drop> kvp in game.Drops)
+                {
+                    Drop drop = kvp.Value;
+                    foreach (Pj pj in game.Pjs.Values)
+                    {
+                        if (drop.AabbAabbIntersectionTest(pj))
+                        {
+                            drop.Callback(pj, this);
+                            dropsToRemove.Add(kvp.Key);
+                        }
+                    }
+                }
+                foreach (int index in dropsToRemove)
+                {
+                    RemoveDrop(index);
+                    break;
                 }
             }
         }
@@ -271,6 +302,15 @@ namespace MazeGamePillaPilla
                     {
                         lastProcessedInputs[inputPacket.CharacterID] = inputPacket.InputSequenceNumber;
                         pj.ApplyInputOnTheServer(inputPacket, game);
+
+                        if (inputPacket.Action)
+                        {
+                            if (pj.PowerUp != null)
+                            {
+                                pj.PowerUp.Action(pj, this);
+                                RemovePowerUp(pj);
+                            }
+                        }
                     }
                     break;
             }
@@ -284,6 +324,67 @@ namespace MazeGamePillaPilla
             server.SendToAll(writer, SendOptions.ReliableOrdered);
 
             this.SetLobby();
+        }
+
+
+        public void AddDrop(int type, int x, int y)
+        {
+            NetDataWriter writer = new NetDataWriter();
+            writer.Put((int)NetMessage.AddDrop);
+            writer.Put(dropsCount); // id
+            writer.Put(type);
+            writer.Put(x);
+            writer.Put(y);
+            server.SendToAll(writer, SendOptions.ReliableOrdered);
+
+            dropsCount++;
+        }
+
+        public void RemoveDrop(int id)
+        {
+            NetDataWriter writer = new NetDataWriter();
+            writer.Put((int)NetMessage.RemoveDrop);
+            writer.Put(id);
+            server.SendToAll(writer, SendOptions.ReliableOrdered);
+
+            game.Drops.Remove(id);
+        }
+
+        public void AddBuff(int type, Pj pj)
+        {
+            NetDataWriter writer = new NetDataWriter();
+            writer.Put((int)NetMessage.AddBuff);
+            writer.Put(type);
+            writer.Put(pj.ID);
+            server.SendToAll(writer, SendOptions.ReliableOrdered);
+        }
+
+        public void RemoveBuff(Pj pj, int id)
+        {
+            NetDataWriter writer = new NetDataWriter();
+            writer.Put((int)NetMessage.RemoveBuff);
+            writer.Put(pj.ID);
+            writer.Put(id);
+            server.SendToAll(writer, SendOptions.ReliableOrdered);
+        }
+
+        public void AddPowerUp(int type, Pj pj)
+        {
+            NetDataWriter writer = new NetDataWriter();
+            writer.Put((int)NetMessage.AddPowerUp);
+            writer.Put(pj.ID);
+            writer.Put(type);
+            server.SendToAll(writer, SendOptions.ReliableOrdered);
+        }
+
+        public void RemovePowerUp(Pj pj)
+        {
+            NetDataWriter writer = new NetDataWriter();
+            writer.Put((int)NetMessage.RemovePowerUp);
+            writer.Put(pj.ID);
+            server.SendToAll(writer, SendOptions.ReliableOrdered);
+
+            pj.PowerUp = null;
         }
 
 

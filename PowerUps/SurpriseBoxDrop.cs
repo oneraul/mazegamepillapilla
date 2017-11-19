@@ -14,19 +14,15 @@ namespace MazeGamePillaPilla.PowerUps
         private AnimationFrame model;
         private float rotation;
 
-        public SurpriseBoxDrop(int x, int y) : base(x, y, radius, (pj) =>
+        public SurpriseBoxDrop(int x, int y) : base(x, y, radius, (pj, server) =>
         {
-            /*
             int roll = rng.Next(3);
             switch (roll)
             {
-                case 0: pj.PowerUp = new SprintPowerUp(); break;
-                case 1: pj.PowerUp = new TraverseWallsPowerUp(); break;
-                case 2: pj.PowerUp = new BananaPowerUp(); break;
+                case 0: server.AddPowerUp((int)PowerUpTypes.SprintPowerUp, pj); break;
+                case 1: server.AddPowerUp((int)PowerUpTypes.TraverseWallsPowerUp, pj); break;
+                case 2: server.AddPowerUp((int)PowerUpTypes.BananaPowerUp, pj); break;
             }
-            */
-            pj.PowerUp = new BananaPowerUp();
-
         })
         {
             int layers = 16;
@@ -49,7 +45,7 @@ namespace MazeGamePillaPilla.PowerUps
             rotation = (float)((rotation + dt) % (Math.PI * 2));
         }
 
-        public static SurpriseBoxDrop SpawnInAnEmptyPosition(Cell[,] maze)
+        public static Point SpawnInAnEmptyPosition(Cell[,] maze)
         {
             int x = rng.Next(2 * Tile.Size, (maze.GetLength(1) - 1) * Tile.Size);
             int y = rng.Next(2 * Tile.Size, (maze.GetLength(0) - 1) * Tile.Size);
@@ -88,7 +84,7 @@ namespace MazeGamePillaPilla.PowerUps
                 box.SetPosition(x, y);
             }
 
-            return box;
+            return new Point(x, y);
         }
     }
 }

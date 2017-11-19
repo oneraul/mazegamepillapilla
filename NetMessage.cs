@@ -18,5 +18,11 @@
         // gameplay
         CharacterUpdate,
         GoToScoresScreen,
+        AddDrop,
+        RemoveDrop,
+        AddBuff,
+        RemoveBuff,
+        AddPowerUp,
+        RemovePowerUp,
     }
 }

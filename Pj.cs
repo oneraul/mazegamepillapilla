@@ -155,6 +155,8 @@ namespace MazeGamePillaPilla
 
         public abstract void ApplyInputOnTheServer(InputPacket input, GameScreen gameScreen);
 
+        public abstract void ProcessServerUpdate(StatePacket packet, Cell[,] maze);
+
 
         public void ApplyInput(InputPacket input, Cell[,] maze)
         {
@@ -200,8 +202,6 @@ namespace MazeGamePillaPilla
             }
         }
 
-
-        public abstract void ProcessServerUpdate(StatePacket packet, Cell[,] maze);
 
         public Vector2[] GetVertices()
         {
