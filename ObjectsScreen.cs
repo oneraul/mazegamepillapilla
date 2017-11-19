@@ -82,7 +82,6 @@ namespace MazeGamePillaPilla
             {
                 spritebatch.Begin();
                 spritebatch.Draw(renderTarget, renderTargetRectangle, biomeTintColor);
-
                 spritebatch.End();
             }
 
@@ -101,22 +100,23 @@ namespace MazeGamePillaPilla
                 spritebatch.Begin();
 
                 int screenWidth = spritebatch.GraphicsDevice.PresentationParameters.BackBufferWidth;
-                int sideMargin = 230;       // the distance from the side of the screen to the first portrait
-                int portraitPadding = 15;   // the separation from one portrait to the next
-                int portraitWidth = (screenWidth - sideMargin * 2 - (Pjs.Count - 1) * portraitPadding) / Pjs.Count;
-                int y = spritebatch.GraphicsDevice.PresentationParameters.BackBufferHeight - portraitWidth;
+                int portraitWidth = 80;
+                int portraitPadding = 15; // the separation from one portrait to the next
+                int sideMargin = (screenWidth - (portraitWidth + portraitPadding) * Pjs.Count) / 2; // the distance from the side of the screen to the first portrait
+                int y = spritebatch.GraphicsDevice.PresentationParameters.BackBufferHeight - portraitWidth - 5;
 
                 int i = 0;
                 foreach (Pj pj in Pjs.Values)
                 {
                     spritebatch.Draw(pixel, new Rectangle(sideMargin + i * (portraitWidth + portraitPadding), y, portraitWidth, portraitWidth), new Color(Color.Black, 0.16f));
-                    if (pj.PowerUp != null) spritebatch.Draw(pj.PowerUp.GetIcon(), 
-                        new Rectangle(sideMargin + i * (portraitWidth + portraitPadding) + 5, y + 5, portraitWidth-10, portraitWidth-10), pj.PowerUp.GetColor());
+                    if (pj.PowerUp != null) spritebatch.Draw(pj.PowerUp.GetIcon(),
+                        new Rectangle(sideMargin + i * (portraitWidth + portraitPadding) + 5, y + 5, portraitWidth - 10, portraitWidth - 10), pj.PowerUp.GetColor());
 
                     spritebatch.DrawString(Button.Font, pj.ID, new Vector2(sideMargin + i * (portraitWidth + portraitPadding), y), Color.White);
 
                     i++;
                 }
+
                 spritebatch.End();
             }
         }
@@ -153,6 +153,7 @@ namespace MazeGamePillaPilla
             Pjs.Add("Bot1", new AiPj("Bot1", 2.5f * Tile.Size, 2.5f * Tile.Size, 2));
             Pjs.Add("Bot2", new AiPj("Bot2", 2.5f * Tile.Size, 4.5f * Tile.Size, 0));
             Pjs.Add("Bot3", new AiPj("Bot3", 2.5f * Tile.Size, 6.5f * Tile.Size, 3));
+            Pjs.Add("Bot4", new AiPj("Bot4", 2.5f * Tile.Size, 8.5f * Tile.Size, 0));
 
             Drops = new List<Drop>();
 
@@ -331,7 +332,7 @@ namespace MazeGamePillaPilla
 
     class TraverseWallsBuff : DurationBuff
     {
-        private static float duration = 2.5f;
+        private static float duration = 1.5f;
         public static Texture2D texture;
 
         private Pj pj;
