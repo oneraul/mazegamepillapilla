@@ -91,22 +91,22 @@ namespace MazeGamePillaPilla
         public void OnBuffAdded(object source, GameplayBuffEventArgs args)
         {
             Pjs.TryGetValue(args.PlayerId, out Pj pj);
-            if (pj != null)
+            System.Diagnostics.Debug.Assert(pj != null);
+            switch(args.BuffId)
             {
-                switch(args.BuffId)
-                {
-                    case (int)BuffTypes.SprintBuff:
-                        pj.Buffs.Add(new SprintBuff(pj));
-                        break;
+                case (int)BuffTypes.SprintBuff:
+                    pj.Buffs.Add(new SprintBuff(pj));
+                    break;
 
-                    case (int)BuffTypes.TraverseWallsBuff:
-                        pj.Buffs.Add(new TraverseWallsBuff(pj));
-                        break;
+                case (int)BuffTypes.TraverseWallsBuff:
+                    pj.Buffs.Add(new TraverseWallsBuff(pj));
+                    break;
 
-                    case (int)BuffTypes.BananaStunBuff:
-                        pj.Buffs.Add(new BananaStunBuff(pj));
-                        break;
-                }
+                case (int)BuffTypes.BananaStunBuff:
+                    pj.Buffs.Add(new BananaStunBuff(pj));
+                    break;
+
+                throw new System.Exception();
             }
         }
 
@@ -114,9 +114,11 @@ namespace MazeGamePillaPilla
         {
             Pjs.TryGetValue(args.PlayerId, out Pj pj);
             System.Diagnostics.Debug.Assert(pj != null);
-            System.Diagnostics.Debug.Assert(pj.Buffs[args.BuffId] != null);
-            pj.Buffs[args.BuffId].End();
-            pj.Buffs.RemoveAt(args.BuffId);
+            if (args.BuffId < pj.Buffs.Count && pj.Buffs[args.BuffId] != null)
+            {
+                pj.Buffs[args.BuffId].End();
+                pj.Buffs.RemoveAt(args.BuffId);
+            }
         }
 
         public void OnPowerUpAdded(object source, GameplayPowerUpEventArgs args)

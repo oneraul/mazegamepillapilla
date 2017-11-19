@@ -183,7 +183,7 @@ namespace MazeGamePillaPilla
             this.Pjs = new Dictionary<string, Pj>();
             this.aiPjs = new List<AiPj>();
 
-            Pjs.Add("Player", new TestPj("Player", PlayerControllerIndex.Keyboard, 18.5f * Tile.Size, 2.5f * Tile.Size, 1));
+            //Pjs.Add("Player", new TestPj("Player", PlayerControllerIndex.Keyboard, 18.5f * Tile.Size, 2.5f * Tile.Size, 1));
             AiPj aipj = new AiPj("AI", Tile.Size * 2.5f, Tile.Size * 2.5f, 2);
             Pjs.Add("AI", aipj);
             aiPjs.Add(aipj);

@@ -25,7 +25,7 @@ namespace MazeGamePillaPilla
         {
             Port = 9050;
             MaxClients = 4;
-            TickRate = 1/5f;
+            TickRate = 1/60f;
 
             players = new Dictionary<string, LobbyPlayer>();
             playersPerClient = new Dictionary<NetPeer, List<string>>();
@@ -242,13 +242,15 @@ namespace MazeGamePillaPilla
 
         public void GameplayUpdate(float dt)
         {
+            if (game == null) return;
+
             updateAccumulator += dt;
             if (updateAccumulator >= TickRate)
             {
                 updateAccumulator -= TickRate;
                 server.PollEvents();
 
-                foreach (Pj pj in game?.Pjs.Values ?? Enumerable.Empty<Pj>())
+                foreach (Pj pj in game.Pjs.Values ?? Enumerable.Empty<Pj>())
                 {
                     if (lastProcessedInputs[pj.ID] > lastSentSnapshots[pj.ID])
                     {
@@ -366,6 +368,9 @@ namespace MazeGamePillaPilla
             writer.Put(pj.ID);
             writer.Put(id);
             server.SendToAll(writer, SendOptions.ReliableOrdered);
+
+            pj.Buffs[id].End();
+            pj.Buffs.RemoveAt(id);
         }
 
         public void AddPowerUp(int type, Pj pj)
