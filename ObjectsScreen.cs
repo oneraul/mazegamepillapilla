@@ -156,9 +156,7 @@ namespace MazeGamePillaPilla
             Pjs.Add("Bot4", new AiPj("Bot4", 2.5f * Tile.Size, 8.5f * Tile.Size, 0));
 
             Drops = new List<Drop>();
-
-            Random rng = new Random();
-            ScheduleManager.ScheduleInLoop(3, () => SpawnSurpriseBox(rng));
+            ScheduleManager.ScheduleInLoop(3, () => Drops.Add(SurpriseBoxDrop.SpawnInAnEmptyPosition(maze)));
 
             // Initialize rendering stuff
             renderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight);
@@ -168,47 +166,6 @@ namespace MazeGamePillaPilla
             floorColor = new Color(182f / 255, 186f / 255, 159f / 255);
             backgroundColor = new Color(77f / 255, 174f / 255, 183f / 255);
             biomeTintColor = Color.Wheat;
-        }
-
-        private void SpawnSurpriseBox(Random rng)
-        {
-            int x = rng.Next(2 * Tile.Size, (maze.GetLength(1) - 1) * Tile.Size);
-            int y = rng.Next(2 * Tile.Size, (maze.GetLength(0) - 1) * Tile.Size);
-            SurpriseBoxDrop box = new SurpriseBoxDrop(x, y);
-
-            bool isFree(SurpriseBoxDrop drop)
-            {
-                foreach (Vector2 vertex in drop.GetVertices())
-                {
-                    int currentCellX = (int)(vertex.X / Tile.Size);
-                    int currentCellY = (int)(vertex.Y / Tile.Size);
-
-                    if (currentCellX >= 0 && currentCellX < maze.GetLength(1)
-                    && currentCellY >= 0 && currentCellY < maze.GetLength(0))
-                    {
-                        Cell cell = maze[currentCellY, currentCellX];
-                        if (drop.AabbAabbIntersectionTest(cell))
-                        {
-                            if (drop.SatIntersectionTest(cell))
-                            {
-                                return false;
-                            }
-                        }
-                    }
-                }
-
-                return true;
-            }
-
-            int iteraciones = 0;
-            while (!isFree(box))
-            {
-                iteraciones++;
-                x = rng.Next(2 * Tile.Size, (maze.GetLength(1) - 1) * Tile.Size);
-                y = rng.Next(2 * Tile.Size, (maze.GetLength(0) - 1) * Tile.Size);
-                box.SetPosition(x, y);
-            }
-            Drops.Add(new SurpriseBoxDrop(x, y));
         }
 
         public void Update(float dt)
@@ -451,6 +408,48 @@ namespace MazeGamePillaPilla
         public override void Update(float dt)
         {
             rotation = (float)((rotation + dt) % (Math.PI * 2));
+        }
+
+        public static SurpriseBoxDrop SpawnInAnEmptyPosition(Cell[,] maze)
+        {
+            int x = rng.Next(2 * Tile.Size, (maze.GetLength(1) - 1) * Tile.Size);
+            int y = rng.Next(2 * Tile.Size, (maze.GetLength(0) - 1) * Tile.Size);
+            SurpriseBoxDrop box = new SurpriseBoxDrop(x, y);
+
+            bool isFree(SurpriseBoxDrop drop)
+            {
+                foreach (Vector2 vertex in drop.GetVertices())
+                {
+                    int currentCellX = (int)(vertex.X / Tile.Size);
+                    int currentCellY = (int)(vertex.Y / Tile.Size);
+
+                    if (currentCellX >= 0 && currentCellX < maze.GetLength(1)
+                    && currentCellY >= 0 && currentCellY < maze.GetLength(0))
+                    {
+                        Cell cell = maze[currentCellY, currentCellX];
+                        if (drop.AabbAabbIntersectionTest(cell))
+                        {
+                            if (drop.SatIntersectionTest(cell))
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+
+                return true;
+            }
+
+            int iteraciones = 0;
+            while (!isFree(box))
+            {
+                iteraciones++;
+                x = rng.Next(2 * Tile.Size, (maze.GetLength(1) - 1) * Tile.Size);
+                y = rng.Next(2 * Tile.Size, (maze.GetLength(0) - 1) * Tile.Size);
+                box.SetPosition(x, y);
+            }
+
+            return box;
         }
     }
 }
