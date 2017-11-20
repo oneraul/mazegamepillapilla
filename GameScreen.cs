@@ -78,8 +78,10 @@ namespace MazeGamePillaPilla
                 case (int)DropTypes.BananaDrop:
                     drop = new BananaDrop(args.X, args.Y);
                     break;
+
+                default:
+                    throw new System.ComponentModel.InvalidEnumArgumentException();
             }
-            System.Diagnostics.Debug.Assert(drop != null);
             Drops.Add(args.Id, drop);
         }
 
@@ -92,21 +94,22 @@ namespace MazeGamePillaPilla
         {
             Pjs.TryGetValue(args.PlayerId, out Pj pj);
             System.Diagnostics.Debug.Assert(pj != null);
-            switch(args.BuffId)
+            switch(args.BuffType)
             {
                 case (int)BuffTypes.SprintBuff:
-                    pj.Buffs.Add(new SprintBuff(pj));
+                    pj.Buffs.Add(args.BuffId, new SprintBuff(pj));
                     break;
 
                 case (int)BuffTypes.TraverseWallsBuff:
-                    pj.Buffs.Add(new TraverseWallsBuff(pj));
+                    pj.Buffs.Add(args.BuffId, new TraverseWallsBuff(pj));
                     break;
 
                 case (int)BuffTypes.BananaStunBuff:
-                    pj.Buffs.Add(new BananaStunBuff(pj));
+                    pj.Buffs.Add(args.BuffId, new BananaStunBuff(pj));
                     break;
 
-                throw new System.Exception();
+                default:
+                    throw new System.ComponentModel.InvalidEnumArgumentException();
             }
         }
 
@@ -114,11 +117,9 @@ namespace MazeGamePillaPilla
         {
             Pjs.TryGetValue(args.PlayerId, out Pj pj);
             System.Diagnostics.Debug.Assert(pj != null);
-            if (args.BuffId < pj.Buffs.Count && pj.Buffs[args.BuffId] != null)
-            {
-                pj.Buffs[args.BuffId].End();
-                pj.Buffs.RemoveAt(args.BuffId);
-            }
+            pj.Buffs.TryGetValue(args.BuffId, out Buff buff);
+            buff?.End();
+            pj.Buffs.Remove(args.BuffId);
         }
 
         public void OnPowerUpAdded(object source, GameplayPowerUpEventArgs args)
@@ -140,6 +141,9 @@ namespace MazeGamePillaPilla
                     case (int)PowerUpTypes.BananaPowerUp:
                         pj.PowerUp = new BananaPowerUp();
                         break;
+
+                    default:
+                        throw new System.ComponentModel.InvalidEnumArgumentException();
                 }
             }
         }

@@ -240,8 +240,9 @@ namespace MazeGamePillaPilla
                 case NetMessage.AddBuff:
                     BuffAdded?.Invoke(this, new GameplayBuffEventArgs()
                     {
-                        BuffId = dataReader.GetInt(),
-                        PlayerId = dataReader.GetString()
+                        BuffType = dataReader.GetInt(),
+                        PlayerId = dataReader.GetString(),
+                        BuffId = dataReader.GetInt()
                     });
                     break;
 

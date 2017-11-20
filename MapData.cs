@@ -53,7 +53,7 @@ namespace MazeGamePillaPilla
                     };
             }
 
-            throw new Exception();
+            throw new System.ComponentModel.InvalidEnumArgumentException();
         }
     }
 }

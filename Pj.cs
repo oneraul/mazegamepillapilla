@@ -37,7 +37,7 @@ namespace MazeGamePillaPilla
         public Animation currentAnimation;
 
         public IPowerUp PowerUp;
-        public List<Buff> Buffs;
+        public Dictionary<int, Buff> Buffs;
 
 
         protected enum AnimationID { Idle, Running }
@@ -61,7 +61,7 @@ namespace MazeGamePillaPilla
             paletteParameter = Pj.effect.Parameters["u_palette"];
             effectPass = Pj.effect.Techniques[0].Passes[0];
 
-            Buffs = new List<Buff>();
+            Buffs = new Dictionary<int, Buff>();
         }
 
 
@@ -140,7 +140,7 @@ namespace MazeGamePillaPilla
             batch.End();
 
             batch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, cameraMatrix);
-            foreach (Buff buff in Buffs)
+            foreach (Buff buff in Buffs.Values)
             {
                 buff.Draw(batch, cameraMatrix);
             }

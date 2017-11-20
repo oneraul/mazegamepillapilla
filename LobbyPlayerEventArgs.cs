@@ -38,6 +38,7 @@ namespace MazeGamePillaPilla
     class GameplayBuffEventArgs : EventArgs
     {
         public string PlayerId;
+        public int BuffType;
         public int BuffId;
     }
 

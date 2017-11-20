@@ -47,6 +47,7 @@ namespace MazeGamePillaPilla.PowerUps
 
         public static Point SpawnInAnEmptyPosition(Cell[,] maze)
         {
+            /*
             int x = rng.Next(2 * Tile.Size, (maze.GetLength(1) - 1) * Tile.Size);
             int y = rng.Next(2 * Tile.Size, (maze.GetLength(0) - 1) * Tile.Size);
             SurpriseBoxDrop box = new SurpriseBoxDrop(x, y);
@@ -84,6 +85,11 @@ namespace MazeGamePillaPilla.PowerUps
                 box.SetPosition(x, y);
             }
 
+            return new Point(x, y);
+            */
+
+            int x = rng.Next(2 * Tile.Size, (maze.GetLength(1) - 1) * Tile.Size);
+            int y = rng.Next(2 * Tile.Size, (maze.GetLength(0) - 1) * Tile.Size);
             return new Point(x, y);
         }
     }

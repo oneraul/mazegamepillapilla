@@ -46,6 +46,7 @@ namespace MazeGamePillaPilla
                 server.game = gameScreen;
                 server.lastProcessedInputs = new Dictionary<string, long>();
                 server.lastSentSnapshots = new Dictionary<string, long>();
+                server.lastBuff = new Dictionary<string, int>();
             }
         }
 
@@ -170,15 +171,18 @@ namespace MazeGamePillaPilla
                     gameScreen.LocalPlayers.Add(pj);
                     server?.lastProcessedInputs.Add(args.PlayerID, 0);
                     server?.lastSentSnapshots.Add(args.PlayerID, 0);
+                    server?.lastBuff.Add(args.PlayerID, 0);
                     break;
 
                 case Pj.Type.Remote:
                     gameScreen.Pjs.Add(args.PlayerID, new RemotePj(args.PlayerID, args.X, args.Y, 1));
                     server?.lastProcessedInputs.Add(args.PlayerID, 0);
                     server?.lastSentSnapshots.Add(args.PlayerID, 0);
+                    server?.lastBuff.Add(args.PlayerID, 0);
                     break;
 
-                throw new Exception();
+                default:
+                    throw new System.ComponentModel.InvalidEnumArgumentException();
             }
         }
     }
