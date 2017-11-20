@@ -280,7 +280,7 @@ namespace MazeGamePillaPilla
 
             ScheduleManager.ScheduleInLoop(3, () => {
                 Point spawnPosition = SurpriseBoxDrop.SpawnInAnEmptyPosition(maze);
-                server.AddDrop((int)DropTypes.SurpriseBoxDrop, spawnPosition.Y, spawnPosition.Y);
+                server.AddDrop((int)DropTypes.SurpriseBoxDrop, spawnPosition.X, spawnPosition.Y);
             });
         }
 
