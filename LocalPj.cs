@@ -10,6 +10,7 @@ namespace MazeGamePillaPilla
         public PlayerControllerIndex PlayerControllerIndex { get; private set; }
         public List<InputPacket> PendingInputs;
         public long InputSequenceNumber;
+        public long LastSnapshotReceived;
         private bool oldStateValid;
 
 
@@ -18,6 +19,7 @@ namespace MazeGamePillaPilla
             PlayerControllerIndex = playerControllerIndex;
             PendingInputs = new List<InputPacket>();
             InputSequenceNumber = 0;
+            LastSnapshotReceived = 0;
         }
 
 
@@ -29,6 +31,9 @@ namespace MazeGamePillaPilla
 
         public override void ProcessServerUpdate(StatePacket packet, Cell[,] maze)
         {
+            if (packet.InputSequenceNumber <= LastSnapshotReceived) return;
+            LastSnapshotReceived = packet.InputSequenceNumber;
+
             x = packet.X;
             y = packet.Y;
             rotation = packet.Rotation;

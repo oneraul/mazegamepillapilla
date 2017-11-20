@@ -212,7 +212,8 @@ namespace MazeGamePillaPilla
                     break;
 
                 case NetMessage.CharacterUpdate:
-                    CharacterUpdated?.Invoke(this, new GameplayUpdateEventArgs() { Packet = new StatePacket(dataReader) });
+                    StatePacket packet = new StatePacket(dataReader);
+                    CharacterUpdated?.Invoke(this, new GameplayUpdateEventArgs() { Packet = packet });
                     break;
 
                 case NetMessage.GoToScoresScreen:

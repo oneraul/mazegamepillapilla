@@ -9,7 +9,7 @@ namespace MazeGamePillaPilla
 {
     class Server
     {
-        public static readonly float TickRate = 1f/30;
+        public static readonly float TickRate = 1f/60;
 
         public int Port { get; private set; }
         public int MaxClients { get; private set; }
@@ -254,10 +254,11 @@ namespace MazeGamePillaPilla
 
                 foreach (Pj pj in game.Pjs.Values ?? Enumerable.Empty<Pj>())
                 {
-                    if (lastProcessedInputs[pj.ID] > lastSentSnapshots[pj.ID])
+                    long lastInput = lastProcessedInputs[pj.ID];
+                    if (lastInput > lastSentSnapshots[pj.ID])
                     {
-                        lastSentSnapshots[pj.ID] = lastProcessedInputs[pj.ID];
-                        StatePacket statePacket = new StatePacket(pj.ID, lastProcessedInputs[pj.ID], pj);
+                        lastSentSnapshots[pj.ID] = lastInput;
+                        StatePacket statePacket = new StatePacket(lastInput, pj);
                         server.SendToAll(statePacket.Serialize(), SendOptions.Unreliable);
                     }
 

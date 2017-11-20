@@ -36,9 +36,9 @@ namespace MazeGamePillaPilla
         }
 
 
-        public StatePacket(string CharacterID, long InputSequenceNumber, Pj pj)
+        public StatePacket(long InputSequenceNumber, Pj pj)
         {
-            this.CharacterID = CharacterID;
+            this.CharacterID = pj.ID;
             this.InputSequenceNumber = InputSequenceNumber;
             this.X = pj.x;
             this.Y = pj.y;
