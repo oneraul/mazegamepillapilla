@@ -38,9 +38,13 @@ namespace MazeGamePillaPilla
             {
                 InputPacket pending = PendingInputs[i];
                 if (pending.InputSequenceNumber <= packet.InputSequenceNumber)
+                {
                     PendingInputs.RemoveAt(i);
-                else
+                }
+                else 
+                {
                     ApplyInput(pending, maze);
+                }
             }
         }
 

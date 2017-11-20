@@ -9,7 +9,8 @@ namespace MazeGamePillaPilla
 {
     class Server
     {
-        public float TickRate { get; private set; }
+        public static readonly float TickRate = 1f/30;
+
         public int Port { get; private set; }
         public int MaxClients { get; private set; }
 
@@ -25,7 +26,6 @@ namespace MazeGamePillaPilla
         {
             Port = 9050;
             MaxClients = 4;
-            TickRate = 1/30f;
 
             players = new Dictionary<string, LobbyPlayer>();
             playersPerClient = new Dictionary<NetPeer, List<string>>();

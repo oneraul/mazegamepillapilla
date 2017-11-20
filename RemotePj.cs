@@ -25,8 +25,7 @@ namespace MazeGamePillaPilla
             currentAnimation.Update(dt);
 
             interpolationTimer += dt;
-            float serverTickrate = 1f/5;
-            float a = MathHelper.Clamp(interpolationTimer / serverTickrate, 0, 1);
+            float a = MathHelper.Clamp(interpolationTimer / Server.TickRate, 0, 1);
             this.x = oldX * (1 - a) + newX * a;
             this.y = oldY * (1 - a) + newY * a;
             this.rotation = oldRotation * (1 - a) + newRotation * a;
