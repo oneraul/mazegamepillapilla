@@ -9,8 +9,6 @@ namespace MazeGamePillaPilla
     class GameScreen : IScreen
     {
         public Matrix cameraMatrix;
-        public Cell[,] maze;
-        public Dictionary<int, Drop> Drops;
         public Texture2D pixel;
         public RenderTarget2D renderTarget;
         public Rectangle renderTargetRectangle;
@@ -19,7 +17,7 @@ namespace MazeGamePillaPilla
         public Color backgroundColor;
         public Color biomeTintColor;
 
-        public Dictionary<string, Pj> Pjs;
+        public GameWorld world;
         public List<LocalPj> LocalPlayers;
 
         private Client client;
@@ -27,9 +25,8 @@ namespace MazeGamePillaPilla
         public GameScreen(Client client)
         {
             this.client = client;
-            Pjs = new Dictionary<string, Pj>();
-            LocalPlayers = new List<LocalPj>();
-            Drops = new Dictionary<int, Drop>();
+            this.world = new GameWorld();
+            this.LocalPlayers = new List<LocalPj>();
         }
 
 
@@ -40,130 +37,32 @@ namespace MazeGamePillaPilla
 
         public void Enter()
         {
-            client.CharacterUpdated += OnCharacterUpdated;
-            client.DropAdded += OnDropAdded;
-            client.DropRemoved += OnDropRemoved;
-            client.BuffAdded += OnBuffAdded;
-            client.BuffRemoved += OnBuffRemoved;
-            client.PowerUpAdded += OnPowerUpAdded;
-            client.PowerUpRemoved += OnPowerUpRemoved;
+            client.CharacterUpdated += world.OnCharacterUpdated;
+            client.DropAdded += world.OnDropAdded;
+            client.DropRemoved += world.OnDropRemoved;
+            client.BuffAdded += world.OnBuffAdded;
+            client.BuffRemoved += world.OnBuffRemoved;
+            client.PowerUpAdded += world.OnPowerUpAdded;
+            client.PowerUpRemoved += world.OnPowerUpRemoved;
         }
 
         public void Exit()
         {
-            client.CharacterUpdated -= OnCharacterUpdated;
-            client.DropAdded -= OnDropAdded;
-            client.DropRemoved -= OnDropRemoved;
-            client.BuffAdded -= OnBuffAdded;
-            client.BuffRemoved -= OnBuffRemoved;
-            client.PowerUpAdded -= OnPowerUpAdded;
-            client.PowerUpRemoved -= OnPowerUpRemoved;
-        }
-
-
-        public void OnCharacterUpdated(object source, GameplayUpdateEventArgs args)
-        {
-            Pjs[args.Packet.CharacterID].ProcessServerUpdate(args.Packet, maze);
-        }
-
-        public void OnDropAdded(object source, GameplayDropEventArgs args)
-        {
-            Drop drop = null;
-            switch (args.Type)
-            {
-                case (int)DropTypes.SurpriseBoxDrop:
-                    drop = new SurpriseBoxDrop(args.X, args.Y);
-                    break;
-
-                case (int)DropTypes.BananaDrop:
-                    drop = new BananaDrop(args.X, args.Y);
-                    break;
-
-                default:
-                    throw new System.ComponentModel.InvalidEnumArgumentException();
-            }
-            Drops.Add(args.Id, drop);
-        }
-
-        public void OnDropRemoved(object source, GameplayDropEventArgs args)
-        {
-            Drops.Remove(args.Id);
-        }
-
-        public void OnBuffAdded(object source, GameplayBuffEventArgs args)
-        {
-            if (Pjs.TryGetValue(args.PlayerId, out Pj pj))
-            {
-                switch(args.BuffType)
-                {
-                    case (int)BuffTypes.SprintBuff:
-                        pj.Buffs.Add(args.BuffId, new SprintBuff(pj));
-                        break;
-
-                    case (int)BuffTypes.TraverseWallsBuff:
-                        pj.Buffs.Add(args.BuffId, new TraverseWallsBuff(pj));
-                        break;
-
-                    case (int)BuffTypes.BananaStunBuff:
-                        pj.Buffs.Add(args.BuffId, new BananaStunBuff(pj));
-                        break;
-
-                    default:
-                        throw new System.ComponentModel.InvalidEnumArgumentException();
-                }
-            }
-        }
-
-        public void OnBuffRemoved(object source, GameplayBuffEventArgs args)
-        {
-            if (Pjs.TryGetValue(args.PlayerId, out Pj pj))
-            {
-                if(pj.Buffs.TryGetValue(args.BuffId, out Buff buff))
-                {
-                    buff?.End();
-                    pj.Buffs.Remove(args.BuffId);
-                }
-            }
-        }
-
-        public void OnPowerUpAdded(object source, GameplayPowerUpEventArgs args)
-        {
-            if (Pjs.TryGetValue(args.PlayerId, out Pj pj))
-            {
-                switch (args.Type)
-                {
-                    case (int)PowerUpTypes.SprintPowerUp:
-                        pj.PowerUp = new SprintPowerUp();
-                        break;
-
-                    case (int)PowerUpTypes.TraverseWallsPowerUp:
-                        pj.PowerUp = new TraverseWallsPowerUp();
-                        break;
-
-                    case (int)PowerUpTypes.BananaPowerUp:
-                        pj.PowerUp = new BananaPowerUp();
-                        break;
-
-                    default:
-                        throw new System.ComponentModel.InvalidEnumArgumentException();
-                }
-            }
-        }
-
-        public void OnPowerUpRemoved(object source, GameplayPowerUpEventArgs args)
-        {
-            if (Pjs.TryGetValue(args.PlayerId, out Pj pj))
-            {
-                pj.PowerUp = null;
-            }
+            client.CharacterUpdated -= world.OnCharacterUpdated;
+            client.DropAdded -= world.OnDropAdded;
+            client.DropRemoved -= world.OnDropRemoved;
+            client.BuffAdded -= world.OnBuffAdded;
+            client.BuffRemoved -= world.OnBuffRemoved;
+            client.PowerUpAdded -= world.OnPowerUpAdded;
+            client.PowerUpRemoved -= world.OnPowerUpRemoved;
         }
 
         public void Update(float dt)
         {
             client.GameplayUpdate(dt);
-            foreach (LocalPj pj in LocalPlayers) pj.ProcessInput(dt, client, maze);
-            foreach (Pj pj in Pjs.Values) pj.Update(dt, maze);
-            foreach (Drop drop in Drops.Values) drop.Update(dt);
+            foreach (LocalPj pj in LocalPlayers) pj.ProcessInput(dt, client, world.maze);
+            foreach (Pj pj in world.Pjs.Values) pj.Update(dt, world.maze);
+            foreach (Drop drop in world.Drops.Values) drop.Update(dt);
         }
 
         public void Draw(SpriteBatch spritebatch)
@@ -173,12 +72,12 @@ namespace MazeGamePillaPilla
                 List<IDrawable> drawables = new List<IDrawable>();
 
                 List<IDrawable> itemsToInsert = new List<IDrawable>();
-                itemsToInsert.AddRange(Pjs.Values);
-                itemsToInsert.AddRange(Drops.Values);
+                itemsToInsert.AddRange(world.Pjs.Values);
+                itemsToInsert.AddRange(world.Drops.Values);
                 itemsToInsert.Sort((a, b) => b.GetSortY().CompareTo(a.GetSortY()));
 
-                int mazeW = maze.GetLength(1);
-                int mazeH = maze.GetLength(0);
+                int mazeW = world.maze.GetLength(1);
+                int mazeH = world.maze.GetLength(0);
                 for (int y = 0; y < mazeH; y++)
                 {
                     for (int i = itemsToInsert.Count - 1; i >= 0; i--)
@@ -186,8 +85,8 @@ namespace MazeGamePillaPilla
                         IDrawable item = itemsToInsert[i];
                         Rectangle itemAabb = ((IIntersectable)item).GetAABB();
 
-                        Cell leftCell = maze[y, itemAabb.Left / Tile.Size];
-                        Cell rightCell = maze[y, itemAabb.Right / Tile.Size];
+                        Cell leftCell = world.maze[y, itemAabb.Left / Tile.Size];
+                        Cell rightCell = world.maze[y, itemAabb.Right / Tile.Size];
 
                         if (item.GetSortY() < leftCell.GetSortY() && item.GetSortY() < rightCell.GetSortY())
                         {
@@ -198,7 +97,7 @@ namespace MazeGamePillaPilla
 
                     for (int x = 0; x < mazeW; x++)
                     {
-                        drawables.Add(maze[y, x]);
+                        drawables.Add(world.maze[y, x]);
                     }
                 }
 
@@ -234,7 +133,7 @@ namespace MazeGamePillaPilla
             // Draw extra gameplay elements (projected into world space but not affected by post-processing)
             {
                 spritebatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, cameraMatrix);
-                foreach (Pj pj in Pjs.Values)
+                foreach (Pj pj in world.Pjs.Values)
                 {
                     spritebatch.DrawString(Button.Font, pj.ID, new Vector2(pj.x - Button.Font.MeasureString(pj.ID).X / 2, pj.y - 40), Color.White);
                 }
@@ -248,11 +147,11 @@ namespace MazeGamePillaPilla
                 int screenWidth = spritebatch.GraphicsDevice.PresentationParameters.BackBufferWidth;
                 int portraitWidth = 80;
                 int portraitPadding = 15; // the separation from one portrait to the next
-                int sideMargin = (screenWidth - (portraitWidth + portraitPadding) * Pjs.Count) / 2; // the distance from the side of the screen to the first portrait
+                int sideMargin = (screenWidth - (portraitWidth + portraitPadding) * world.Pjs.Count) / 2; // the distance from the side of the screen to the first portrait
                 int y = spritebatch.GraphicsDevice.PresentationParameters.BackBufferHeight - portraitWidth - 5;
 
                 int i = 0;
-                foreach (Pj pj in Pjs.Values)
+                foreach (Pj pj in world.Pjs.Values)
                 {
                     spritebatch.Draw(pixel, new Rectangle(sideMargin + i * (portraitWidth + portraitPadding), y, portraitWidth, portraitWidth), new Color(Color.Black, 0.16f));
                     if (pj.PowerUp != null) spritebatch.Draw(pj.PowerUp.GetIcon(),
@@ -283,7 +182,7 @@ namespace MazeGamePillaPilla
             base.Enter();
 
             ScheduleManager.ScheduleInLoop(3, () => {
-                Point spawnPosition = SurpriseBoxDrop.SpawnInAnEmptyPosition(maze);
+                Point spawnPosition = SurpriseBoxDrop.SpawnInAnEmptyPosition(world.maze);
                 server.AddDrop((int)DropTypes.SurpriseBoxDrop, spawnPosition.X, spawnPosition.Y);
             });
         }
