@@ -164,11 +164,11 @@ namespace MazeGamePillaPilla
         {
             cameraMatrix = Matrix.CreateTranslation(400 - Tile.Size * 11, Tile.Size, 0);
 
-            Tile.Init(GraphicsDevice);
+            Tile.InitTextures(GraphicsDevice);
 
             // load maze
             int MapId = 0;
-            maze = Cell.ParseData(Content, MapData.GetMap(MapId));
+            maze = Cell.ParseData(MapData.GetMap(MapId));
 
             // load graphic stuff
             pixel = Content.Load<Texture2D>("pixel");
