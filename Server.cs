@@ -9,7 +9,7 @@ namespace MazeGamePillaPilla
 {
     class Server
     {
-        public static readonly float TickRate = 1f/60;
+        public static readonly float TickRate = 1f/30;
 
         public int Port { get; private set; }
         public int MaxClients { get; private set; }
@@ -305,24 +305,29 @@ namespace MazeGamePillaPilla
             switch (instruction)
             {
                 case (int)NetMessage.CharacterUpdate:
-
-                    InputPacket inputPacket = new InputPacket(dataReader);
-                    if (game.Pjs.TryGetValue(inputPacket.CharacterID, out Pj pj))
-                    {
-                        lastProcessedInputs[inputPacket.CharacterID] = inputPacket.InputSequenceNumber;
-                        pj.ApplyInputOnTheServer(inputPacket, game);
-
-                        if (inputPacket.Action)
-                        {
-                            if (pj.PowerUp != null)
-                            {
-                                pj.PowerUp.Action(pj, this);
-                                RemovePowerUp(pj);
-                            }
-                        }
-                    }
+                    ProcessInputPacket(new InputPacket(dataReader));
                     break;
             }
+        }
+
+
+        private void ProcessInputPacket(InputPacket inputPacket)
+        {
+            if (game.Pjs.TryGetValue(inputPacket.CharacterID, out Pj pj))
+            {
+                lastProcessedInputs[inputPacket.CharacterID] = inputPacket.InputSequenceNumber;
+                pj.ApplyInputOnTheServer(inputPacket, game);
+
+                if (inputPacket.Action)
+                {
+                    if (pj.PowerUp != null)
+                    {
+                        pj.PowerUp.Action(pj, this);
+                        RemovePowerUp(pj);
+                    }
+                }
+            }
+            else throw new System.ComponentModel.InvalidEnumArgumentException();
         }
 
 
