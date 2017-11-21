@@ -18,13 +18,15 @@ namespace MazeGamePillaPilla
         public static Texture2D PaletteTexture;
         public static Effect effect;
 
+        private static readonly float BaseV = 150;
+
         private EffectParameter paletteParameter;
         private EffectPass effectPass;
 
         public string ID;
         public float x;
         public float y;
-        public float v = 150;
+        public float v = BaseV;
         public float rotation = MathHelper.PiOver2;   // in radians, range [0, 2*pi)
         public float hw = (0.5f * Tile.Size) / 2;
         public float hh = (0.5f * Tile.Size) / 2;
@@ -167,14 +169,14 @@ namespace MazeGamePillaPilla
             }
 
             // Multisampling to avoid tunneling when the speed is to high
-            float baseV = 150;
-            int numberOfSamples = (int)(v / baseV);
+            float sampleV = Math.Min(v, Pj.BaseV);
+            int numberOfSamples = (int)(v / sampleV);
 
             float remainingV = v;
             for (int i = 0; i < numberOfSamples; i++)
             {
-                x += Math.Min(baseV, remainingV) * input.Horizontal;
-                y += Math.Min(baseV, remainingV) * input.Vertical;
+                x += Math.Min(sampleV, remainingV) * input.Horizontal;
+                y += Math.Min(sampleV, remainingV) * input.Vertical;
 
                 x = MathHelper.Clamp(x, Tile.Size + hw + 3, maze.GetLength(1) * Tile.Size - hw - Tile.Size - 3);
                 y = MathHelper.Clamp(y, Tile.Size + hh + 3, maze.GetLength(0) * Tile.Size - hh - Tile.Size - 3);
@@ -198,7 +200,7 @@ namespace MazeGamePillaPilla
                     }
                 }
 
-                remainingV -= baseV;
+                remainingV -= sampleV;
             }
         }
 
