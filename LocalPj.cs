@@ -54,7 +54,7 @@ namespace MazeGamePillaPilla
         }
 
 
-        public override void ApplyInputOnTheServer(InputPacket input, GameScreen gameScreen)
+        public override void ApplyInputOnTheServer(InputPacket input, Cell[,] maze)
         {
             // already applied locally as client-side prediction
         }
