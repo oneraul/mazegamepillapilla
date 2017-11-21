@@ -20,6 +20,8 @@ namespace MazeGamePillaPilla
                 PreferredBackBufferHeight = 600,
                 PreferMultiSampling = false,
             };
+
+            this.IsFixedTimeStep = true;
         }
 
 
