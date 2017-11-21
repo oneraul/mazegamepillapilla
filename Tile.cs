@@ -14,9 +14,15 @@ namespace MazeGamePillaPilla
         public Texture2D Texture { get; protected set; }
 
 
+        static Tile()
+        {
+            System.Diagnostics.Debug.WriteLine("Called---------------------------");
+            InitData();
+        }
+
         public static void Init(GraphicsDevice GraphicsDevice)
         {
-            InitData();
+            //InitData();
             InitTextures(GraphicsDevice);
         }
         

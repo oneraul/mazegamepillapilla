@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace MazeGamePillaPilla
@@ -10,7 +9,7 @@ namespace MazeGamePillaPilla
     {
         private readonly static Random rand = new Random();
 
-        public static Cell[,] ParseData(ContentManager Content, int[,] mapData)
+        public static Cell[,] ParseData(int[,] mapData)
         {
             int mazeH = mapData.GetLength(0);
             int mazeW = mapData.GetLength(1);
@@ -21,7 +20,7 @@ namespace MazeGamePillaPilla
             {
                 for(int x = 0; x < mazeW; x++)
                 {
-                    maze[y, x] = new Cell(mapData[y, x], x, y, Content);
+                    maze[y, x] = new Cell(mapData[y, x], x, y);
                 }
             }
 
@@ -41,7 +40,7 @@ namespace MazeGamePillaPilla
         private Vector2[] projectionAxes;
 
 
-        Cell(int tile, int x, int y, ContentManager Content)
+        Cell(int tile, int x, int y)
         {
             this.Tile = Tile.Tileset[tile];
 
