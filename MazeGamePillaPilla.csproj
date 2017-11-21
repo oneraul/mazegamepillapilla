@@ -53,6 +53,7 @@
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameScreen.cs" />
+    <Compile Include="GameWorld.cs" />
     <Compile Include="IDrawable.cs" />
     <Compile Include="IIntersectable.cs" />
     <Compile Include="Input.cs" />

@@ -16,16 +16,8 @@ namespace MazeGamePillaPilla
 
         static Tile()
         {
-            System.Diagnostics.Debug.WriteLine("Called---------------------------");
             InitData();
-        }
-
-        public static void Init(GraphicsDevice GraphicsDevice)
-        {
-            //InitData();
-            InitTextures(GraphicsDevice);
-        }
-        
+        }        
 
         private void Draw(GraphicsDevice GraphicsDevice, BasicEffect effect)
         {
@@ -53,7 +45,7 @@ namespace MazeGamePillaPilla
         }
 
 
-        private static void InitTextures(GraphicsDevice GraphicsDevice)
+        public static void InitTextures(GraphicsDevice GraphicsDevice)
         {
             BasicEffect effect = new BasicEffect(GraphicsDevice);
             RenderTarget2D canvas = new RenderTarget2D(GraphicsDevice, Size, Size*2);

@@ -75,7 +75,9 @@ namespace MazeGamePillaPilla
         private void SetLobby()
         {
             System.Diagnostics.Debug.WriteLine("[SERVER] SetLobby");
-            this.game = null;
+            this.updateAccumulator = 0;
+            this.dropsCount = 0;
+            this.world = null;
             this.lastProcessedInputs = null;
             this.lastSentSnapshots = null;
             this.lastBuff = null;
@@ -92,10 +94,17 @@ namespace MazeGamePillaPilla
             peersNotReadyToStartYet = new List<NetPeer>();
             peersNotReadyToStartYet.AddRange(server.GetPeers());
 
+            int mapId = random.Next(MapData.MapsCount);
+
+            world = new GameWorld { maze = Cell.ParseData(MapData.GetMap(mapId)) };
+            lastProcessedInputs = new Dictionary<string, long>();
+            lastSentSnapshots = new Dictionary<string, long>();
+            lastBuff = new Dictionary<string, int>();
+
             NetDataWriter writer = new NetDataWriter();
             writer.Put((int)NetMessage.PrepareToStartGame);
             writer.Put(players.Count);
-            writer.Put(random.Next(MapData.MapsCount));
+            writer.Put(mapId);
             server.SendToAll(writer, SendOptions.ReliableOrdered);
 
             // instantiate characters
@@ -126,14 +135,20 @@ namespace MazeGamePillaPilla
                     remoteCharacterWriter.Put(x);
                     remoteCharacterWriter.Put(y);
                     server.SendToAll(remoteCharacterWriter, SendOptions.ReliableOrdered, peer);
+
+                    world.Pjs.Add(id, new RemotePj(id, x, y, 1));
+                    lastProcessedInputs.Add(id, 0);
+                    lastSentSnapshots.Add(id, 0);
+                    lastBuff.Add(id, 0);
                 }
+
             }
         }
 
 
         private void OnLobbyPeerConnected(NetPeer peer)
         {
-            System.Diagnostics.Debug.WriteLine("[SERVER] client connected: {0}", peer.EndPoint);
+            System.Diagnostics.Debug.WriteLine($"[SERVER] client connected: {peer.EndPoint}");
             
             // set the new client up to date
             foreach(KeyValuePair<string, LobbyPlayer> kvp in players)
@@ -225,10 +240,11 @@ namespace MazeGamePillaPilla
 
         private float updateAccumulator;
         private int dropsCount;
-        public GameScreen game;
         public Dictionary<string, long> lastProcessedInputs;
         public Dictionary<string, long> lastSentSnapshots;
         public Dictionary<string, int> lastBuff;
+
+        public GameWorld world;
 
 
         private void SetGameplay()
@@ -244,7 +260,7 @@ namespace MazeGamePillaPilla
 
         public void GameplayUpdate(float dt)
         {
-            if (game == null) return;
+            if (world == null) return;
 
             updateAccumulator += dt;
             if (updateAccumulator >= TickRate)
@@ -252,7 +268,7 @@ namespace MazeGamePillaPilla
                 updateAccumulator -= TickRate;
                 server.PollEvents();
 
-                foreach (Pj pj in game.Pjs.Values ?? Enumerable.Empty<Pj>())
+                foreach (Pj pj in world.Pjs.Values ?? Enumerable.Empty<Pj>())
                 {
                     long lastInput = lastProcessedInputs[pj.ID];
                     if (lastInput > lastSentSnapshots[pj.ID])
@@ -279,10 +295,10 @@ namespace MazeGamePillaPilla
                 }
 
                 List<int> dropsToRemove = new List<int>();
-                foreach (KeyValuePair<int, Drop> kvp in game.Drops)
+                foreach (KeyValuePair<int, Drop> kvp in world.Drops)
                 {
                     Drop drop = kvp.Value;
-                    foreach (Pj pj in game.Pjs.Values)
+                    foreach (Pj pj in world.Pjs.Values)
                     {
                         if (drop.AabbAabbIntersectionTest(pj))
                         {
@@ -313,10 +329,10 @@ namespace MazeGamePillaPilla
 
         private void ProcessInputPacket(InputPacket inputPacket)
         {
-            if (game.Pjs.TryGetValue(inputPacket.CharacterID, out Pj pj))
+            if (world.Pjs.TryGetValue(inputPacket.CharacterID, out Pj pj))
             {
                 lastProcessedInputs[inputPacket.CharacterID] = inputPacket.InputSequenceNumber;
-                pj.ApplyInputOnTheServer(inputPacket, game);
+                pj.ApplyInputOnTheServer(inputPacket, world.maze);
 
                 if (inputPacket.Action)
                 {
@@ -351,6 +367,9 @@ namespace MazeGamePillaPilla
             writer.Put(y);
             server.SendToAll(writer, SendOptions.ReliableUnordered);
 
+            world.OnDropAdded(this, new GameplayDropEventArgs()
+                { Id = dropsCount, Type = type, X = x, Y = y });
+
             dropsCount++;
         }
 
@@ -361,7 +380,7 @@ namespace MazeGamePillaPilla
             writer.Put(id);
             server.SendToAll(writer, SendOptions.ReliableUnordered);
 
-            game.Drops.Remove(id);
+            world.OnDropRemoved(this, new GameplayDropEventArgs() { Id = id });
         }
 
         public void AddBuff(int type, Pj pj)
@@ -374,6 +393,9 @@ namespace MazeGamePillaPilla
             writer.Put(pj.ID);
             writer.Put(buffId);
             server.SendToAll(writer, SendOptions.ReliableUnordered);
+
+            world.OnBuffAdded(this, new GameplayBuffEventArgs()
+                { BuffType = type, PlayerId = pj.ID, BuffId = buffId });
         }
 
         public void RemoveBuff(Pj pj, int buffId)
@@ -384,8 +406,8 @@ namespace MazeGamePillaPilla
             writer.Put(buffId);
             server.SendToAll(writer, SendOptions.ReliableUnordered);
 
-            pj.Buffs[buffId].End();
-            pj.Buffs.Remove(buffId);
+            world.OnBuffRemoved(this, new GameplayBuffEventArgs()
+                { PlayerId = pj.ID, BuffId = buffId });
         }
 
         public void AddPowerUp(int type, Pj pj)
@@ -395,6 +417,9 @@ namespace MazeGamePillaPilla
             writer.Put(pj.ID);
             writer.Put(type);
             server.SendToAll(writer, SendOptions.ReliableUnordered);
+
+            world.OnPowerUpAdded(this, new GameplayPowerUpEventArgs()
+                { PlayerId = pj.ID, Type = type });
         }
 
         public void RemovePowerUp(Pj pj)
@@ -404,7 +429,7 @@ namespace MazeGamePillaPilla
             writer.Put(pj.ID);
             server.SendToAll(writer, SendOptions.ReliableUnordered);
 
-            pj.PowerUp = null;
+            world.OnPowerUpRemoved(this, new GameplayPowerUpEventArgs() { PlayerId = pj.ID });
         }
 
 
