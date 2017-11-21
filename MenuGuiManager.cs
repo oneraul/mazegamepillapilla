@@ -128,6 +128,7 @@ namespace MazeGamePillaPilla
                 if (currentButton == button)
                 {
                     currentButton = button.NextButtonDown;
+                    if (currentButton == button) currentButton = null;
                 }
             }
         }
