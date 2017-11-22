@@ -48,6 +48,7 @@ namespace MazeGamePillaPilla
 
         public void Exit()
         {
+            ScheduleManager.Clear();
             client.CharacterUpdated -= world.OnCharacterUpdated;
             client.DropAdded -= world.OnDropAdded;
             client.DropRemoved -= world.OnDropRemoved;
