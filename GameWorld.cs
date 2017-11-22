@@ -110,6 +110,10 @@ namespace MazeGamePillaPilla
                         pj.PowerUp = new InvisiblePowerUp();
                         break;
 
+                    case (int)PowerUpTypes.TintaPowerUp:
+                        pj.PowerUp = new TintaPowerUp();
+                        break;
+
                     default:
                         throw new System.ComponentModel.InvalidEnumArgumentException();
                 }

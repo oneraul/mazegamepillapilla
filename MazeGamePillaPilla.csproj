@@ -86,6 +86,7 @@
     <Compile Include="PowerUps\SprintBuff.cs" />
     <Compile Include="PowerUps\SprintPowerUp.cs" />
     <Compile Include="PowerUps\SurpriseBoxDrop.cs" />
+    <Compile Include="PowerUps\TintaPowerUp.cs" />
     <Compile Include="PowerUps\TraverseWallsBuff.cs" />
     <Compile Include="PowerUps\TraverseWallsPowerUp.cs" />
     <Compile Include="Program.cs" />
