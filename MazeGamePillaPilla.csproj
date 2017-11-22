@@ -80,6 +80,8 @@
     <Compile Include="PowerUps\Buff.cs" />
     <Compile Include="PowerUps\Drop.cs" />
     <Compile Include="PowerUps\DurationBuff.cs" />
+    <Compile Include="PowerUps\InvisibleBuff.cs" />
+    <Compile Include="PowerUps\InvisiblePowerUp.cs" />
     <Compile Include="PowerUps\IPowerUp.cs" />
     <Compile Include="PowerUps\SprintBuff.cs" />
     <Compile Include="PowerUps\SprintPowerUp.cs" />

@@ -64,6 +64,10 @@ namespace MazeGamePillaPilla
                         pj.Buffs.Add(args.BuffId, new BananaStunBuff(pj));
                         break;
 
+                    case (int)BuffTypes.InvisibleBuff:
+                        pj.Buffs.Add(args.BuffId, new InvisibleBuff(pj));
+                        break;
+
                     default:
                         throw new System.ComponentModel.InvalidEnumArgumentException();
                 }
@@ -100,6 +104,10 @@ namespace MazeGamePillaPilla
 
                     case (int)PowerUpTypes.BananaPowerUp:
                         pj.PowerUp = new BananaPowerUp();
+                        break;
+
+                    case (int)PowerUpTypes.InvisiblePowerUp:
+                        pj.PowerUp = new InvisiblePowerUp();
                         break;
 
                     default:

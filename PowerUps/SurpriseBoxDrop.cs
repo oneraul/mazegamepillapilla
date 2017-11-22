@@ -16,12 +16,14 @@ namespace MazeGamePillaPilla.PowerUps
 
         public SurpriseBoxDrop(int x, int y) : base(x, y, radius, (pj, server) =>
         {
-            int roll = rng.Next(3);
+            int roll = rng.Next(4);
+            roll = 3;
             switch (roll)
             {
                 case 0: server.AddPowerUp((int)PowerUpTypes.SprintPowerUp, pj); break;
                 case 1: server.AddPowerUp((int)PowerUpTypes.TraverseWallsPowerUp, pj); break;
                 case 2: server.AddPowerUp((int)PowerUpTypes.BananaPowerUp, pj); break;
+                case 3: server.AddPowerUp((int)PowerUpTypes.InvisiblePowerUp, pj); break;
             }
         })
         {

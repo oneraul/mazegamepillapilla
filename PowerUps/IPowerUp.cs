@@ -16,5 +16,6 @@ namespace MazeGamePillaPilla.PowerUps
         SprintPowerUp,
         TraverseWallsPowerUp,
         BananaPowerUp,
+        InvisiblePowerUp
     }
 }

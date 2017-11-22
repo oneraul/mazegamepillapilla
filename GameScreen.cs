@@ -136,7 +136,10 @@ namespace MazeGamePillaPilla
                 spritebatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, cameraMatrix);
                 foreach (Pj pj in world.Pjs.Values)
                 {
-                    spritebatch.DrawString(Button.Font, pj.ID, new Vector2(pj.x - Button.Font.MeasureString(pj.ID).X / 2, pj.y - 40), Color.White);
+                    if (!pj.Invisible)
+                    {
+                        spritebatch.DrawString(Button.Font, pj.ID, new Vector2(pj.x - Button.Font.MeasureString(pj.ID).X / 2, pj.y - 40), Color.White);
+                    }
                 }
                 spritebatch.End();
             }

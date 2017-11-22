@@ -30,6 +30,7 @@ namespace MazeGamePillaPilla
 
         public bool CanTraverseWalls;
         public bool Stunned;
+        public bool Invisible;
 
         public int palette;
         public Animation[] Animations;
@@ -118,27 +119,30 @@ namespace MazeGamePillaPilla
 
         public void Draw(SpriteBatch batch, Matrix cameraMatrix)
         {
-            Color color = Color.Wheat;
-            switch (palette)
+            if (!Invisible)
             {
-                case 1: color = Color.Red; break;
-                case 2: color = Color.Blue; break;
-                case 3: color = Color.DarkGreen; break;
-                case 4: color = Color.DarkOrange; break;
-            }
+                Color color = Color.Wheat;
+                switch (palette)
+                {
+                    case 1: color = Color.Red; break;
+                    case 2: color = Color.Blue; break;
+                    case 3: color = Color.DarkGreen; break;
+                    case 4: color = Color.DarkOrange; break;
+                }
 
-            batch.Draw(ColliderTexture, GetAABB(), color);
-            batch.End();
+                batch.Draw(ColliderTexture, GetAABB(), color);
+                batch.End();
 
-            batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, Pj.effect, cameraMatrix);
-            Pj.effect.Parameters["u_palette"].SetValue(palette);
-            currentAnimation.Draw(batch, x, y, rotation, 1, hw, hh);
-            batch.End();
+                batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, Pj.effect, cameraMatrix);
+                Pj.effect.Parameters["u_palette"].SetValue(palette);
+                currentAnimation.Draw(batch, x, y, rotation, 1, hw, hh);
+                batch.End();
 
-            batch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, cameraMatrix);
-            foreach (Buff buff in Buffs.Values)
-            {
-                buff.Draw(batch, cameraMatrix);
+                batch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, cameraMatrix);
+                foreach (Buff buff in Buffs.Values)
+                {
+                    buff.Draw(batch, cameraMatrix);
+                }
             }
         }
 

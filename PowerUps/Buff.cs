@@ -18,5 +18,6 @@ namespace MazeGamePillaPilla.PowerUps
         SprintBuff,
         TraverseWallsBuff,
         BananaStunBuff,
+        InvisibleBuff,
     }
 }

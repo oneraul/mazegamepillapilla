@@ -72,6 +72,7 @@ namespace MazeGamePillaPilla
                 SurpriseBoxDrop.modelTexture = Content.Load<Texture2D>("surpriseBox");
                 BananaPowerUp.Icon = Content.Load<Texture2D>("bananaIcon");
                 BananaDrop.modelTexture = Content.Load<Texture2D>("bananaDrop");
+                InvisiblePowerUp.Icon = Content.Load<Texture2D>("invisible");
 
                 // Initialize rendering stuff
                 gameScreen.renderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight);
