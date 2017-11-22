@@ -16,16 +16,8 @@ namespace MazeGamePillaPilla.PowerUps
 
         public SurpriseBoxDrop(int x, int y) : base(x, y, radius, (pj, server) =>
         {
-            int roll = rng.Next(5);
-            roll = 4;
-            switch (roll)
-            {
-                case 0: server.AddPowerUp((int)PowerUpTypes.SprintPowerUp, pj); break;
-                case 1: server.AddPowerUp((int)PowerUpTypes.TraverseWallsPowerUp, pj); break;
-                case 2: server.AddPowerUp((int)PowerUpTypes.BananaPowerUp, pj); break;
-                case 3: server.AddPowerUp((int)PowerUpTypes.InvisiblePowerUp, pj); break;
-                case 4: server.AddPowerUp((int)PowerUpTypes.TintaPowerUp, pj); break;
-            }
+            int randomPowerUpType = rng.Next(Enum.GetNames(typeof(PowerUpTypes)).Length);
+            server.AddPowerUp(randomPowerUpType, pj);
         })
         {
             int layers = 16;
