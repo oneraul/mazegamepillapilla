@@ -14,12 +14,10 @@ namespace MazeGamePillaPilla
         public Texture2D Texture { get; protected set; }
 
 
-        public static void Init(GraphicsDevice GraphicsDevice)
+        static Tile()
         {
             InitData();
-            InitTextures(GraphicsDevice);
-        }
-        
+        }        
 
         private void Draw(GraphicsDevice GraphicsDevice, BasicEffect effect)
         {
@@ -47,7 +45,7 @@ namespace MazeGamePillaPilla
         }
 
 
-        private static void InitTextures(GraphicsDevice GraphicsDevice)
+        public static void InitTextures(GraphicsDevice GraphicsDevice)
         {
             BasicEffect effect = new BasicEffect(GraphicsDevice);
             RenderTarget2D canvas = new RenderTarget2D(GraphicsDevice, Size, Size*2);

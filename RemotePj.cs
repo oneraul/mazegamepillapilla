@@ -46,7 +46,7 @@ namespace MazeGamePillaPilla
             oldX = newX;
             oldY = newY;
             oldRotation = newRotation;
-            
+
             newX = packet.X;
             newY = packet.Y;
             newRotation = packet.Rotation;
@@ -55,9 +55,9 @@ namespace MazeGamePillaPilla
         }
 
 
-        public override void ApplyInputOnTheServer(InputPacket input, GameScreen gameScreen)
+        public override void ApplyInputOnTheServer(InputPacket input, Cell[,] maze)
         {
-            ApplyInput(input, gameScreen.maze);
+            ApplyInput(input, maze);
         }
     }
 }

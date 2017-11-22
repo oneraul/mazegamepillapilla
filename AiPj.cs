@@ -16,7 +16,7 @@ namespace MazeGamePillaPilla
             path = new List<Vector2>();
         }
 
-        public override void ApplyInputOnTheServer(InputPacket input, GameScreen gameScreen) {}
+        public override void ApplyInputOnTheServer(InputPacket input, Cell[,] maze) {}
 
         public override void ProcessServerUpdate(StatePacket packet, Cell[,] maze) {}
 

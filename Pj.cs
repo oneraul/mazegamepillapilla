@@ -20,9 +20,6 @@ namespace MazeGamePillaPilla
 
         private static readonly float BaseV = 150;
 
-        private EffectParameter paletteParameter;
-        private EffectPass effectPass;
-
         public string ID;
         public float x;
         public float y;
@@ -59,9 +56,6 @@ namespace MazeGamePillaPilla
             };
 
             currentAnimation = Animations[(int)AnimationID.Idle];
-
-            paletteParameter = Pj.effect.Parameters["u_palette"];
-            effectPass = Pj.effect.Techniques[0].Passes[0];
 
             Buffs = new Dictionary<int, Buff>();
         }
@@ -137,7 +131,7 @@ namespace MazeGamePillaPilla
             batch.End();
 
             batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, Pj.effect, cameraMatrix);
-            paletteParameter.SetValue(palette);
+            Pj.effect.Parameters["u_palette"].SetValue(palette);
             currentAnimation.Draw(batch, x, y, rotation, 1, hw, hh);
             batch.End();
 
@@ -155,7 +149,7 @@ namespace MazeGamePillaPilla
         }
 
 
-        public abstract void ApplyInputOnTheServer(InputPacket input, GameScreen gameScreen);
+        public abstract void ApplyInputOnTheServer(InputPacket input, Cell[,] maze);
 
         public abstract void ProcessServerUpdate(StatePacket packet, Cell[,] maze);
 
