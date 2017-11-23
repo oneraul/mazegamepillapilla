@@ -19,6 +19,8 @@ namespace MazeGamePillaPilla
             }
         }
 
+        private static Random rng = new Random();
+
 
         private static Range Get1dProjectionOntoAxis(this IIntersectable intersectable, Vector2 axis)
         {
@@ -119,6 +121,7 @@ namespace MazeGamePillaPilla
             // TODO
             // Optimize testing only against the possible instersection cells instead of the whole maze.
             // Use the Bresenham Line-Drawing Algorithm to find de cells to check.
+            // http://playtechs.blogspot.cz/2007/03/raytracing-on-grid.html
 
             foreach (Cell cell in maze)
             {
@@ -132,6 +135,65 @@ namespace MazeGamePillaPilla
             }
 
             return false;
+        }
+
+
+        public static bool AabbMapIntersectionTest(this IIntersectable item, Cell[,] maze)
+        {
+            foreach (Cell cell in item.GetSurroundingCells(maze))
+            {
+                if (item.AabbAabbIntersectionTest(cell))
+                {
+                    if (item.SatIntersectionTest(cell))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private static Cell[] GetSurroundingCells(this IIntersectable item, Cell[,] maze)
+        {
+            Rectangle aabb = item.GetAABB();
+            List<Cell> cells = new List<Cell>();
+
+            int currentCellX = aabb.Center.X / Tile.Size;
+            int currentCellY = aabb.Center.Y / Tile.Size;
+
+            int smallX = currentCellX - 1;
+            int largeX = currentCellX + 1;
+
+            int smallY = currentCellY - 1;
+            int largeY = currentCellY + 1;
+
+            for (int y = smallY; y <= largeY; y++)
+            {
+                for (int x = smallX; x <= largeX; x++)
+                {
+                    Cell cell = maze[y, x];
+                    if (cell.Tile.Id != 0)
+                    {
+                        cells.Add(cell);
+                    }
+                }
+            }
+
+            return cells.ToArray();
+        }
+
+
+        public static void SpawnInAnEmptyPosition(this ISpawnable itemToSpawn, Cell[,] maze)
+        {
+            IIntersectable intersectable = (IIntersectable)itemToSpawn;
+            do
+            {
+                itemToSpawn.SetPosition(
+                    rng.Next(2 * Tile.Size, (maze.GetLength(1) - 1) * Tile.Size),
+                    rng.Next(2 * Tile.Size, (maze.GetLength(0) - 1) * Tile.Size));
+
+            } while (intersectable.AabbMapIntersectionTest(maze));
         }
     }
 }

@@ -61,6 +61,7 @@
     <Compile Include="InputControllerButton.cs" />
     <Compile Include="InputPacket.cs" />
     <Compile Include="IScreen.cs" />
+    <Compile Include="ISpawnable.cs" />
     <Compile Include="LoadGameScreen.cs" />
     <Compile Include="LobbyPlayer.cs" />
     <Compile Include="LobbyPlayerEventArgs.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="PowerUps\InvisibleBuff.cs" />
     <Compile Include="PowerUps\InvisiblePowerUp.cs" />
     <Compile Include="PowerUps\IPowerUp.cs" />
+    <Compile Include="PowerUps\RandomTeleportPowerUp.cs" />
     <Compile Include="PowerUps\SprintBuff.cs" />
     <Compile Include="PowerUps\SprintPowerUp.cs" />
     <Compile Include="PowerUps\SurpriseBoxDrop.cs" />

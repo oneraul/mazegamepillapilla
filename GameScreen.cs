@@ -186,7 +186,9 @@ namespace MazeGamePillaPilla
             base.Enter();
 
             ScheduleManager.ScheduleInLoop(3, () => {
-                Point spawnPosition = SurpriseBoxDrop.SpawnInAnEmptyPosition(world.maze);
+                SurpriseBoxDrop dummyBox = new SurpriseBoxDrop(0, 0);
+                dummyBox.SpawnInAnEmptyPosition(server.world.maze);
+                Point spawnPosition = dummyBox.GetAABB().Center;
                 server.AddDrop((int)DropTypes.SurpriseBoxDrop, spawnPosition.X, spawnPosition.Y);
             });
         }

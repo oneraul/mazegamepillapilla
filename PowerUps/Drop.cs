@@ -10,7 +10,7 @@ namespace MazeGamePillaPilla.PowerUps
         BananaDrop,
     }
 
-    abstract class Drop : IIntersectable, IDrawable
+    abstract class Drop : IDrawable, IIntersectable, ISpawnable
     {
         private static Vector2[] ProjectionAxes = new Vector2[] { Vector2.UnitX, Vector2.UnitY };
 

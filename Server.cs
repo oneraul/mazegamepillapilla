@@ -115,8 +115,15 @@ namespace MazeGamePillaPilla
                 {
                     LobbyPlayer character = players[id];
 
-                    float x = Tile.Size * (random.Next(2, 10) + (float)random.NextDouble());
-                    float y = Tile.Size * (random.Next(2, 10) + (float)random.NextDouble());
+                    RemotePj pjCopyInTheServer = new RemotePj(id, 0, 0, 1);
+                    pjCopyInTheServer.SpawnInAnEmptyPosition(world.maze);
+                    world.Pjs.Add(id, pjCopyInTheServer);
+                    lastProcessedInputs.Add(id, 0);
+                    lastSentSnapshots.Add(id, 0);
+                    lastBuff.Add(id, 0);
+
+                    float x = pjCopyInTheServer.x;
+                    float y = pjCopyInTheServer.y;
 
                     NetDataWriter localCharacterWriter = new NetDataWriter();
                     localCharacterWriter.Put((int)NetMessage.InstantiateCharacter);
@@ -135,11 +142,6 @@ namespace MazeGamePillaPilla
                     remoteCharacterWriter.Put(x);
                     remoteCharacterWriter.Put(y);
                     server.SendToAll(remoteCharacterWriter, SendOptions.ReliableOrdered, peer);
-
-                    world.Pjs.Add(id, new RemotePj(id, x, y, 1));
-                    lastProcessedInputs.Add(id, 0);
-                    lastSentSnapshots.Add(id, 0);
-                    lastBuff.Add(id, 0);
                 }
 
             }

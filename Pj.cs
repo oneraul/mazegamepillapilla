@@ -6,7 +6,7 @@ using MazeGamePillaPilla.PowerUps;
 
 namespace MazeGamePillaPilla
 {
-    abstract class Pj : IDrawable, IIntersectable
+    abstract class Pj : IDrawable, IIntersectable, ISpawnable
     {
         public enum Type { Local, Remote, Bot }
 
@@ -61,6 +61,12 @@ namespace MazeGamePillaPilla
             currentAnimation = Animations[(int)AnimationID.Idle];
 
             Buffs = new Dictionary<int, Buff>();
+        }
+
+        public void SetPosition(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
         }
 
 

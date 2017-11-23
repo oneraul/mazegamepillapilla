@@ -39,47 +39,5 @@ namespace MazeGamePillaPilla.PowerUps
         {
             rotation = (float)((rotation + dt) % (Math.PI * 2));
         }
-
-        public static Point SpawnInAnEmptyPosition(Cell[,] maze)
-        {
-            int x = rng.Next(2 * Tile.Size, (maze.GetLength(1) - 1) * Tile.Size);
-            int y = rng.Next(2 * Tile.Size, (maze.GetLength(0) - 1) * Tile.Size);
-            SurpriseBoxDrop box = new SurpriseBoxDrop(x, y);
-
-            bool isFree(SurpriseBoxDrop drop)
-            {
-                foreach (Vector2 vertex in drop.GetVertices())
-                {
-                    int currentCellX = (int)(vertex.X / Tile.Size);
-                    int currentCellY = (int)(vertex.Y / Tile.Size);
-
-                    if (currentCellX >= 0 && currentCellX < maze.GetLength(1)
-                    && currentCellY >= 0 && currentCellY < maze.GetLength(0))
-                    {
-                        Cell cell = maze[currentCellY, currentCellX];
-                        if (drop.AabbAabbIntersectionTest(cell))
-                        {
-                            if (drop.SatIntersectionTest(cell))
-                            {
-                                return false;
-                            }
-                        }
-                    }
-                }
-
-                return true;
-            }
-
-            int iteraciones = 0;
-            while (!isFree(box))
-            {
-                iteraciones++;
-                x = rng.Next(2 * Tile.Size, (maze.GetLength(1) - 1) * Tile.Size);
-                y = rng.Next(2 * Tile.Size, (maze.GetLength(0) - 1) * Tile.Size);
-                box.SetPosition(x, y);
-            }
-
-            return new Point(x, y);
-        }
     }
 }
