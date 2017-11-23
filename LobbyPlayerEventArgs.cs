@@ -47,4 +47,11 @@ namespace MazeGamePillaPilla
         public string PlayerId;
         public int Type;
     }
+
+    class GameplayCharacterTeleportedEventArgs
+    {
+        public string PlayerId;
+        public int X;
+        public int Y;
+    }
 }

@@ -75,6 +75,7 @@ namespace MazeGamePillaPilla
                 InvisiblePowerUp.Icon = Content.Load<Texture2D>("invisible");
                 TintaPowerUp.Icon = Content.Load<Texture2D>("tinta");
                 ImmunePowerUp.Icon = Content.Load<Texture2D>("immune");
+                RandomTeleportPowerUp.Icon = Content.Load<Texture2D>("randomTeleport");
 
                 // Initialize rendering stuff
                 gameScreen.renderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight);

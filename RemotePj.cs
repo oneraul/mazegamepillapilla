@@ -59,5 +59,13 @@ namespace MazeGamePillaPilla
         {
             ApplyInput(input, maze);
         }
+
+
+        public new void SetPosition(int x, int y)
+        {
+            interpolationTimer = 0;
+            this.x = oldX = newX = x;
+            this.y = oldY = newY = y;
+        }
     }
 }

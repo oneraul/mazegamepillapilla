@@ -24,5 +24,6 @@
         RemoveBuff,
         AddPowerUp,
         RemovePowerUp,
+        Teleport,
     }
 }

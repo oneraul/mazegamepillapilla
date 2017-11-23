@@ -122,6 +122,10 @@ namespace MazeGamePillaPilla
                         pj.PowerUp = new ImmunePowerUp();
                         break;
 
+                    case (int)PowerUpTypes.RandomTeleport:
+                        pj.PowerUp = new RandomTeleportPowerUp();
+                        break;
+
                     default:
                         throw new System.ComponentModel.InvalidEnumArgumentException();
                 }
@@ -133,6 +137,15 @@ namespace MazeGamePillaPilla
             if (Pjs.TryGetValue(args.PlayerId, out Pj pj))
             {
                 pj.PowerUp = null;
+            }
+            else throw new System.ComponentModel.InvalidEnumArgumentException();
+        }
+
+        public void OnCharacterTeleported(object source, GameplayCharacterTeleportedEventArgs args)
+        {
+            if (Pjs.TryGetValue(args.PlayerId, out Pj pj))
+            {
+                pj.SetPosition(args.X, args.Y);
             }
             else throw new System.ComponentModel.InvalidEnumArgumentException();
         }

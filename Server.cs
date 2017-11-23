@@ -434,6 +434,17 @@ namespace MazeGamePillaPilla
             world.OnPowerUpRemoved(this, new GameplayPowerUpEventArgs() { PlayerId = pj.ID });
         }
 
+        // Forces all the clients to teleport the pj to the same position as it is in the server
+        public void TeleportPj(Pj pj)
+        {
+            NetDataWriter writer = new NetDataWriter();
+            writer.Put((int)NetMessage.Teleport);
+            writer.Put(pj.ID);
+            writer.Put(pj.x);
+            writer.Put(pj.y);
+            server.SendToAll(writer, SendOptions.ReliableUnordered);
+        }
+
 
         // https://stackoverflow.com/a/1344242
         private static Random random = new Random();

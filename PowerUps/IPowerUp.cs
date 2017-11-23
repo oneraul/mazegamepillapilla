@@ -19,5 +19,6 @@ namespace MazeGamePillaPilla.PowerUps
         InvisiblePowerUp,
         TintaPowerUp,
         ImmunePowerUp,
+        RandomTeleport
     }
 }

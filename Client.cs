@@ -201,6 +201,7 @@ namespace MazeGamePillaPilla
         public event EventHandler<GameplayBuffEventArgs> BuffRemoved;
         public event EventHandler<GameplayPowerUpEventArgs> PowerUpAdded;
         public event EventHandler<GameplayPowerUpEventArgs> PowerUpRemoved;
+        public event EventHandler<GameplayCharacterTeleportedEventArgs> CharacterTeleported;
 
         private void OnGameplayNetworkReceived(NetPeer peer, NetDataReader dataReader)
         {
@@ -267,6 +268,15 @@ namespace MazeGamePillaPilla
                     PowerUpRemoved?.Invoke(this, new GameplayPowerUpEventArgs()
                     {
                         PlayerId = dataReader.GetString(),
+                    });
+                    break;
+
+                case NetMessage.Teleport:
+                    CharacterTeleported?.Invoke(this, new GameplayCharacterTeleportedEventArgs()
+                    {
+                        PlayerId = dataReader.GetString(),
+                        X = dataReader.GetInt(),
+                        Y = dataReader.GetInt()
                     });
                     break;
             }
