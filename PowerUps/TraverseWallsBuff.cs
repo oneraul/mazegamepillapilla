@@ -30,5 +30,7 @@ namespace MazeGamePillaPilla.PowerUps
         {
             pj.CanTraverseWalls = false;
         }
+
+        public override bool ShouldBeRemovedWhenPjGoesImmune() => false;
     }
 }

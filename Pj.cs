@@ -30,7 +30,7 @@ namespace MazeGamePillaPilla
 
         public bool CanTraverseWalls;
         public bool Invisible;
-        public bool Immune;
+        public bool Immune { get; private set; }
         public bool Stunned { get; private set; }
         private int stuns;
 
@@ -77,10 +77,24 @@ namespace MazeGamePillaPilla
 
         public void SetStunned(bool stun)
         {
-            if (stun) this.stuns++;
-            else this.stuns--;
+            if (!Immune)
+            {
+                if (stun) this.stuns++;
+                else this.stuns--;
 
-            Stunned = (this.stuns != 0);
+                Stunned = (this.stuns != 0);
+            }
+        }
+
+        public void SetImmune(bool immune)
+        {
+            if (immune)
+            {
+                stuns = 0;
+                Stunned = false;
+            }
+
+            this.Immune = immune;
         }
 
 

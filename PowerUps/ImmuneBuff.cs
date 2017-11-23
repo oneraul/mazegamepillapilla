@@ -3,13 +3,13 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MazeGamePillaPilla.PowerUps
 {
-    class BananaStunBuff : DurationBuff
+    class ImmuneBuff : DurationBuff
     {
         private static float duration = 1;
 
         private Pj pj;
 
-        public BananaStunBuff(Pj pj) : base(duration)
+        public ImmuneBuff(Pj pj) : base(duration)
         {
             this.pj = pj;
             this.Activate();
@@ -17,19 +17,19 @@ namespace MazeGamePillaPilla.PowerUps
 
         public override void Activate()
         {
-            pj.SetStunned(true);
+            pj.SetImmune(true);
         }
 
         public override void End()
         {
-            pj.SetStunned(false);
+            pj.SetImmune(false);
         }
 
         public override void Draw(SpriteBatch spritebatch, Matrix cameraMatrix)
         {
-            spritebatch.Draw(SprintBuff.texture, new Rectangle((int)(pj.x - 16), (int)(pj.y - 16), 32, 32), Color.Gold);
+            spritebatch.Draw(SprintBuff.texture, new Rectangle((int)(pj.x - 16), (int)(pj.y - 16), 32, 32), Color.PaleVioletRed);
         }
 
-        public override bool ShouldBeRemovedWhenPjGoesImmune() => true;
+        public override bool ShouldBeRemovedWhenPjGoesImmune() => false;
     }
 }

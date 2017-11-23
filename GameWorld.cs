@@ -68,6 +68,10 @@ namespace MazeGamePillaPilla
                         pj.Buffs.Add(args.BuffId, new InvisibleBuff(pj));
                         break;
 
+                    case (int)BuffTypes.ImmuneBuff:
+                        pj.Buffs.Add(args.BuffId, new ImmuneBuff(pj));
+                        break;
+
                     default:
                         throw new System.ComponentModel.InvalidEnumArgumentException();
                 }
@@ -112,6 +116,10 @@ namespace MazeGamePillaPilla
 
                     case (int)PowerUpTypes.TintaPowerUp:
                         pj.PowerUp = new TintaPowerUp();
+                        break;
+
+                    case (int)PowerUpTypes.ImmunePowerUp:
+                        pj.PowerUp = new ImmunePowerUp();
                         break;
 
                     default:

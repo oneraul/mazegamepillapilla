@@ -18,5 +18,6 @@ namespace MazeGamePillaPilla.PowerUps
         BananaPowerUp,
         InvisiblePowerUp,
         TintaPowerUp,
+        ImmunePowerUp,
     }
 }

@@ -11,6 +11,7 @@ namespace MazeGamePillaPilla.PowerUps
         public virtual void Update(float dt) { }
         public virtual void End() { }
         public virtual void Draw(SpriteBatch spritebatch, Matrix cameraMatrix) { }
+        public abstract bool ShouldBeRemovedWhenPjGoesImmune();
     }
 
     public enum BuffTypes
@@ -19,5 +20,6 @@ namespace MazeGamePillaPilla.PowerUps
         TraverseWallsBuff,
         BananaStunBuff,
         InvisibleBuff,
+        ImmuneBuff,
     }
 }

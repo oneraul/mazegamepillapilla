@@ -20,5 +20,7 @@
         {
             pj.Invisible = false;
         }
+
+        public override bool ShouldBeRemovedWhenPjGoesImmune() => false;
     }
 }

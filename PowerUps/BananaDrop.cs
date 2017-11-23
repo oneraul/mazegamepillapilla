@@ -14,7 +14,10 @@ namespace MazeGamePillaPilla.PowerUps
 
         public BananaDrop(int x, int y) : base(x, y, radius, (pj, server) =>
         {
-            server.AddBuff((int)BuffTypes.BananaStunBuff, pj);
+            if (!pj.Immune)
+            {
+                server.AddBuff((int)BuffTypes.BananaStunBuff, pj);
+            }
         })
         {
             int layers = 16;

@@ -31,5 +31,7 @@ namespace MazeGamePillaPilla.PowerUps
         {
             pj.v -= velocityBuffAmount;
         }
+
+        public override bool ShouldBeRemovedWhenPjGoesImmune() => false;
     }
 }
