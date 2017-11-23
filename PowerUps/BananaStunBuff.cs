@@ -17,12 +17,12 @@ namespace MazeGamePillaPilla.PowerUps
 
         public override void Activate()
         {
-            pj.SetStunned(true);
+            pj.Stunned = true;
         }
 
         public override void End()
         {
-            pj.SetStunned(false);
+            pj.Stunned = false;
         }
 
         public override void Draw(SpriteBatch spritebatch, Matrix cameraMatrix)

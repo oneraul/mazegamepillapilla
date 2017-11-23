@@ -28,11 +28,11 @@ namespace MazeGamePillaPilla
         public float hw = (0.5f * Tile.Size) / 2;
         public float hh = (0.5f * Tile.Size) / 2;
 
-        public bool CanTraverseWalls;
-        public bool Invisible;
-        public bool Immune { get; private set; }
-        public bool Stunned { get; private set; }
-        private int stuns;
+        private int traverseWallsAccumulator;
+        private int immunesAccumulator;
+        private int invisiblesAccumulator;
+        private int stunsAccumulator;
+
 
         public int palette;
         public Animation[] Animations;
@@ -75,26 +75,58 @@ namespace MazeGamePillaPilla
         }
 
 
-        public void SetStunned(bool stun)
+        public bool Stunned
         {
-            if (!Immune)
-            {
-                if (stun) this.stuns++;
-                else this.stuns--;
+            get => stunsAccumulator != 0;
 
-                Stunned = (this.stuns != 0);
+            set
+            {
+                if (!Immune)
+                {
+                    if (value) stunsAccumulator++;
+                    else stunsAccumulator--;
+
+                }
             }
         }
 
-        public void SetImmune(bool immune)
+        public bool Immune
         {
-            if (immune)
-            {
-                stuns = 0;
-                Stunned = false;
-            }
+            get => immunesAccumulator != 0;
 
-            this.Immune = immune;
+            set
+            {
+                if (value) immunesAccumulator++;
+                else immunesAccumulator--;
+
+                if (Immune)
+                {
+                    stunsAccumulator = 0;
+                    Stunned = false;
+                }
+            }
+        }
+        
+        public bool CanTraverseWalls
+        {
+            get => traverseWallsAccumulator != 0;
+
+            set
+            {
+                if (value) traverseWallsAccumulator++;
+                else traverseWallsAccumulator--;
+            }
+        }
+
+        public bool Invisible
+        {
+            get => invisiblesAccumulator != 0;
+
+            set
+            {
+                if (value) invisiblesAccumulator++;
+                else invisiblesAccumulator--;
+            }
         }
 
 

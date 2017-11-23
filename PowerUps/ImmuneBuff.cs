@@ -17,12 +17,12 @@ namespace MazeGamePillaPilla.PowerUps
 
         public override void Activate()
         {
-            pj.SetImmune(true);
+            pj.Immune = true;
         }
 
         public override void End()
         {
-            pj.SetImmune(false);
+            pj.Immune = false;
         }
 
         public override void Draw(SpriteBatch spritebatch, Matrix cameraMatrix)
