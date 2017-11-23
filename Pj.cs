@@ -29,8 +29,10 @@ namespace MazeGamePillaPilla
         public float hh = (0.5f * Tile.Size) / 2;
 
         public bool CanTraverseWalls;
-        public bool Stunned;
         public bool Invisible;
+        public bool Immune;
+        public bool Stunned { get; private set; }
+        private int stuns;
 
         public int palette;
         public Animation[] Animations;
@@ -70,6 +72,15 @@ namespace MazeGamePillaPilla
             currentAnimation = Animations[(int)AnimationID.Idle];
             currentAnimation.Reset();
             Animations[(int)AnimationID.Running].Reset();
+        }
+
+
+        public void SetStunned(bool stun)
+        {
+            if (stun) this.stuns++;
+            else this.stuns--;
+
+            Stunned = (this.stuns != 0);
         }
 
 
