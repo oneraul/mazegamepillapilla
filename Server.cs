@@ -336,7 +336,7 @@ namespace MazeGamePillaPilla
 
                 if (inputPacket.Action)
                 {
-                    if (pj.PowerUp != null)
+                    if (pj.PowerUp != null && !pj.Stunned)
                     {
                         pj.PowerUp.Action(pj, this);
                         RemovePowerUp(pj);
