@@ -74,6 +74,7 @@ namespace MazeGamePillaPilla
                 BananaDrop.modelTexture = Content.Load<Texture2D>("bananaDrop");
                 InvisiblePowerUp.Icon = Content.Load<Texture2D>("invisible");
                 TintaPowerUp.Icon = Content.Load<Texture2D>("tinta");
+                TintaSplash.Texture = Content.Load<Texture2D>("tinta_splash");
                 ImmunePowerUp.Icon = Content.Load<Texture2D>("immune");
                 RandomTeleportPowerUp.Icon = Content.Load<Texture2D>("randomTeleport");
                 RelojPowerUp.Icon = Content.Load<Texture2D>("reloj");

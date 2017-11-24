@@ -44,6 +44,8 @@ namespace MazeGamePillaPilla
             client.BuffRemoved += world.OnBuffRemoved;
             client.PowerUpAdded += world.OnPowerUpAdded;
             client.PowerUpRemoved += world.OnPowerUpRemoved;
+            client.TintaSplashAdded += world.OnTintaSplashAdded;
+            client.TintaSplashRemoved += world.OnTintaSplashRemoved;
         }
 
         public void Exit()
@@ -56,6 +58,8 @@ namespace MazeGamePillaPilla
             client.BuffRemoved -= world.OnBuffRemoved;
             client.PowerUpAdded -= world.OnPowerUpAdded;
             client.PowerUpRemoved -= world.OnPowerUpRemoved;
+            client.TintaSplashAdded -= world.OnTintaSplashAdded;
+            client.TintaSplashRemoved -= world.OnTintaSplashRemoved;
         }
 
         public void Update(float dt)
@@ -140,6 +144,10 @@ namespace MazeGamePillaPilla
                     {
                         spritebatch.DrawString(Button.Font, pj.ID, new Vector2(pj.x - Button.Font.MeasureString(pj.ID).X / 2, pj.y - 40), Color.White);
                     }
+                }
+                foreach (TintaSplash splash in world.TintaSplashes.Values)
+                {
+                    splash.Draw(spritebatch, cameraMatrix);
                 }
                 spritebatch.End();
             }

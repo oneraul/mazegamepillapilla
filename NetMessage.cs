@@ -25,5 +25,7 @@
         AddPowerUp,
         RemovePowerUp,
         Teleport,
+        AddTintaSplash,
+        RemoveTintaSplash,
     }
 }

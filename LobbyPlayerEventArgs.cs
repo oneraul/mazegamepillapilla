@@ -54,4 +54,13 @@ namespace MazeGamePillaPilla
         public int X;
         public int Y;
     }
+
+    class GameplayTintaSplashEventArgs
+    {
+        public int Id;
+        public int X;
+        public int Y;
+        public float Rotation;
+        public float Duration;
+    }
 }

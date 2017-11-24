@@ -77,6 +77,7 @@ namespace MazeGamePillaPilla
             System.Diagnostics.Debug.WriteLine("[SERVER] SetLobby");
             this.updateAccumulator = 0;
             this.dropsCount = 0;
+            this.tintaSplashesCount = 0;
             this.world = null;
             this.lastProcessedInputs = null;
             this.lastSentSnapshots = null;
@@ -242,6 +243,7 @@ namespace MazeGamePillaPilla
 
         private float updateAccumulator;
         private int dropsCount;
+        private int tintaSplashesCount;
         public Dictionary<string, long> lastProcessedInputs;
         public Dictionary<string, long> lastSentSnapshots;
         public Dictionary<string, int> lastBuff;
@@ -312,6 +314,21 @@ namespace MazeGamePillaPilla
                 foreach (int index in dropsToRemove)
                 {
                     RemoveDrop(index);
+                }
+
+                List<int> tintaSplashesToRemove = new List<int>();
+                foreach (KeyValuePair<int, TintaSplash> kvp in world.TintaSplashes)
+                {
+                    TintaSplash splash = kvp.Value;
+                    splash.Update(TickRate);
+                    if (splash.ToBeRemoved)
+                    {
+                        tintaSplashesToRemove.Add(kvp.Key);
+                    }
+                }
+                foreach (int index in tintaSplashesToRemove)
+                {
+                    RemoveTintaSplash(index);
                 }
             }
         }
@@ -443,6 +460,33 @@ namespace MazeGamePillaPilla
             writer.Put(pj.x);
             writer.Put(pj.y);
             server.SendToAll(writer, SendOptions.ReliableUnordered);
+        }
+
+        public void AddTintaSplash(int x, int y, float rotation, float duration)
+        {
+            NetDataWriter writer = new NetDataWriter();
+            writer.Put((int)NetMessage.AddTintaSplash);
+            writer.Put(tintaSplashesCount);
+            writer.Put(x);
+            writer.Put(y);
+            writer.Put(rotation);
+            writer.Put(duration);
+            server.SendToAll(writer, SendOptions.ReliableUnordered);
+
+            world.OnTintaSplashAdded(this, new GameplayTintaSplashEventArgs()
+                { Id = tintaSplashesCount, X = x, Y = y, Rotation = rotation, Duration = duration });
+
+            tintaSplashesCount++;
+        }
+
+        public void RemoveTintaSplash(int id)
+        {
+            NetDataWriter writer = new NetDataWriter();
+            writer.Put((int)NetMessage.RemoveTintaSplash);
+            writer.Put(id);
+            server.SendToAll(writer, SendOptions.ReliableUnordered);
+
+            world.OnTintaSplashRemoved(this, new GameplayTintaSplashEventArgs() { Id = id });
         }
 
 

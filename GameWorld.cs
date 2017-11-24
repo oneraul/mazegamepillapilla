@@ -8,11 +8,13 @@ namespace MazeGamePillaPilla
         public Cell[,] maze;
         public Dictionary<string, Pj> Pjs { get; private set; }
         public Dictionary<int, Drop> Drops { get; private set; }
+        public Dictionary<int, TintaSplash> TintaSplashes { get; private set; }
 
         public GameWorld()
         {
             Pjs = new Dictionary<string, Pj>();
             Drops = new Dictionary<int, Drop>();
+            TintaSplashes = new Dictionary<int, TintaSplash>();
         }
 
 
@@ -156,6 +158,16 @@ namespace MazeGamePillaPilla
                 pj.SetPosition(args.X, args.Y);
             }
             else throw new System.ComponentModel.InvalidEnumArgumentException();
+        }
+
+        public void OnTintaSplashAdded(object source, GameplayTintaSplashEventArgs args)
+        {
+            TintaSplashes.Add(args.Id, new TintaSplash(args.X, args.Y, args.Rotation, args.Duration));
+        }
+
+        public void OnTintaSplashRemoved(object source, GameplayTintaSplashEventArgs args)
+        {
+            TintaSplashes.Remove(args.Id);
         }
     }
 }

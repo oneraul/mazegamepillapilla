@@ -202,6 +202,8 @@ namespace MazeGamePillaPilla
         public event EventHandler<GameplayPowerUpEventArgs> PowerUpAdded;
         public event EventHandler<GameplayPowerUpEventArgs> PowerUpRemoved;
         public event EventHandler<GameplayCharacterTeleportedEventArgs> CharacterTeleported;
+        public event EventHandler<GameplayTintaSplashEventArgs> TintaSplashAdded;
+        public event EventHandler<GameplayTintaSplashEventArgs> TintaSplashRemoved;
 
         private void OnGameplayNetworkReceived(NetPeer peer, NetDataReader dataReader)
         {
@@ -277,6 +279,24 @@ namespace MazeGamePillaPilla
                         PlayerId = dataReader.GetString(),
                         X = dataReader.GetInt(),
                         Y = dataReader.GetInt()
+                    });
+                    break;
+
+                case NetMessage.AddTintaSplash:
+                    TintaSplashAdded?.Invoke(this, new GameplayTintaSplashEventArgs()
+                    {
+                        Id = dataReader.GetInt(),
+                        X = dataReader.GetInt(),
+                        Y = dataReader.GetInt(),
+                        Rotation = dataReader.GetFloat(),
+                        Duration = dataReader.GetFloat()
+                    });
+                    break;
+
+                case NetMessage.RemoveTintaSplash:
+                    TintaSplashRemoved?.Invoke(this, new GameplayTintaSplashEventArgs()
+                    {
+                        Id = dataReader.GetInt()
                     });
                     break;
             }
