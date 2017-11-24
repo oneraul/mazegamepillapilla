@@ -7,13 +7,13 @@ namespace MazeGamePillaPilla
     abstract class AnimationMachine
     {
         protected int defaultAnimation;
-        protected NewAnimation[] animations;
+        protected Animation[] animations;
         private int currentFrame;
         private float timer;
 
         public int CurrentAnimationId { get; private set; }
-        NewAnimation CurrentAnimation { get => animations[CurrentAnimationId]; }
-        NewAnimationFrame CurrentFrame { get => CurrentAnimation.Frames[currentFrame]; }
+        Animation CurrentAnimation { get => animations[CurrentAnimationId]; }
+        AnimationFrame CurrentFrame { get => CurrentAnimation.Frames[currentFrame]; }
 
         public void Update(float dt)
         {
@@ -28,7 +28,7 @@ namespace MazeGamePillaPilla
                     currentFrame = 0;
                     if (!CurrentAnimation.Loop)
                     {
-                        CurrentAnimation?.Callback();
+                        CurrentAnimation.Callback?.Invoke();
                         ForceSetAnimation(defaultAnimation);
                     }
                 }
@@ -65,36 +65,36 @@ namespace MazeGamePillaPilla
         }
     }
 
-    class NewAnimation
+    class Animation
     {
         public Texture2D texture;
-        public NewAnimationFrame[] Frames;
+        public AnimationFrame[] Frames;
         public bool Loop;
         public bool LocksUntilCompletion;
         public Action Callback;
 
-        public NewAnimation(Texture2D texture, float frameDuration, int frames, int layersPerFrame, int layerWidth, int layerHeight, 
-                            bool loop = true, bool locksUntilCompletion = false, Action callback = null)
+        public Animation(Texture2D texture, int frames, int layersPerFrame, int layerWidth, int layerHeight,
+                            float frameDuration = 1, bool loop = true, bool locksUntilCompletion = false, Action callback = null)
         {
             this.texture = texture;
             this.Loop = loop;
             this.LocksUntilCompletion = locksUntilCompletion;
             this.Callback = callback;
 
-            Frames = new NewAnimationFrame[frames];
+            Frames = new AnimationFrame[frames];
             for (int i = 0; i < frames; i++)
             {
-                Frames[i] = new NewAnimationFrame(frameDuration, i, layersPerFrame, layerWidth, layerHeight);
+                Frames[i] = new AnimationFrame(frameDuration, i, layersPerFrame, layerWidth, layerHeight);
             }
         }
     }
 
-    class NewAnimationFrame
+    class AnimationFrame
     {
         public float Duration { get; private set; }
         public Rectangle[] Layers { get; private set; }
 
-        public NewAnimationFrame(float duration, int frame, int layers, int layerWidth, int layerHeight)
+        public AnimationFrame(float duration, int frame, int layers, int layerWidth, int layerHeight)
         {
             this.Duration = duration;
 
@@ -117,12 +117,21 @@ namespace MazeGamePillaPilla
         public PjAnimationMachine()
         {
             defaultAnimation = (int)Animations.Idle;
-            animations = new NewAnimation[]
+            animations = new Animation[]
             {
-                new NewAnimation(Pj.IdleTexture, 10, 1, 28, 18, 16),
-                new NewAnimation(Pj.RunningTexture, 0.08f, 8, 28, 18, 16),
-                new NewAnimation(Pj.TestTexture, 1, 1, 28, 18, 16, false, true)
+                new Animation(Pj.IdleTexture, 1, 28, 18, 16),
+                new Animation(Pj.RunningTexture, 8, 28, 18, 16, 0.08f),
+                new Animation(Pj.TestTexture, 1, 28, 18, 16, 2, false, true)
             };
+        }
+    }
+
+
+    class SingleFrameAnimationMachine : AnimationMachine
+    {
+        public SingleFrameAnimationMachine(Animation animation)
+        {
+            animations = new Animation[] { animation };
         }
     }
 }
