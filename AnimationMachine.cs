@@ -29,7 +29,7 @@ namespace MazeGamePillaPilla
                     if (!CurrentAnimation.Loop)
                     {
                         CurrentAnimation?.Callback();
-                        SetAnimation(defaultAnimation);
+                        ForceSetAnimation(defaultAnimation);
                     }
                 }
             }
@@ -49,11 +49,19 @@ namespace MazeGamePillaPilla
             }
         }
 
-        public void SetAnimation(int animationId)
+        private void ForceSetAnimation(int animationId)
         {
             timer = 0;
             currentFrame = 0;
             CurrentAnimationId = animationId;
+        }
+
+        public void SetAnimation(int animationId)
+        {
+            if (!CurrentAnimation.LocksUntilCompletion)
+            {
+                ForceSetAnimation(animationId);
+            }
         }
     }
 
@@ -113,7 +121,7 @@ namespace MazeGamePillaPilla
             {
                 new NewAnimation(Pj.IdleTexture, 10, 1, 28, 18, 16),
                 new NewAnimation(Pj.RunningTexture, 0.08f, 8, 28, 18, 16),
-                new NewAnimation(Pj.TestTexture, 3, 1, 28, 18, 16, false, true, () => System.Diagnostics.Debug.WriteLine("Pene"))
+                new NewAnimation(Pj.TestTexture, 1, 1, 28, 18, 16, false, true)
             };
         }
     }
