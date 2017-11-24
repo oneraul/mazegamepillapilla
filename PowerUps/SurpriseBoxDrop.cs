@@ -9,16 +9,10 @@ namespace MazeGamePillaPilla.PowerUps
         private static Random rng = new Random();
 
         public static Texture2D modelTexture;
+        private static AnimationFrame model;
         private static readonly int RADIUS = 10;
 
-        private AnimationFrame model;
-        private float rotation;
-
-        public SurpriseBoxDrop(int x, int y) : base(x, y, RADIUS, (pj, server) =>
-        {
-            int randomPowerUpType = rng.Next(Enum.GetNames(typeof(PowerUpTypes)).Length);
-            server.AddPowerUp(randomPowerUpType, pj);
-        })
+        static SurpriseBoxDrop()
         {
             int layers = 16;
             int side = 16;
@@ -27,6 +21,17 @@ namespace MazeGamePillaPilla.PowerUps
             {
                 model.Rectangles[i] = new Rectangle(i * layers, 0, side, side);
             }
+        }
+
+        private float rotation;
+
+        public SurpriseBoxDrop(int x, int y) : base(x, y, RADIUS, (pj, server) =>
+        {
+            int randomPowerUpType = rng.Next(Enum.GetNames(typeof(PowerUpTypes)).Length);
+            server.AddPowerUp(randomPowerUpType, pj);
+        })
+        {
+            rotation = (float)(rng.NextDouble() * Math.PI*2);
         }
 
         public override void Draw(SpriteBatch spritebatch, Matrix cameraMatrix)

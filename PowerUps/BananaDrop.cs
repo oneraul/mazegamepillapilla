@@ -7,9 +7,20 @@ namespace MazeGamePillaPilla.PowerUps
     class BananaDrop : Drop
     {
         public static Texture2D modelTexture;
+        private static AnimationFrame model;
         private static readonly int RADIUS = 8; // from the center to the vertices of the aabb
 
-        private AnimationFrame model;
+        static BananaDrop()
+        {
+            int layers = 16;
+            int side = 16;
+            model = new AnimationFrame(layers);
+            for (int i = 0; i < layers; i++)
+            {
+                model.Rectangles[i] = new Rectangle(i * layers, 0, side, side);
+            }
+        }
+
         private float rotation;
 
         public BananaDrop(int x, int y) : base(x, y, RADIUS, (pj, server) =>
@@ -20,13 +31,6 @@ namespace MazeGamePillaPilla.PowerUps
             }
         })
         {
-            int layers = 16;
-            int side = 16;
-            model = new AnimationFrame(layers);
-            for (int i = 0; i < layers; i++)
-            {
-                model.Rectangles[i] = new Rectangle(i * layers, 0, side, side);
-            }
         }
 
         public override void Update(float dt)
