@@ -25,7 +25,7 @@ namespace MazeGamePillaPilla
 
         public override void Update(float dt, Cell[,] maze)
         {
-            currentAnimation.Update(dt);
+            AnimationMachine.Update(dt);
         }
 
 

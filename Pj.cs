@@ -34,16 +34,12 @@ namespace MazeGamePillaPilla
         private int invisiblesAccumulator;
         private int stunsAccumulator;
 
-
         public int palette;
-        public Animation[] Animations;
-        public Animation currentAnimation;
 
         public IPowerUp PowerUp;
         public Dictionary<int, Buff> Buffs;
 
-
-        protected enum AnimationID { Idle, Running, Test }
+        public readonly PjAnimationMachine AnimationMachine;
 
 
         protected Pj(string ID, float x, float y, int palette)
@@ -54,15 +50,9 @@ namespace MazeGamePillaPilla
 
             this.palette = palette;
 
-            Animations = new Animation[] {
-                new Animation((int)AnimationID.Idle, IdleTexture, 1, 28, 18, 16), // idle2 -> 1, 48, 10, 48
-                new Animation((int)AnimationID.Running, RunningTexture, 8, 28, 18, 16),
-                new Animation((int)AnimationID.Test, TestTexture, 1, 28, 18, 16)
-            };
-
-            currentAnimation = Animations[(int)AnimationID.Idle];
-
             Buffs = new Dictionary<int, Buff>();
+
+            AnimationMachine = new PjAnimationMachine();
         }
 
         public void SetPosition(int x, int y)
@@ -73,14 +63,6 @@ namespace MazeGamePillaPilla
 
 
         public abstract void Update(float dt, Cell[,] maze);
-
-
-        protected void SetIdle()
-        {
-            currentAnimation = Animations[(int)AnimationID.Idle];
-            currentAnimation.Reset();
-            Animations[(int)AnimationID.Running].Reset();
-        }
 
 
         public bool Stunned
@@ -200,7 +182,7 @@ namespace MazeGamePillaPilla
 
                 batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, Pj.effect, cameraMatrix);
                 Pj.effect.Parameters["u_palette"].SetValue(palette);
-                currentAnimation.Draw(batch, x, y, rotation, 1, hw, hh);
+                AnimationMachine.Draw(batch, x, y, rotation);
                 batch.End();
 
                 batch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, cameraMatrix);
@@ -227,13 +209,13 @@ namespace MazeGamePillaPilla
         {
             if (Stunned || (input.Horizontal == 0 && input.Vertical == 0))
             {
-                SetIdle();
+                AnimationMachine.SetAnimation((int)PjAnimationMachine.Animations.Idle);
                 return;
             }
 
-            if (currentAnimation.ID == (int)AnimationID.Idle)
+            if (AnimationMachine.CurrentAnimationId == (int)PjAnimationMachine.Animations.Idle)
             {
-                currentAnimation = Animations[(int)AnimationID.Running];
+                AnimationMachine.SetAnimation((int)PjAnimationMachine.Animations.Running);
             }
 
             // Multisampling to avoid tunneling when the speed is to high

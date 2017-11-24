@@ -44,7 +44,7 @@ namespace MazeGamePillaPilla
             this.Y = pj.y;
             this.Rotation = pj.rotation;
             this.Palette = pj.palette;
-            this.Animation = pj.currentAnimation.ID;
+            this.Animation = pj.AnimationMachine.CurrentAnimationId;
         }
 
 

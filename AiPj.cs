@@ -22,11 +22,11 @@ namespace MazeGamePillaPilla
 
         public override void Update(float dt, Cell[,] maze)
         {
-            currentAnimation.Update(dt);
+            AnimationMachine.Update(dt);
 
             if (path.Count == 0)
             {
-                SetIdle();
+                AnimationMachine.SetAnimation((int)PjAnimationMachine.Animations.Idle);
             }
             else
             {
@@ -47,7 +47,10 @@ namespace MazeGamePillaPilla
                     path.RemoveAt(path.Count - 1);
                 }
 
-                currentAnimation = Animations[(int)AnimationID.Running];
+                if (AnimationMachine.CurrentAnimationId == (int)PjAnimationMachine.Animations.Idle)
+                {
+                    AnimationMachine.SetAnimation((int)PjAnimationMachine.Animations.Running);
+                }
             }
 
 

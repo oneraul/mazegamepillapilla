@@ -22,7 +22,7 @@ namespace MazeGamePillaPilla
 
         public override void Update(float dt, Cell[,] maze)
         {
-            currentAnimation.Update(dt);
+            AnimationMachine.Update(dt);
 
             interpolationTimer += dt;
             float a = MathHelper.Clamp(interpolationTimer / Server.TickRate, 0, 1);
@@ -51,7 +51,10 @@ namespace MazeGamePillaPilla
             newY = packet.Y;
             newRotation = packet.Rotation;
 
-            currentAnimation = Animations[packet.Animation];
+            if(AnimationMachine.CurrentAnimationId != packet.Animation)
+            {
+                AnimationMachine.SetAnimation(packet.Animation);
+            }
         }
 
 
