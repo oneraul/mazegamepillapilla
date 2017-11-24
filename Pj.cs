@@ -230,38 +230,41 @@ namespace MazeGamePillaPilla
             }
 
             // Multisampling to avoid tunneling when the speed is to high
-            float sampleV = Math.Min(v, Pj.BaseV);
-            int numberOfSamples = (int)(v / sampleV);
-
-            float remainingV = v;
-            for (int i = 0; i < numberOfSamples; i++)
+            if (v > 0)
             {
-                x += Math.Min(sampleV, remainingV) * input.Horizontal;
-                y += Math.Min(sampleV, remainingV) * input.Vertical;
+                float sampleV = Math.Min(v, Pj.BaseV);
+                int numberOfSamples = (int)(v / sampleV);
 
-                x = MathHelper.Clamp(x, Tile.Size + hw + 3, maze.GetLength(1) * Tile.Size - hw - Tile.Size - 3);
-                y = MathHelper.Clamp(y, Tile.Size + hh + 3, maze.GetLength(0) * Tile.Size - hh - Tile.Size - 3);
-
-                rotation = ((float)Math.Atan2(input.Vertical, input.Horizontal) + MathHelper.TwoPi) % MathHelper.TwoPi;
-                currentAnimation = Animations[(int)AnimationID.Running];
-
-                if (!CanTraverseWalls)
+                float remainingV = v;
+                for (int i = 0; i < numberOfSamples; i++)
                 {
-                    // Collision
-                    Vector2 dir = new Vector2(input.Horizontal, input.Vertical);
-                    dir.Normalize();
-                    foreach (Cell cell in GetSurroundingCells(maze, dir))
+                    x += Math.Min(sampleV, remainingV) * input.Horizontal;
+                    y += Math.Min(sampleV, remainingV) * input.Vertical;
+
+                    x = MathHelper.Clamp(x, Tile.Size + hw + 3, maze.GetLength(1) * Tile.Size - hw - Tile.Size - 3);
+                    y = MathHelper.Clamp(y, Tile.Size + hh + 3, maze.GetLength(0) * Tile.Size - hh - Tile.Size - 3);
+
+                    rotation = ((float)Math.Atan2(input.Vertical, input.Horizontal) + MathHelper.TwoPi) % MathHelper.TwoPi;
+                    currentAnimation = Animations[(int)AnimationID.Running];
+
+                    if (!CanTraverseWalls)
                     {
-                        if (this.AabbAabbIntersectionTest(cell))
+                        // Collision
+                        Vector2 dir = new Vector2(input.Horizontal, input.Vertical);
+                        dir.Normalize();
+                        foreach (Cell cell in GetSurroundingCells(maze, dir))
                         {
-                            Vector2 mtv = this.SatIntersectionTestGetMtv(cell) ?? Vector2.Zero;
-                            x -= mtv.X;
-                            y -= mtv.Y;
+                            if (this.AabbAabbIntersectionTest(cell))
+                            {
+                                Vector2 mtv = this.SatIntersectionTestGetMtv(cell) ?? Vector2.Zero;
+                                x -= mtv.X;
+                                y -= mtv.Y;
+                            }
                         }
                     }
-                }
 
-                remainingV -= sampleV;
+                    remainingV -= sampleV;
+                }
             }
         }
 
