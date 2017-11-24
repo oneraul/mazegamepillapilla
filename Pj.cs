@@ -16,6 +16,7 @@ namespace MazeGamePillaPilla
         public static Texture2D IdleTexture;
         public static Texture2D RunningTexture;
         public static Texture2D PaletteTexture;
+        public static Texture2D TestTexture;
         public static Effect effect;
 
         private static readonly float BaseV = 150;
@@ -42,7 +43,7 @@ namespace MazeGamePillaPilla
         public Dictionary<int, Buff> Buffs;
 
 
-        protected enum AnimationID { Idle, Running }
+        protected enum AnimationID { Idle, Running, Test }
 
 
         protected Pj(string ID, float x, float y, int palette)
@@ -55,7 +56,8 @@ namespace MazeGamePillaPilla
 
             Animations = new Animation[] {
                 new Animation((int)AnimationID.Idle, IdleTexture, 1, 28, 18, 16), // idle2 -> 1, 48, 10, 48
-                new Animation((int)AnimationID.Running, RunningTexture, 8, 28, 18, 16)
+                new Animation((int)AnimationID.Running, RunningTexture, 8, 28, 18, 16),
+                new Animation((int)AnimationID.Test, TestTexture, 1, 28, 18, 16)
             };
 
             currentAnimation = Animations[(int)AnimationID.Idle];
@@ -229,6 +231,11 @@ namespace MazeGamePillaPilla
                 return;
             }
 
+            if (currentAnimation.ID == (int)AnimationID.Idle)
+            {
+                currentAnimation = Animations[(int)AnimationID.Running];
+            }
+
             // Multisampling to avoid tunneling when the speed is to high
             if (v > 0)
             {
@@ -245,7 +252,6 @@ namespace MazeGamePillaPilla
                     y = MathHelper.Clamp(y, Tile.Size + hh + 3, maze.GetLength(0) * Tile.Size - hh - Tile.Size - 3);
 
                     rotation = ((float)Math.Atan2(input.Vertical, input.Horizontal) + MathHelper.TwoPi) % MathHelper.TwoPi;
-                    currentAnimation = Animations[(int)AnimationID.Running];
 
                     if (!CanTraverseWalls)
                     {
