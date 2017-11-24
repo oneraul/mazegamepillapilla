@@ -213,7 +213,11 @@ namespace MazeGamePillaPilla
                 return;
             }
 
-            if (AnimationMachine.CurrentAnimationId == (int)PjAnimationMachine.Animations.Idle)
+            if (input.Action && PowerUp != null)
+            {
+                AnimationMachine.SetAnimation((int)PjAnimationMachine.Animations.Test);
+            }
+            else if (AnimationMachine.CurrentAnimationId == (int)PjAnimationMachine.Animations.Idle)
             {
                 AnimationMachine.SetAnimation((int)PjAnimationMachine.Animations.Running);
             }

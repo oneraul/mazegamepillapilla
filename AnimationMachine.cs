@@ -62,12 +62,15 @@ namespace MazeGamePillaPilla
         public Texture2D texture;
         public NewAnimationFrame[] Frames;
         public bool Loop;
+        public bool LocksUntilCompletion;
         public Action Callback;
 
-        public NewAnimation(Texture2D texture, bool loop, float frameDuration, Action callback, int frames, int layersPerFrame, int layerWidth, int layerHeight)
+        public NewAnimation(Texture2D texture, float frameDuration, int frames, int layersPerFrame, int layerWidth, int layerHeight, 
+                            bool loop = true, bool locksUntilCompletion = false, Action callback = null)
         {
             this.texture = texture;
             this.Loop = loop;
+            this.LocksUntilCompletion = locksUntilCompletion;
             this.Callback = callback;
 
             Frames = new NewAnimationFrame[frames];
@@ -108,9 +111,9 @@ namespace MazeGamePillaPilla
             defaultAnimation = (int)Animations.Idle;
             animations = new NewAnimation[]
             {
-                new NewAnimation(Pj.IdleTexture, true, 10, null, 1, 28, 18, 16),
-                new NewAnimation(Pj.RunningTexture, true, 0.08f, null, 8, 28, 18, 16),
-                new NewAnimation(Pj.TestTexture, false, 3, () => System.Diagnostics.Debug.WriteLine("Pene"), 1, 28, 18, 16)
+                new NewAnimation(Pj.IdleTexture, 10, 1, 28, 18, 16),
+                new NewAnimation(Pj.RunningTexture, 0.08f, 8, 28, 18, 16),
+                new NewAnimation(Pj.TestTexture, 3, 1, 28, 18, 16, false, true, () => System.Diagnostics.Debug.WriteLine("Pene"))
             };
         }
     }
