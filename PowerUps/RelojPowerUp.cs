@@ -11,7 +11,7 @@ namespace MazeGamePillaPilla.PowerUps
         {
             foreach (Pj otherPj in server.world.Pjs.Values)
             {
-                if (otherPj.ID != pj.ID)
+                if (otherPj.ID != pj.ID && !otherPj.Immune)
                 {
                     server.AddBuff((int)BuffTypes.RelojBuff, otherPj);
                 }
