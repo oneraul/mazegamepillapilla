@@ -72,6 +72,10 @@ namespace MazeGamePillaPilla
                         pj.Buffs.Add(args.BuffId, new ImmuneBuff(pj));
                         break;
 
+                    case (int)BuffTypes.RelojBuff:
+                        pj.Buffs.Add(args.BuffId, new RelojBuff(pj));
+                        break;
+
                     default:
                         throw new System.ComponentModel.InvalidEnumArgumentException();
                 }
@@ -122,8 +126,12 @@ namespace MazeGamePillaPilla
                         pj.PowerUp = new ImmunePowerUp();
                         break;
 
-                    case (int)PowerUpTypes.RandomTeleport:
+                    case (int)PowerUpTypes.RandomTeleportPowerUp:
                         pj.PowerUp = new RandomTeleportPowerUp();
+                        break;
+
+                    case (int)PowerUpTypes.RelojPowerUp:
+                        pj.PowerUp = new RelojPowerUp();
                         break;
 
                     default:

@@ -87,6 +87,8 @@
     <Compile Include="PowerUps\InvisiblePowerUp.cs" />
     <Compile Include="PowerUps\IPowerUp.cs" />
     <Compile Include="PowerUps\RandomTeleportPowerUp.cs" />
+    <Compile Include="PowerUps\RelojBuff.cs" />
+    <Compile Include="PowerUps\RelojPowerUp.cs" />
     <Compile Include="PowerUps\SprintBuff.cs" />
     <Compile Include="PowerUps\SprintPowerUp.cs" />
     <Compile Include="PowerUps\SurpriseBoxDrop.cs" />

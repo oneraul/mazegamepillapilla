@@ -21,5 +21,6 @@ namespace MazeGamePillaPilla.PowerUps
         BananaStunBuff,
         InvisibleBuff,
         ImmuneBuff,
+        RelojBuff,
     }
 }
