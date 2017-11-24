@@ -5,11 +5,11 @@ namespace MazeGamePillaPilla.PowerUps
 {
     class BananaStunBuff : DurationBuff
     {
-        private static float duration = 1;
+        private static readonly float DURATION = 1;
 
         private Pj pj;
 
-        public BananaStunBuff(Pj pj) : base(duration)
+        public BananaStunBuff(Pj pj) : base(DURATION)
         {
             this.pj = pj;
             this.Activate();

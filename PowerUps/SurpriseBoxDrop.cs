@@ -9,12 +9,12 @@ namespace MazeGamePillaPilla.PowerUps
         private static Random rng = new Random();
 
         public static Texture2D modelTexture;
-        private static int radius = 10;
+        private static readonly int RADIUS = 10;
 
         private AnimationFrame model;
         private float rotation;
 
-        public SurpriseBoxDrop(int x, int y) : base(x, y, radius, (pj, server) =>
+        public SurpriseBoxDrop(int x, int y) : base(x, y, RADIUS, (pj, server) =>
         {
             int randomPowerUpType = rng.Next(Enum.GetNames(typeof(PowerUpTypes)).Length);
             server.AddPowerUp(randomPowerUpType, pj);

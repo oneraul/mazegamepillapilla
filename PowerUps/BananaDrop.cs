@@ -7,12 +7,12 @@ namespace MazeGamePillaPilla.PowerUps
     class BananaDrop : Drop
     {
         public static Texture2D modelTexture;
-        private static int radius = 8;
+        private static readonly int RADIUS = 8; // from the center to the vertices of the aabb
 
         private AnimationFrame model;
         private float rotation;
 
-        public BananaDrop(int x, int y) : base(x, y, radius, (pj, server) =>
+        public BananaDrop(int x, int y) : base(x, y, RADIUS, (pj, server) =>
         {
             if (!pj.Immune)
             {

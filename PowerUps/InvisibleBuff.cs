@@ -2,10 +2,10 @@
 {
     class InvisibleBuff : DurationBuff
     {
-        private static float duration = 2;
+        private static readonly float DURATION = 2;
         private Pj pj;
 
-        public InvisibleBuff(Pj pj) : base(duration)
+        public InvisibleBuff(Pj pj) : base(DURATION)
         {
             this.pj = pj;
             this.Activate();

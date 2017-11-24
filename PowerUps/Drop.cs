@@ -33,14 +33,13 @@ namespace MazeGamePillaPilla.PowerUps
             this.y = y;
         }
 
+        public float GetSortY() => y;
+
+        public Vector2[] GetSatProjectionAxes() => ProjectionAxes;
+
         public Rectangle GetAABB()
         {
             return new Rectangle(x - radius, y - radius, radius * 2, radius * 2);
-        }
-
-        public Vector2[] GetSatProjectionAxes()
-        {
-            return ProjectionAxes;
         }
 
         public Vector2[] GetVertices()
@@ -55,11 +54,6 @@ namespace MazeGamePillaPilla.PowerUps
         }
 
         public abstract void Draw(SpriteBatch spritebatch, Matrix cameraMatrix);
-
-        public float GetSortY()
-        {
-            return y;
-        }
 
         public virtual void Update(float dt) { }
     }

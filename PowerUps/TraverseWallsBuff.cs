@@ -5,12 +5,12 @@ namespace MazeGamePillaPilla.PowerUps
 {
     class TraverseWallsBuff : DurationBuff
     {
-        private static float duration = 1.5f;
+        private static readonly float DURATION = 1.5f;
         public static Texture2D texture;
 
         private Pj pj;
 
-        public TraverseWallsBuff(Pj pj) : base(duration)
+        public TraverseWallsBuff(Pj pj) : base(DURATION)
         {
             this.pj = pj;
             this.Activate();

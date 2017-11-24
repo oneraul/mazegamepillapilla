@@ -5,13 +5,13 @@ namespace MazeGamePillaPilla.PowerUps
 {
     class SprintBuff : DurationBuff
     {
-        private static float duration = 2.5f;
-        private static float velocityBuffAmount = 300;
+        private static readonly float DURATION = 2.5f;
+        private static readonly float VELOCITY_BUFF_AMOUNT = 300;
         public static Texture2D texture;
 
         private Pj pj;
 
-        public SprintBuff(Pj pj) : base(duration)
+        public SprintBuff(Pj pj) : base(DURATION)
         {
             this.pj = pj;
             this.Activate();
@@ -19,7 +19,7 @@ namespace MazeGamePillaPilla.PowerUps
 
         public override void Activate()
         {
-            pj.v += velocityBuffAmount;
+            pj.v += VELOCITY_BUFF_AMOUNT;
         }
 
         public override void Draw(SpriteBatch spritebatch, Matrix cameraMatrix)
@@ -29,7 +29,7 @@ namespace MazeGamePillaPilla.PowerUps
 
         public override void End()
         {
-            pj.v -= velocityBuffAmount;
+            pj.v -= VELOCITY_BUFF_AMOUNT;
         }
 
         public override bool ShouldBeRemovedWhenPjGoesImmune() => false;

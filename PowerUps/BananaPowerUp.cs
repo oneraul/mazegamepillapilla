@@ -6,7 +6,6 @@ namespace MazeGamePillaPilla.PowerUps
 {
     class BananaPowerUp : IPowerUp
     {
-        public static int Type = (int)PowerUpTypes.BananaPowerUp;
         public static Texture2D Icon;
 
         public void Action(Pj pj, Server server)
