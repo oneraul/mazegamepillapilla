@@ -63,7 +63,10 @@ namespace MazeGamePillaPilla
         }
 
 
-        public abstract void Update(float dt, Cell[,] maze);
+        public virtual void Update(float dt)
+        {
+            AnimationMachine.Update(dt);
+        }
 
 
         public bool Stunned
@@ -97,7 +100,7 @@ namespace MazeGamePillaPilla
                 }
             }
         }
-        
+
         public bool CanTraverseWalls
         {
             get => traverseWallsAccumulator != 0;
@@ -119,7 +122,6 @@ namespace MazeGamePillaPilla
                 else invisiblesAccumulator--;
             }
         }
-
 
         protected Cell[] GetSurroundingCells(Cell[,] maze, Vector2 dir)
         {
@@ -164,7 +166,6 @@ namespace MazeGamePillaPilla
             return cells.ToArray();
         }
 
-
         public void Draw(SpriteBatch batch, Matrix cameraMatrix)
         {
             if (!Invisible)
@@ -194,17 +195,9 @@ namespace MazeGamePillaPilla
             }
         }
 
-
-        public float GetSortY()
-        {
-            return y;
-        }
-
-
-        public abstract void ApplyInputOnTheServer(InputPacket input, Cell[,] maze);
+        public float GetSortY() => y;
 
         public abstract void ProcessServerUpdate(StatePacket packet, Cell[,] maze);
-
 
         public void ApplyInput(InputPacket input, Cell[,] maze)
         {
@@ -284,14 +277,8 @@ namespace MazeGamePillaPilla
             };
         }
 
-        public Vector2[] GetSatProjectionAxes()
-        {
-            return ProjectionAxes;
-        }
+        public Vector2[] GetSatProjectionAxes() => ProjectionAxes;
 
-        public Rectangle GetAABB()
-        {
-            return new Rectangle((int)(x-hw), (int)(y-hh), (int)(hw*2), (int)(hh*2));
-        }
+        public Rectangle GetAABB() => new Rectangle((int)(x-hw), (int)(y-hh), (int)(hw*2), (int)(hh*2));
     }
 }

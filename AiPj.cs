@@ -16,13 +16,11 @@ namespace MazeGamePillaPilla
             path = new List<Vector2>();
         }
 
-        public override void ApplyInputOnTheServer(InputPacket input, Cell[,] maze) {}
-
         public override void ProcessServerUpdate(StatePacket packet, Cell[,] maze) {}
 
-        public override void Update(float dt, Cell[,] maze)
+        public override void Update(float dt)
         {
-            AnimationMachine.Update(dt);
+            base.Update(dt);
 
             if (path.Count == 0)
             {

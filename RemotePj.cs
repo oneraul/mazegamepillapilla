@@ -20,9 +20,9 @@ namespace MazeGamePillaPilla
         }
 
 
-        public override void Update(float dt, Cell[,] maze)
+        public override void Update(float dt)
         {
-            AnimationMachine.Update(dt);
+            base.Update(dt);
 
             interpolationTimer += dt;
             float a = MathHelper.Clamp(interpolationTimer / Server.TickRate, 0, 1);
@@ -56,13 +56,6 @@ namespace MazeGamePillaPilla
                 AnimationMachine.SetAnimation(packet.Animation);
             }
         }
-
-
-        public override void ApplyInputOnTheServer(InputPacket input, Cell[,] maze)
-        {
-            ApplyInput(input, maze);
-        }
-
 
         public new void SetPosition(int x, int y)
         {

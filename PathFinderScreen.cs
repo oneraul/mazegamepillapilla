@@ -191,7 +191,7 @@ namespace MazeGamePillaPilla
 
         public void Update(float dt)
         {
-            foreach (Pj pj in Pjs.Values) pj.Update(dt, maze);
+            foreach (Pj pj in Pjs.Values) pj.Update(dt);
 
             foreach (AiPj pj in aiPjs)
             {

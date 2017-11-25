@@ -66,7 +66,7 @@ namespace MazeGamePillaPilla
         {
             client.GameplayUpdate(dt);
             foreach (LocalPj pj in LocalPlayers) pj.ProcessInput(dt, client, world.maze);
-            foreach (Pj pj in world.Pjs.Values) pj.Update(dt, world.maze);
+            foreach (Pj pj in world.Pjs.Values) pj.Update(dt);
             foreach (Drop drop in world.Drops.Values) drop.Update(dt);
         }
 
