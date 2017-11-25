@@ -23,12 +23,6 @@ namespace MazeGamePillaPilla
         }
 
 
-        public override void Update(float dt, Cell[,] maze)
-        {
-            currentAnimation.Update(dt);
-        }
-
-
         public override void ProcessServerUpdate(StatePacket packet, Cell[,] maze)
         {
             if (packet.InputSequenceNumber <= LastSnapshotReceived) return;
@@ -52,13 +46,6 @@ namespace MazeGamePillaPilla
                 }
             }
         }
-
-
-        public override void ApplyInputOnTheServer(InputPacket input, Cell[,] maze)
-        {
-            // already applied locally as client-side prediction
-        }
-
 
         public void ProcessInput(float dt, Client client, Cell[,] maze)
         {

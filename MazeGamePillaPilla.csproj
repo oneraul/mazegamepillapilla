@@ -43,7 +43,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AiPj.cs" />
-    <Compile Include="Animation.cs" />
+    <Compile Include="AnimationMachine.cs" />
     <Compile Include="Button.cs" />
     <Compile Include="Cell.cs" />
     <Compile Include="Client.cs" />

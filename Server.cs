@@ -274,6 +274,8 @@ namespace MazeGamePillaPilla
 
                 foreach (Pj pj in world.Pjs.Values ?? Enumerable.Empty<Pj>())
                 {
+                    pj.AnimationMachine.Update(TickRate);
+
                     long lastInput = lastProcessedInputs[pj.ID];
                     if (lastInput > lastSentSnapshots[pj.ID])
                     {
@@ -351,7 +353,7 @@ namespace MazeGamePillaPilla
             if (world.Pjs.TryGetValue(inputPacket.CharacterID, out Pj pj))
             {
                 lastProcessedInputs[inputPacket.CharacterID] = inputPacket.InputSequenceNumber;
-                pj.ApplyInputOnTheServer(inputPacket, world.maze);
+                pj.ApplyInput(inputPacket, world.maze);
 
                 if (inputPacket.Action)
                 {

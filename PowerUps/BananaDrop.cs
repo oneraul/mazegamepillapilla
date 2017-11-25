@@ -7,20 +7,9 @@ namespace MazeGamePillaPilla.PowerUps
     class BananaDrop : Drop
     {
         public static Texture2D modelTexture;
-        private static AnimationFrame model;
         private static readonly int RADIUS = 8; // from the center to the vertices of the aabb
 
-        static BananaDrop()
-        {
-            int layers = 16;
-            int side = 16;
-            model = new AnimationFrame(layers);
-            for (int i = 0; i < layers; i++)
-            {
-                model.Rectangles[i] = new Rectangle(i * layers, 0, side, side);
-            }
-        }
-
+        private AnimationMachine animationMachine;
         private float rotation;
 
         public BananaDrop(int x, int y) : base(x, y, RADIUS, (pj, server) =>
@@ -31,6 +20,7 @@ namespace MazeGamePillaPilla.PowerUps
             }
         })
         {
+            animationMachine = new SingleFrameAnimationMachine(new Animation(modelTexture, 1, 16, 16, 16));
         }
 
         public override void Update(float dt)
@@ -41,7 +31,7 @@ namespace MazeGamePillaPilla.PowerUps
 
         public override void Draw(SpriteBatch spritebatch, Matrix cameraMatrix)
         {
-            model.Draw(modelTexture, spritebatch, GetAABB().Center.X, GetAABB().Center.Y, rotation, 1, 8, 8);
+            animationMachine.Draw(spritebatch, GetAABB().Center.X, GetAABB().Center.Y, rotation);
         }
     }
 }

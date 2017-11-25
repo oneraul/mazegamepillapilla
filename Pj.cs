@@ -15,8 +15,9 @@ namespace MazeGamePillaPilla
         public static Texture2D ColliderTexture;
         public static Texture2D IdleTexture;
         public static Texture2D RunningTexture;
-        public static Texture2D PaletteTexture;
+        public static Texture2D StunnedTexture;
         public static Texture2D TestTexture;
+        public static Texture2D PaletteTexture;
         public static Effect effect;
 
         private static readonly float BaseV = 150;
@@ -34,16 +35,12 @@ namespace MazeGamePillaPilla
         private int invisiblesAccumulator;
         private int stunsAccumulator;
 
-
         public int palette;
-        public Animation[] Animations;
-        public Animation currentAnimation;
 
         public IPowerUp PowerUp;
         public Dictionary<int, Buff> Buffs;
 
-
-        protected enum AnimationID { Idle, Running, Test }
+        public readonly PjAnimationMachine AnimationMachine;
 
 
         protected Pj(string ID, float x, float y, int palette)
@@ -54,15 +51,9 @@ namespace MazeGamePillaPilla
 
             this.palette = palette;
 
-            Animations = new Animation[] {
-                new Animation((int)AnimationID.Idle, IdleTexture, 1, 28, 18, 16), // idle2 -> 1, 48, 10, 48
-                new Animation((int)AnimationID.Running, RunningTexture, 8, 28, 18, 16),
-                new Animation((int)AnimationID.Test, TestTexture, 1, 28, 18, 16)
-            };
-
-            currentAnimation = Animations[(int)AnimationID.Idle];
-
             Buffs = new Dictionary<int, Buff>();
+
+            AnimationMachine = new PjAnimationMachine();
         }
 
         public void SetPosition(int x, int y)
@@ -72,14 +63,9 @@ namespace MazeGamePillaPilla
         }
 
 
-        public abstract void Update(float dt, Cell[,] maze);
-
-
-        protected void SetIdle()
+        public virtual void Update(float dt)
         {
-            currentAnimation = Animations[(int)AnimationID.Idle];
-            currentAnimation.Reset();
-            Animations[(int)AnimationID.Running].Reset();
+            AnimationMachine.Update(dt);
         }
 
 
@@ -114,7 +100,7 @@ namespace MazeGamePillaPilla
                 }
             }
         }
-        
+
         public bool CanTraverseWalls
         {
             get => traverseWallsAccumulator != 0;
@@ -136,7 +122,6 @@ namespace MazeGamePillaPilla
                 else invisiblesAccumulator--;
             }
         }
-
 
         protected Cell[] GetSurroundingCells(Cell[,] maze, Vector2 dir)
         {
@@ -181,7 +166,6 @@ namespace MazeGamePillaPilla
             return cells.ToArray();
         }
 
-
         public void Draw(SpriteBatch batch, Matrix cameraMatrix)
         {
             if (!Invisible)
@@ -200,7 +184,7 @@ namespace MazeGamePillaPilla
 
                 batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, Pj.effect, cameraMatrix);
                 Pj.effect.Parameters["u_palette"].SetValue(palette);
-                currentAnimation.Draw(batch, x, y, rotation, 1, hw, hh);
+                AnimationMachine.Draw(batch, x, y, rotation);
                 batch.End();
 
                 batch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, cameraMatrix);
@@ -211,30 +195,14 @@ namespace MazeGamePillaPilla
             }
         }
 
-
-        public float GetSortY()
-        {
-            return y;
-        }
-
-
-        public abstract void ApplyInputOnTheServer(InputPacket input, Cell[,] maze);
+        public float GetSortY() => y;
 
         public abstract void ProcessServerUpdate(StatePacket packet, Cell[,] maze);
 
-
         public void ApplyInput(InputPacket input, Cell[,] maze)
         {
-            if (Stunned || (input.Horizontal == 0 && input.Vertical == 0))
-            {
-                SetIdle();
-                return;
-            }
-
-            if (currentAnimation.ID == (int)AnimationID.Idle)
-            {
-                currentAnimation = Animations[(int)AnimationID.Running];
-            }
+            InputToAnimation(input);
+            if (Stunned || (input.Horizontal == 0 && input.Vertical == 0)) return;
 
             // Multisampling to avoid tunneling when the speed is to high
             if (v > 0)
@@ -274,6 +242,29 @@ namespace MazeGamePillaPilla
             }
         }
 
+        private void InputToAnimation(InputPacket input)
+        {
+            if (Stunned)
+            {
+                if (AnimationMachine.CurrentAnimationId != (int)PjAnimationMachine.Animations.Stunned)
+                {
+                    AnimationMachine.ForceSetAnimation((int)PjAnimationMachine.Animations.Stunned);
+                }
+            }
+            else if (input.Action && PowerUp != null)
+            {
+                AnimationMachine.SetAnimation((int)PjAnimationMachine.Animations.Test);
+            }
+            else if (input.Horizontal == 0 && input.Vertical == 0)
+            {
+                AnimationMachine.SetAnimation((int)PjAnimationMachine.Animations.Idle);
+            }
+            else if (AnimationMachine.CurrentAnimationId == (int)PjAnimationMachine.Animations.Idle)
+            {
+                AnimationMachine.SetAnimation((int)PjAnimationMachine.Animations.Running);
+            }
+        }
+
 
         public Vector2[] GetVertices()
         {
@@ -286,14 +277,8 @@ namespace MazeGamePillaPilla
             };
         }
 
-        public Vector2[] GetSatProjectionAxes()
-        {
-            return ProjectionAxes;
-        }
+        public Vector2[] GetSatProjectionAxes() => ProjectionAxes;
 
-        public Rectangle GetAABB()
-        {
-            return new Rectangle((int)(x-hw), (int)(y-hh), (int)(hw*2), (int)(hh*2));
-        }
+        public Rectangle GetAABB() => new Rectangle((int)(x-hw), (int)(y-hh), (int)(hw*2), (int)(hh*2));
     }
 }

@@ -20,9 +20,9 @@ namespace MazeGamePillaPilla
         }
 
 
-        public override void Update(float dt, Cell[,] maze)
+        public override void Update(float dt)
         {
-            currentAnimation.Update(dt);
+            base.Update(dt);
 
             interpolationTimer += dt;
             float a = MathHelper.Clamp(interpolationTimer / Server.TickRate, 0, 1);
@@ -51,15 +51,11 @@ namespace MazeGamePillaPilla
             newY = packet.Y;
             newRotation = packet.Rotation;
 
-            currentAnimation = Animations[packet.Animation];
+            if (packet.Animation != AnimationMachine.CurrentAnimationId)
+            {
+                AnimationMachine.ForceSetAnimation(packet.Animation);
+            }
         }
-
-
-        public override void ApplyInputOnTheServer(InputPacket input, Cell[,] maze)
-        {
-            ApplyInput(input, maze);
-        }
-
 
         public new void SetPosition(int x, int y)
         {
