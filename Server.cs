@@ -75,6 +75,7 @@ namespace MazeGamePillaPilla
         private void SetLobby()
         {
             System.Diagnostics.Debug.WriteLine("[SERVER] SetLobby");
+            if (world != null) foreach (Pj pj in world.Pjs.Values) pj.AnimationMachine.PjAnimationChanged -= this.OnPjAnimationChanged;
             this.updateAccumulator = 0;
             this.dropsCount = 0;
             this.tintaSplashesCount = 0;
@@ -122,6 +123,7 @@ namespace MazeGamePillaPilla
                     lastProcessedInputs.Add(id, 0);
                     lastSentSnapshots.Add(id, 0);
                     lastBuff.Add(id, 0);
+                    pjCopyInTheServer.AnimationMachine.PjAnimationChanged += this.OnPjAnimationChanged;
 
                     float x = pjCopyInTheServer.x;
                     float y = pjCopyInTheServer.y;
@@ -487,6 +489,15 @@ namespace MazeGamePillaPilla
             server.SendToAll(writer, SendOptions.ReliableUnordered);
 
             world.OnTintaSplashRemoved(this, new GameplayTintaSplashEventArgs() { Id = id });
+        }
+
+        public void OnPjAnimationChanged(object source, GameplayAnimationChandedEventArgs args)
+        {
+            NetDataWriter writer = new NetDataWriter();
+            writer.Put((int)NetMessage.SetAnimation);
+            writer.Put(args.PlayerId);
+            writer.Put(args.AnimationId);
+            server.SendToAll(writer, SendOptions.Unreliable);
         }
 
 

@@ -38,6 +38,7 @@ namespace MazeGamePillaPilla
         public void Enter()
         {
             client.CharacterUpdated += world.OnCharacterUpdated;
+            client.PjAnimationChanged += world.OnPjAnimationChanged;
             client.DropAdded += world.OnDropAdded;
             client.DropRemoved += world.OnDropRemoved;
             client.BuffAdded += world.OnBuffAdded;
@@ -52,6 +53,7 @@ namespace MazeGamePillaPilla
         {
             ScheduleManager.Clear();
             client.CharacterUpdated -= world.OnCharacterUpdated;
+            client.PjAnimationChanged -= world.OnPjAnimationChanged;
             client.DropAdded -= world.OnDropAdded;
             client.DropRemoved -= world.OnDropRemoved;
             client.BuffAdded -= world.OnBuffAdded;

@@ -52,7 +52,7 @@ namespace MazeGamePillaPilla
 
             Buffs = new Dictionary<int, Buff>();
 
-            AnimationMachine = new PjAnimationMachine();
+            AnimationMachine = new PjAnimationMachine(ID);
         }
 
         public void SetPosition(int x, int y)
