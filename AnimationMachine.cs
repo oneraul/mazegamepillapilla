@@ -49,7 +49,7 @@ namespace MazeGamePillaPilla
             }
         }
 
-        private void ForceSetAnimation(int animationId)
+        public void ForceSetAnimation(int animationId)
         {
             timer = 0;
             currentFrame = 0;
@@ -58,7 +58,7 @@ namespace MazeGamePillaPilla
 
         public void SetAnimation(int animationId)
         {
-            if (!CurrentAnimation.LocksUntilCompletion)
+            if (!CurrentAnimation.LocksUntilCompletion && CurrentAnimationId != animationId)
             {
                 ForceSetAnimation(animationId);
             }
@@ -111,18 +111,17 @@ namespace MazeGamePillaPilla
     {
         public enum Animations
         {
-            Idle, Running, Test
+            Idle, Running, Stunned, Test
         }
 
         public PjAnimationMachine()
         {
             defaultAnimation = (int)Animations.Idle;
-            animations = new Animation[]
-            {
-                new Animation(Pj.IdleTexture, 1, 28, 18, 16),
-                new Animation(Pj.RunningTexture, 8, 28, 18, 16, 0.08f),
-                new Animation(Pj.TestTexture, 1, 28, 18, 16, 2, false, true)
-            };
+            animations = new Animation[Enum.GetNames(typeof(Animations)).Length];
+            animations[(int)Animations.Idle] =      new Animation(Pj.IdleTexture,    1, 28, 18, 16);
+            animations[(int)Animations.Running] =   new Animation(Pj.RunningTexture, 8, 28, 18, 16, 0.08f);
+            animations[(int)Animations.Stunned] =   new Animation(Pj.StunnedTexture, 1, 28, 18, 16);
+            animations[(int)Animations.Test] =      new Animation(Pj.TestTexture,    1, 28, 18, 16, 2, false, true);
         }
     }
 

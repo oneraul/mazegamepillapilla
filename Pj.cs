@@ -15,8 +15,9 @@ namespace MazeGamePillaPilla
         public static Texture2D ColliderTexture;
         public static Texture2D IdleTexture;
         public static Texture2D RunningTexture;
-        public static Texture2D PaletteTexture;
+        public static Texture2D StunnedTexture;
         public static Texture2D TestTexture;
+        public static Texture2D PaletteTexture;
         public static Effect effect;
 
         private static readonly float BaseV = 150;
@@ -207,20 +208,8 @@ namespace MazeGamePillaPilla
 
         public void ApplyInput(InputPacket input, Cell[,] maze)
         {
-            if (Stunned || (input.Horizontal == 0 && input.Vertical == 0))
-            {
-                AnimationMachine.SetAnimation((int)PjAnimationMachine.Animations.Idle);
-                return;
-            }
-
-            if (input.Action && PowerUp != null)
-            {
-                AnimationMachine.SetAnimation((int)PjAnimationMachine.Animations.Test);
-            }
-            else if (AnimationMachine.CurrentAnimationId == (int)PjAnimationMachine.Animations.Idle)
-            {
-                AnimationMachine.SetAnimation((int)PjAnimationMachine.Animations.Running);
-            }
+            InputToAnimation(input);
+            if (Stunned || (input.Horizontal == 0 && input.Vertical == 0)) return;
 
             // Multisampling to avoid tunneling when the speed is to high
             if (v > 0)
@@ -257,6 +246,29 @@ namespace MazeGamePillaPilla
 
                     remainingV -= sampleV;
                 }
+            }
+        }
+
+        public void InputToAnimation(InputPacket input)
+        {
+            if (Stunned)
+            {
+                if (AnimationMachine.CurrentAnimationId != (int)PjAnimationMachine.Animations.Stunned)
+                {
+                    AnimationMachine.ForceSetAnimation((int)PjAnimationMachine.Animations.Stunned);
+                }
+            }
+            else if (input.Action && PowerUp != null)
+            {
+                AnimationMachine.SetAnimation((int)PjAnimationMachine.Animations.Test);
+            }
+            else if (input.Horizontal == 0 && input.Vertical == 0)
+            {
+                AnimationMachine.SetAnimation((int)PjAnimationMachine.Animations.Idle);
+            }
+            else if (AnimationMachine.CurrentAnimationId == (int)PjAnimationMachine.Animations.Idle)
+            {
+                AnimationMachine.SetAnimation((int)PjAnimationMachine.Animations.Running);
             }
         }
 
