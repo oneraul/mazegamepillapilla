@@ -63,10 +63,4 @@ namespace MazeGamePillaPilla
         public float Rotation;
         public float Duration;
     }
-
-    class GameplayAnimationChandedEventArgs
-    {
-        public string PlayerId;
-        public int AnimationId;
-    }
 }

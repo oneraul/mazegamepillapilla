@@ -23,15 +23,6 @@ namespace MazeGamePillaPilla
             Pjs[args.Packet.CharacterID].ProcessServerUpdate(args.Packet, maze);
         }
 
-        public void OnPjAnimationChanged(object source, GameplayAnimationChandedEventArgs args)
-        {
-            if (Pjs.TryGetValue(args.PlayerId, out Pj pj))
-            {
-                pj.AnimationMachine.SetAnimation(args.AnimationId);
-
-            } else throw new System.ComponentModel.InvalidEnumArgumentException();
-        }
-
         public void OnDropAdded(object source, GameplayDropEventArgs args)
         {
             Drop drop = null;

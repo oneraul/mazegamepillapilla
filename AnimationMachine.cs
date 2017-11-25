@@ -39,8 +39,8 @@ namespace MazeGamePillaPilla
         {
             float scale = 1;
             Vector2 origin = new Vector2(
-                (CurrentAnimation.texture.Width / CurrentFrame.Layers.Length) / 2,
-                (CurrentAnimation.texture.Height) / CurrentAnimation.Frames.Length / 2);
+                (CurrentAnimation.texture.Width/CurrentFrame.Layers.Length)/2, 
+                (CurrentAnimation.texture.Height)/CurrentAnimation.Frames.Length/2);
 
             for (int i = 0; i < CurrentFrame.Layers.Length; i++)
             {
@@ -49,7 +49,7 @@ namespace MazeGamePillaPilla
             }
         }
 
-        protected virtual void ForceSetAnimation(int animationId)
+        private void ForceSetAnimation(int animationId)
         {
             timer = 0;
             currentFrame = 0;
@@ -63,8 +63,6 @@ namespace MazeGamePillaPilla
                 ForceSetAnimation(animationId);
             }
         }
-
-        public void SetAnimationDummy(int i) { }
     }
 
     class Animation
@@ -116,11 +114,8 @@ namespace MazeGamePillaPilla
             Idle, Running, Test
         }
 
-        private readonly string PlayerId;
-
-        public PjAnimationMachine(string PlayerId)
+        public PjAnimationMachine()
         {
-            this.PlayerId = PlayerId;
             defaultAnimation = (int)Animations.Idle;
             animations = new Animation[]
             {
@@ -129,17 +124,6 @@ namespace MazeGamePillaPilla
                 new Animation(Pj.TestTexture, 1, 28, 18, 16, 2, false, true)
             };
         }
-
-        protected override void ForceSetAnimation(int animationId)
-        {
-            base.ForceSetAnimation(animationId);
-            PjAnimationChanged?.Invoke(this, new GameplayAnimationChandedEventArgs()
-            {
-                PlayerId = this.PlayerId, AnimationId = CurrentAnimationId
-            });
-        }
-
-        public event EventHandler<GameplayAnimationChandedEventArgs> PjAnimationChanged;
     }
 
 

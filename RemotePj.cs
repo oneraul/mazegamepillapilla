@@ -53,7 +53,7 @@ namespace MazeGamePillaPilla
 
             if(AnimationMachine.CurrentAnimationId != packet.Animation)
             {
-                AnimationMachine.SetAnimationDummy(packet.Animation);
+                AnimationMachine.SetAnimation(packet.Animation);
             }
         }
 

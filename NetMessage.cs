@@ -17,7 +17,6 @@
 
         // gameplay
         CharacterUpdate,
-        SetAnimation,
         GoToScoresScreen,
         AddDrop,
         RemoveDrop,

@@ -195,7 +195,6 @@ namespace MazeGamePillaPilla
 
 
         public event EventHandler<GameplayUpdateEventArgs> CharacterUpdated;
-        public event EventHandler<GameplayAnimationChandedEventArgs> PjAnimationChanged;
         public event EventHandler<GameplayDropEventArgs> DropAdded;
         public event EventHandler<GameplayDropEventArgs> DropRemoved;
         public event EventHandler<GameplayBuffEventArgs> BuffAdded;
@@ -216,14 +215,8 @@ namespace MazeGamePillaPilla
                     break;
 
                 case NetMessage.CharacterUpdate:
-                    CharacterUpdated?.Invoke(this, new GameplayUpdateEventArgs() { Packet = new StatePacket(dataReader) });
-                    break;
-
-                case NetMessage.SetAnimation:
-                    PjAnimationChanged?.Invoke(this, new GameplayAnimationChandedEventArgs()
-                    {
-                        PlayerId = dataReader.GetString(), AnimationId = dataReader.GetInt()
-                    });
+                    StatePacket packet = new StatePacket(dataReader);
+                    CharacterUpdated?.Invoke(this, new GameplayUpdateEventArgs() { Packet = packet });
                     break;
 
                 case NetMessage.GoToScoresScreen:
