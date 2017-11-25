@@ -242,7 +242,7 @@ namespace MazeGamePillaPilla
             }
         }
 
-        public void InputToAnimation(InputPacket input)
+        private void InputToAnimation(InputPacket input)
         {
             if (Stunned)
             {
