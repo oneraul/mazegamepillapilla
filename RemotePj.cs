@@ -51,9 +51,9 @@ namespace MazeGamePillaPilla
             newY = packet.Y;
             newRotation = packet.Rotation;
 
-            if(AnimationMachine.CurrentAnimationId != packet.Animation)
+            if (packet.Animation != AnimationMachine.CurrentAnimationId)
             {
-                AnimationMachine.SetAnimation(packet.Animation);
+                AnimationMachine.ForceSetAnimation(packet.Animation);
             }
         }
 

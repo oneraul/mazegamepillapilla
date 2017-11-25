@@ -274,6 +274,8 @@ namespace MazeGamePillaPilla
 
                 foreach (Pj pj in world.Pjs.Values ?? Enumerable.Empty<Pj>())
                 {
+                    pj.AnimationMachine.Update(TickRate);
+
                     long lastInput = lastProcessedInputs[pj.ID];
                     if (lastInput > lastSentSnapshots[pj.ID])
                     {
