@@ -174,6 +174,8 @@ namespace MazeGamePillaPilla
                     i++;
                 }
 
+                spritebatch.DrawString(Button.Font, $"PNG: {client.Ping}ms", new Vector2(0, 0), Color.White);
+
                 spritebatch.End();
             }
         }
