@@ -62,6 +62,7 @@ namespace MazeGamePillaPilla
                 Pj.IdleTexture = Content.Load<Texture2D>("pj_idle");
                 Pj.RunningTexture = Content.Load<Texture2D>("pj_running");
                 Pj.StunnedTexture = Content.Load<Texture2D>("stunned");
+                Pj.TeleportingTexture = Content.Load<Texture2D>("teleporting");
                 Pj.TestTexture = Content.Load<Texture2D>("t");
                 Pj.PaletteTexture = Content.Load<Texture2D>("pj_palette");
                 Pj.effect = Content.Load<Effect>("pj_shader");

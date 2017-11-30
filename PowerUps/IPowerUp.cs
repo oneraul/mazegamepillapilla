@@ -8,6 +8,7 @@ namespace MazeGamePillaPilla.PowerUps
         void Action(Pj pj, Server server);
         Texture2D GetIcon();
         Color GetColor();
+        PjAnimationMachine.Animations GetAnimation();
     }
 
     public enum PowerUpTypes

@@ -16,6 +16,7 @@ namespace MazeGamePillaPilla
         public static Texture2D IdleTexture;
         public static Texture2D RunningTexture;
         public static Texture2D StunnedTexture;
+        public static Texture2D TeleportingTexture;
         public static Texture2D TestTexture;
         public static Texture2D PaletteTexture;
         public static Effect effect;
@@ -253,7 +254,7 @@ namespace MazeGamePillaPilla
             }
             else if (input.Action && PowerUp != null)
             {
-                AnimationMachine.SetAnimation((int)PjAnimationMachine.Animations.Test);
+                AnimationMachine.SetAnimation((int)PowerUp.GetAnimation());
             }
             else if (input.Horizontal == 0 && input.Vertical == 0)
             {

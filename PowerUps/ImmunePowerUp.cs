@@ -28,5 +28,6 @@ namespace MazeGamePillaPilla.PowerUps
 
         public Texture2D GetIcon() => Icon;
         public Color GetColor() => Color.PaleVioletRed;
+        public PjAnimationMachine.Animations GetAnimation() => PjAnimationMachine.Animations.Test;
     }
 }

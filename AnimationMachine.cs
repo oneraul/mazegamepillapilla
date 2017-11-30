@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MazeGamePillaPilla.PowerUps;
 
 namespace MazeGamePillaPilla
 {
@@ -111,17 +112,18 @@ namespace MazeGamePillaPilla
     {
         public enum Animations
         {
-            Idle, Running, Stunned, Test
+            Idle, Running, Stunned, Teleporting, Test
         }
 
         public PjAnimationMachine()
         {
             defaultAnimation = (int)Animations.Idle;
             animations = new Animation[Enum.GetNames(typeof(Animations)).Length];
-            animations[(int)Animations.Idle] =      new Animation(Pj.IdleTexture,    1, 28, 18, 16);
-            animations[(int)Animations.Running] =   new Animation(Pj.RunningTexture, 8, 28, 18, 16, 0.08f);
-            animations[(int)Animations.Stunned] =   new Animation(Pj.StunnedTexture, 1, 28, 18, 16);
-            animations[(int)Animations.Test] =      new Animation(Pj.TestTexture,    1, 28, 18, 16, 2, false, true);
+            animations[(int)Animations.Idle] =        new Animation(Pj.IdleTexture,        1, 28, 18, 16);
+            animations[(int)Animations.Running] =     new Animation(Pj.RunningTexture,     8, 28, 18, 16, 0.08f);
+            animations[(int)Animations.Stunned] =     new Animation(Pj.StunnedTexture,     1, 28, 18, 16);
+            animations[(int)Animations.Teleporting] = new Animation(Pj.TeleportingTexture, 1, 28, 18, 16, RandomTeleportPowerUp.ANIMATION_DURATION, false);
+            animations[(int)Animations.Test] =        new Animation(Pj.TestTexture,        1, 28, 18, 16, 0.3f, false, true);
         }
     }
 
