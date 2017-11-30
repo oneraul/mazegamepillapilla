@@ -8,7 +8,7 @@ namespace MazeGamePillaPilla
     {
         private EventBasedNetListener listener;
         private NetManager client;
-        public int Ping => client.GetFirstPeer().Ping;
+        public int Ping => client?.GetFirstPeer()?.Ping ?? -1;
 
         public Client()
         {
