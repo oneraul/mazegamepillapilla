@@ -8,6 +8,7 @@ namespace MazeGamePillaPilla
     {
         private EventBasedNetListener listener;
         private NetManager client;
+        public int Ping => client.GetFirstPeer().Ping;
 
         public Client()
         {
@@ -16,6 +17,9 @@ namespace MazeGamePillaPilla
 
             listener = new EventBasedNetListener();
             client = new NetManager(listener, "SomeConnectionKey");
+            client.SimulateLatency = true;
+            client.SimulationMinLatency = 50;
+            client.SimulationMaxLatency = 150;
 
             if (!client.Start()) System.Diagnostics.Debug.WriteLine("Error with Client.Start()");
             client.Connect(Ip, Port);
