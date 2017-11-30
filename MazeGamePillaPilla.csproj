@@ -103,6 +103,7 @@
     <Compile Include="ScoresScreen.cs" />
     <Compile Include="ScreenManager.cs" />
     <Compile Include="Server.cs" />
+    <Compile Include="ServerPj.cs" />
     <Compile Include="StatePacket.cs" />
     <Compile Include="Tile.cs" />
     <Compile Include="VisibilityRay.cs" />

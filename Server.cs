@@ -75,13 +75,11 @@ namespace MazeGamePillaPilla
         private void SetLobby()
         {
             System.Diagnostics.Debug.WriteLine("[SERVER] SetLobby");
+            this.gameTimer = 0;
             this.updateAccumulator = 0;
             this.dropsCount = 0;
             this.tintaSplashesCount = 0;
             this.world = null;
-            this.lastProcessedInputs = null;
-            this.lastSentSnapshots = null;
-            this.lastBuff = null;
             listener.NetworkReceiveEvent -= OnGameplayNetworkReceived;
 
             listener.PeerConnectedEvent += OnLobbyPeerConnected;
@@ -96,11 +94,7 @@ namespace MazeGamePillaPilla
             peersNotReadyToStartYet.AddRange(server.GetPeers());
 
             int mapId = random.Next(MapData.MapsCount);
-
             world = new GameWorld { maze = Cell.ParseData(MapData.GetMap(mapId)) };
-            lastProcessedInputs = new Dictionary<string, long>();
-            lastSentSnapshots = new Dictionary<string, long>();
-            lastBuff = new Dictionary<string, int>();
 
             NetDataWriter writer = new NetDataWriter();
             writer.Put((int)NetMessage.PrepareToStartGame);
@@ -116,15 +110,12 @@ namespace MazeGamePillaPilla
                 {
                     LobbyPlayer character = players[id];
 
-                    RemotePj pjCopyInTheServer = new RemotePj(id, 0, 0, 1);
-                    pjCopyInTheServer.SpawnInAnEmptyPosition(world.maze);
-                    world.Pjs.Add(id, pjCopyInTheServer);
-                    lastProcessedInputs.Add(id, 0);
-                    lastSentSnapshots.Add(id, 0);
-                    lastBuff.Add(id, 0);
+                    ServerPj serverPj = new ServerPj(id);
+                    serverPj.SpawnInAnEmptyPosition(world.maze);
+                    world.Pjs.Add(id, serverPj);
 
-                    float x = pjCopyInTheServer.x;
-                    float y = pjCopyInTheServer.y;
+                    float x = serverPj.x;
+                    float y = serverPj.y;
 
                     NetDataWriter localCharacterWriter = new NetDataWriter();
                     localCharacterWriter.Put((int)NetMessage.InstantiateCharacter);
@@ -241,12 +232,10 @@ namespace MazeGamePillaPilla
 
         // Gameplay ---------------------
 
+        private float gameTimer;
         private float updateAccumulator;
         private int dropsCount;
         private int tintaSplashesCount;
-        public Dictionary<string, long> lastProcessedInputs;
-        public Dictionary<string, long> lastSentSnapshots;
-        public Dictionary<string, int> lastBuff;
 
         public GameWorld world;
 
@@ -272,15 +261,17 @@ namespace MazeGamePillaPilla
                 updateAccumulator -= TickRate;
                 server.PollEvents();
 
-                foreach (Pj pj in world.Pjs.Values ?? Enumerable.Empty<Pj>())
+                gameTimer += TickRate;
+
+                foreach (ServerPj pj in world.Pjs.Values ?? Enumerable.Empty<Pj>())
                 {
                     pj.AnimationMachine.Update(TickRate);
 
-                    long lastInput = lastProcessedInputs[pj.ID];
-                    if (lastInput > lastSentSnapshots[pj.ID])
+                    long lastInput = pj.LastProcessedInput;
+                    if (lastInput > pj.LastSentSnapshot)
                     {
-                        lastSentSnapshots[pj.ID] = lastInput;
-                        StatePacket statePacket = new StatePacket(lastInput, pj);
+                        pj.LastSentSnapshot = lastInput;
+                        StatePacket statePacket = new StatePacket(lastInput, pj, gameTimer);
                         server.SendToAll(statePacket.Serialize(), SendOptions.Unreliable);
                     }
 
@@ -352,7 +343,7 @@ namespace MazeGamePillaPilla
         {
             if (world.Pjs.TryGetValue(inputPacket.CharacterID, out Pj pj))
             {
-                lastProcessedInputs[inputPacket.CharacterID] = inputPacket.InputSequenceNumber;
+                ((ServerPj)pj).LastProcessedInput = inputPacket.InputSequenceNumber;
                 pj.ApplyInput(inputPacket, world.maze);
 
                 if (inputPacket.Action)
@@ -406,7 +397,7 @@ namespace MazeGamePillaPilla
 
         public void AddBuff(int type, Pj pj)
         {
-            int buffId = lastBuff[pj.ID]++;
+            int buffId = ((ServerPj)pj).LastBuff++;
 
             NetDataWriter writer = new NetDataWriter();
             writer.Put((int)NetMessage.AddBuff);
