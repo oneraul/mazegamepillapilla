@@ -90,13 +90,23 @@ namespace MazeGamePillaPilla
                         IDrawable item = itemsToInsert[i];
                         Rectangle itemAabb = ((IIntersectable)item).GetAABB();
 
-                        Cell leftCell = world.maze[y, itemAabb.Left / Tile.Size];
-                        Cell rightCell = world.maze[y, itemAabb.Right / Tile.Size];
+                        int leftX = itemAabb.Left / Tile.Size;
+                        int rightX = itemAabb.Right / Tile.Size;
 
-                        if (item.GetSortY() < leftCell.GetSortY() && item.GetSortY() < rightCell.GetSortY())
+                        if (leftX < 0 || rightX >= world.maze.GetLength(1))
                         {
-                            drawables.Add(item);
                             itemsToInsert.RemoveAt(i);
+                        }
+                        else
+                        {
+                            Cell leftCell = world.maze[y, leftX];
+                            Cell rightCell = world.maze[y, rightX];
+
+                            if (item.GetSortY() < leftCell.GetSortY() && item.GetSortY() < rightCell.GetSortY())
+                            {
+                                drawables.Add(item);
+                                itemsToInsert.RemoveAt(i);
+                            }
                         }
                     }
 
