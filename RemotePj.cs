@@ -1,22 +1,27 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 
 namespace MazeGamePillaPilla
 {
     class RemotePj : Pj
     {
-        public float oldX;
-        public float oldY;
-        public float newX;
-        public float newY;
-        public float oldRotation;
-        public float newRotation;
-        public float interpolationTimer;
+        private const bool INTERPOLATION_ENABLED = true;
+
+        struct Snapshot
+        {
+            public float X;
+            public float Y;
+            public float Rotation;
+            public float Timestamp;
+        }
+
+        public DateTime GameStartedTime;
+        private List<Snapshot> snapshots;
 
         public RemotePj(string ID, float x, float y, int palette) : base(ID, x, y, palette)
         {
-            oldX = newX = x;
-            oldY = newY = y;
-            oldRotation = newRotation = rotation;
+            snapshots = new List<Snapshot>() { new Snapshot() { X = x, Y = y, Rotation = this.rotation, Timestamp = 0 } };
         }
 
 
@@ -24,44 +29,67 @@ namespace MazeGamePillaPilla
         {
             base.Update(dt);
 
-            interpolationTimer += dt;
-            float a = MathHelper.Clamp(interpolationTimer / Server.TickRate, 0, 1);
-            this.x = oldX * (1 - a) + newX * a;
-            this.y = oldY * (1 - a) + newY * a;
-            this.rotation = oldRotation * (1 - a) + newRotation * a;
-        }
+            if (INTERPOLATION_ENABLED)
+            {
+                if (snapshots.Count >= 2)
+                {
+                    TimeSpan gameElapsedTime = DateTime.UtcNow.Subtract(GameStartedTime);
+                    int now = (int)gameElapsedTime.TotalMilliseconds;
+                    int interpolationDelayMilliseconds = 80;
+                    int renderTime = now - interpolationDelayMilliseconds;
 
+                    while (snapshots.Count >= 2 && snapshots[1].Timestamp <= renderTime)
+                    {
+                        snapshots.RemoveAt(0);
+                    }
+
+                    if (snapshots.Count >= 2)
+                    {
+                        Snapshot Old = snapshots[0];
+                        Snapshot New = snapshots[1];
+
+                        if (Old.Timestamp <= renderTime && renderTime <= New.Timestamp)
+                        {
+                            float alpha = (renderTime - Old.Timestamp) / (New.Timestamp - Old.Timestamp);
+                            this.x = MathHelper.Lerp(Old.X, New.X, alpha);
+                            this.y = MathHelper.Lerp(Old.Y, New.Y, alpha);
+                            this.rotation = MathHelper.Lerp(Old.Rotation, New.Rotation, alpha);
+                        }
+                    }
+                }
+            }
+        }
 
         public override void ProcessServerUpdate(StatePacket packet, Cell[,] maze)
         {
-            // no interpolation
-            /*
-            oldX = newX = packet.x;
-            oldY = newY = packet.y;
-            oldRotation = newRotation = packet.Dir;
-            currentAnimation = Animations[packet.Animation];
-            */
-
-            interpolationTimer = 0;
-            oldX = newX;
-            oldY = newY;
-            oldRotation = newRotation;
-
-            newX = packet.X;
-            newY = packet.Y;
-            newRotation = packet.Rotation;
-
-            if (packet.Animation != AnimationMachine.CurrentAnimationId)
+            if (INTERPOLATION_ENABLED)
             {
-                AnimationMachine.ForceSetAnimation(packet.Animation);
+                snapshots.Add(new Snapshot()
+                {
+                    X = packet.X, Y = packet.Y, Rotation = packet.Rotation, Timestamp = packet.Timestamp
+                });
+            }
+            else
+            {
+                #pragma warning disable CS0162 // Unreachable code detected
+                this.x = packet.X;
+                this.y = packet.Y;
+                this.rotation = packet.Rotation;
+                #pragma warning restore CS0162 // Unreachable code detected
             }
         }
 
         public new void SetPosition(int x, int y)
         {
-            interpolationTimer = 0;
-            this.x = oldX = newX = x;
-            this.y = oldY = newY = y;
+            this.x = x;
+            this.y = y;
+
+            if (INTERPOLATION_ENABLED)
+            {
+                float lastTimestamp = snapshots[0].Timestamp;
+                snapshots.Clear();
+                snapshots.Add(new Snapshot() { X = x, Y = y, Rotation = this.rotation, Timestamp =  lastTimestamp });
+            }
         }
     }
 }

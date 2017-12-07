@@ -9,7 +9,7 @@ namespace MazeGamePillaPilla
 {
     class Server
     {
-        public static readonly float TickRate = 1f/30;
+        public const float TickRate = 1f/20f;
 
         public int Port { get; private set; }
         public int MaxClients { get; private set; }
@@ -75,7 +75,6 @@ namespace MazeGamePillaPilla
         private void SetLobby()
         {
             System.Diagnostics.Debug.WriteLine("[SERVER] SetLobby");
-            this.gameTimer = 0;
             this.updateAccumulator = 0;
             this.dropsCount = 0;
             this.tintaSplashesCount = 0;
@@ -232,7 +231,6 @@ namespace MazeGamePillaPilla
 
         // Gameplay ---------------------
 
-        private float gameTimer;
         private float updateAccumulator;
         private int dropsCount;
         private int tintaSplashesCount;
@@ -248,6 +246,8 @@ namespace MazeGamePillaPilla
             listener.NetworkReceiveEvent -= OnLobbyReceived;
 
             listener.NetworkReceiveEvent += OnGameplayNetworkReceived;
+
+            world.GameStartedTime = DateTime.UtcNow;
         }
 
 
@@ -261,8 +261,6 @@ namespace MazeGamePillaPilla
                 updateAccumulator -= TickRate;
                 server.PollEvents();
 
-                gameTimer += TickRate;
-
                 foreach (ServerPj pj in world.Pjs.Values ?? Enumerable.Empty<Pj>())
                 {
                     pj.AnimationMachine.Update(TickRate);
@@ -271,7 +269,7 @@ namespace MazeGamePillaPilla
                     if (lastInput > pj.LastSentSnapshot)
                     {
                         pj.LastSentSnapshot = lastInput;
-                        StatePacket statePacket = new StatePacket(lastInput, pj, gameTimer);
+                        StatePacket statePacket = new StatePacket(lastInput, pj);
                         server.SendToAll(statePacket.Serialize(), SendOptions.Unreliable);
                     }
 
@@ -344,6 +342,7 @@ namespace MazeGamePillaPilla
             if (world.Pjs.TryGetValue(inputPacket.CharacterID, out Pj pj))
             {
                 ((ServerPj)pj).LastProcessedInput = inputPacket.InputSequenceNumber;
+                ((ServerPj)pj).LastProccessedInputTimestamp = (int)DateTime.UtcNow.Subtract(world.GameStartedTime).TotalMilliseconds;
                 pj.ApplyInput(inputPacket, world.maze);
 
                 if (inputPacket.Action)

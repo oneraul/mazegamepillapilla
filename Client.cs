@@ -16,10 +16,14 @@ namespace MazeGamePillaPilla
             int Port = 9050;
 
             listener = new EventBasedNetListener();
-            client = new NetManager(listener, "SomeConnectionKey");
-            client.SimulateLatency = true;
-            client.SimulationMinLatency = 50;
-            client.SimulationMaxLatency = 150;
+            client = new NetManager(listener, "SomeConnectionKey")
+            {
+                SimulateLatency = true,
+                SimulationMinLatency = 20,
+                SimulationMaxLatency = 360,
+                SimulatePacketLoss = true,
+                SimulationPacketLossChance = 10,
+            };
 
             if (!client.Start()) System.Diagnostics.Debug.WriteLine("Error with Client.Start()");
             client.Connect(Ip, Port);

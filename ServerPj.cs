@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MazeGamePillaPilla
+﻿namespace MazeGamePillaPilla
 {
     class ServerPj : Pj
     {
         public long LastProcessedInput;
         public long LastSentSnapshot;
         public int LastBuff;
+        public int LastProccessedInputTimestamp;
 
         public ServerPj(string id) : base(id, 0, 0, 1) {}
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -46,6 +47,15 @@ namespace MazeGamePillaPilla
             client.PowerUpRemoved += world.OnPowerUpRemoved;
             client.TintaSplashAdded += world.OnTintaSplashAdded;
             client.TintaSplashRemoved += world.OnTintaSplashRemoved;
+
+            world.GameStartedTime = DateTime.UtcNow;
+            foreach (Pj pj in world.Pjs.Values)
+            {
+                if (pj.GetType() == typeof(RemotePj))
+                {
+                    ((RemotePj)pj).GameStartedTime = world.GameStartedTime;
+                }
+            }
         }
 
         public void Exit()
@@ -90,7 +100,7 @@ namespace MazeGamePillaPilla
                         IDrawable item = itemsToInsert[i];
                         Rectangle itemAabb = ((IIntersectable)item).GetAABB();
 
-                        int leftX = itemAabb.Left / Tile.Size;
+                        int leftX  = itemAabb.Left / Tile.Size;
                         int rightX = itemAabb.Right / Tile.Size;
 
                         if (leftX < 0 || rightX >= world.maze.GetLength(1))
@@ -99,7 +109,7 @@ namespace MazeGamePillaPilla
                         }
                         else
                         {
-                            Cell leftCell = world.maze[y, leftX];
+                            Cell leftCell  = world.maze[y, leftX];
                             Cell rightCell = world.maze[y, rightX];
 
                             if (item.GetSortY() < leftCell.GetSortY() && item.GetSortY() < rightCell.GetSortY())
@@ -185,6 +195,8 @@ namespace MazeGamePillaPilla
                 }
 
                 spritebatch.DrawString(Button.Font, $"PNG: {client.Ping}ms", new Vector2(0, 0), Color.White);
+                TimeSpan elapsedTime = DateTime.UtcNow.Subtract(world.GameStartedTime);
+                spritebatch.DrawString(Button.Font, $"{elapsedTime.Minutes}:{elapsedTime.Seconds},{elapsedTime.Milliseconds}", new Vector2(0, 20), Color.White);
 
                 spritebatch.End();
             }

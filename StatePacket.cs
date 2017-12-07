@@ -10,9 +10,10 @@ namespace MazeGamePillaPilla
         public float Rotation;
         public int Palette;
         public int Animation;
+        public int Timestamp;
 
 
-        public StatePacket(string CharacterID, long InputSequenceNumber, float X, float Y, float Rotation, int Palette, int Animation)
+        public StatePacket(string CharacterID, long InputSequenceNumber, float X, float Y, float Rotation, int Palette, int Animation, int Timestamp)
         {
             this.CharacterID = CharacterID;
             this.InputSequenceNumber = InputSequenceNumber;
@@ -21,6 +22,7 @@ namespace MazeGamePillaPilla
             this.Rotation = Rotation;
             this.Palette = Palette;
             this.Animation = Animation;
+            this.Timestamp = Timestamp;
         }
 
 
@@ -33,10 +35,11 @@ namespace MazeGamePillaPilla
             this.Rotation = dataReader.GetFloat();
             this.Palette = dataReader.GetInt();
             this.Animation = dataReader.GetInt();
+            this.Timestamp = dataReader.GetInt();
         }
 
 
-        public StatePacket(long InputSequenceNumber, Pj pj)
+        public StatePacket(long InputSequenceNumber, ServerPj pj)
         {
             this.CharacterID = pj.ID;
             this.InputSequenceNumber = InputSequenceNumber;
@@ -45,6 +48,7 @@ namespace MazeGamePillaPilla
             this.Rotation = pj.rotation;
             this.Palette = pj.palette;
             this.Animation = pj.AnimationMachine.CurrentAnimationId;
+            this.Timestamp = pj.LastProccessedInputTimestamp;
         }
 
 
@@ -60,6 +64,7 @@ namespace MazeGamePillaPilla
             writer.Put(Rotation);
             writer.Put(Palette);
             writer.Put(Animation);
+            writer.Put(Timestamp);
 
             return writer;
         }

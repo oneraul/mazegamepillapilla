@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MazeGamePillaPilla.PowerUps;
 
 namespace MazeGamePillaPilla
@@ -9,6 +10,7 @@ namespace MazeGamePillaPilla
         public Dictionary<string, Pj> Pjs { get; private set; }
         public Dictionary<int, Drop> Drops { get; private set; }
         public Dictionary<int, TintaSplash> TintaSplashes { get; private set; }
+        public DateTime GameStartedTime;
 
         public GameWorld()
         {

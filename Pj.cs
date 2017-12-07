@@ -167,7 +167,7 @@ namespace MazeGamePillaPilla
             return cells.ToArray();
         }
 
-        public void Draw(SpriteBatch batch, Matrix cameraMatrix)
+        public virtual void Draw(SpriteBatch batch, Matrix cameraMatrix)
         {
             if (!Invisible)
             {
