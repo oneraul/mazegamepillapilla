@@ -20,6 +20,7 @@ namespace MazeGamePillaPilla
     {
         public int PlayersCount;
         public int Map;
+        public int Biome;
     }
 
     class GameplayUpdateEventArgs : EventArgs

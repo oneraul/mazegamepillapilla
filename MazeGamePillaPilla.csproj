@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="AiPj.cs" />
     <Compile Include="AnimationMachine.cs" />
+    <Compile Include="BiomeData.cs" />
     <Compile Include="Button.cs" />
     <Compile Include="Cell.cs" />
     <Compile Include="Client.cs" />

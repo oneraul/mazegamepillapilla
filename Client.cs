@@ -107,7 +107,8 @@ namespace MazeGamePillaPilla
                 case NetMessage.PrepareToStartGame:
                     PreparingGameToStart?.Invoke(this, new LobbyOptionsArgs {
                         PlayersCount = dataReader.GetInt(),
-                        Map = dataReader.GetInt()
+                        Map = dataReader.GetInt(),
+                        Biome = dataReader.GetInt(),
                     });
                     break;
 

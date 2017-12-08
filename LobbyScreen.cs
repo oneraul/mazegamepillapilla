@@ -113,7 +113,7 @@ namespace MazeGamePillaPilla
 
         public virtual void OnPreparingGameToStart(object source, LobbyOptionsArgs args)
         {
-            ScreenManager.PushScreen(new LoadGameScreen(args.PlayersCount, args.Map, client));
+            ScreenManager.PushScreen(new LoadGameScreen(args.PlayersCount, args.Map, args.Biome, client));
         }
 
         public void OnDisconnectedFromServer(object source, EventArgs args)
@@ -155,7 +155,7 @@ namespace MazeGamePillaPilla
 
         public override void OnPreparingGameToStart(object source, LobbyOptionsArgs args)
         {
-            ScreenManager.PushScreen(new LoadGameScreen(args.PlayersCount, args.Map, client, Server));
+            ScreenManager.PushScreen(new LoadGameScreen(args.PlayersCount, args.Map, args.Biome, client, Server));
         }
     }
 }

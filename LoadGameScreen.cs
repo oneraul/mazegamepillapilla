@@ -15,27 +15,29 @@ namespace MazeGamePillaPilla
         private Server server;
         private int ExpectedPlayers;
         private int MapId;
+        private BiomeData.Biome biome;
         private int i;
         private volatile bool hasFinishedLoading = false;
         private List<LobbyPlayerEventArgs> charactersToInstantiate;
         private object locker = new object();
         private bool readyToStart = false;
 
-        private LoadGameScreen(int PlayersCount, int MapId)
+        private LoadGameScreen(int PlayersCount, int MapId, int BiomeId)
         {
             ExpectedPlayers = PlayersCount;
             this.MapId = MapId;
+            this.biome = BiomeData.GetBiome(BiomeId);
         }
 
 
-        public LoadGameScreen(int PlayersCount, int MapId, Client client) : this(PlayersCount, MapId)
+        public LoadGameScreen(int PlayersCount, int MapId, int BiomeId, Client client) : this(PlayersCount, MapId, BiomeId)
         {
             this.client = client;
             gameScreen = new GameScreen(client);
         }
 
 
-        public LoadGameScreen(int PlayersCount, int MapId, Client client, Server server) : this(PlayersCount, MapId)
+        public LoadGameScreen(int PlayersCount, int MapId, int BiomeId, Client client, Server server) : this(PlayersCount, MapId, BiomeId)
         {
             this.client = client;
             this.server = server;
@@ -49,7 +51,7 @@ namespace MazeGamePillaPilla
             charactersToInstantiate = new List<LobbyPlayerEventArgs>();
 
             // Tile.Init has to be called on the main thread
-            Tile.InitTextures(GraphicsDevice);
+            Tile.InitTextures(GraphicsDevice, biome);
 
             Thread t = new Thread(() =>
             {
@@ -87,9 +89,9 @@ namespace MazeGamePillaPilla
                 gameScreen.renderTargetRectangle = new Rectangle(0, 0, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight);
                 gameScreen.cameraMatrix = Matrix.CreateTranslation(GraphicsDevice.PresentationParameters.BackBufferWidth / 2 - Tile.Size * 11, Tile.Size, 0);
                 gameScreen.floorRectangle = new Rectangle(0, 0, gameScreen.world.maze.GetLength(1) * Tile.Size, gameScreen.world.maze.GetLength(0) * Tile.Size);
-                gameScreen.floorColor = new Color(182f / 255, 186f / 255, 159f / 255);
-                gameScreen.backgroundColor = new Color(77f / 255, 174f / 255, 183f / 255);
-                gameScreen.biomeTintColor = Color.Wheat;
+                gameScreen.floorColor = biome.GroundColor;
+                gameScreen.backgroundColor = biome.BackgroundColor;
+                gameScreen.biomeTintColor = biome.TintColor;
 
                 // instantiate the characters
                 while (gameScreen.world.Pjs.Count < ExpectedPlayers)

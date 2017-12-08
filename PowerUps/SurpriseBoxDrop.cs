@@ -26,7 +26,7 @@ namespace MazeGamePillaPilla.PowerUps
 
         public override void Draw(SpriteBatch spritebatch, Matrix cameraMatrix)
         {
-            spritebatch.Draw(SprintPowerUp.pixel, GetAABB(), Color.GreenYellow);
+            //spritebatch.Draw(SprintPowerUp.pixel, GetAABB(), Color.GreenYellow);
             animationMachine.Draw(spritebatch, GetAABB().Center.X, GetAABB().Center.Y, rotation);
         }
 

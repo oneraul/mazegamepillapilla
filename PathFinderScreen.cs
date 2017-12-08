@@ -164,7 +164,7 @@ namespace MazeGamePillaPilla
         {
             cameraMatrix = Matrix.CreateTranslation(400 - Tile.Size * 11, Tile.Size, 0);
 
-            Tile.InitTextures(GraphicsDevice);
+            Tile.InitTextures(GraphicsDevice, BiomeData.GetBiome(1));
 
             // load maze
             int MapId = 0;

@@ -94,11 +94,13 @@ namespace MazeGamePillaPilla
 
             int mapId = random.Next(MapData.MapsCount);
             world = new GameWorld { maze = Cell.ParseData(MapData.GetMap(mapId)) };
+            int biomeId = random.Next(BiomeData.BiomesCount);
 
             NetDataWriter writer = new NetDataWriter();
             writer.Put((int)NetMessage.PrepareToStartGame);
             writer.Put(players.Count);
             writer.Put(mapId);
+            writer.Put(biomeId);
             server.SendToAll(writer, SendOptions.ReliableOrdered);
 
             // instantiate characters

@@ -19,14 +19,14 @@ namespace MazeGamePillaPilla
             InitData();
         }        
 
-        private void Draw(GraphicsDevice GraphicsDevice, BasicEffect effect)
+        private void Draw(GraphicsDevice GraphicsDevice, BasicEffect effect, BiomeData.Biome biome)
         {
             if (Id == 0) return;
 
             const int height = 20;
             for (int h = 0; h < height; h++)
             {
-                Color color = (h == height-1) ? new Color(153f / 255, 186f / 255, 0) : new Color(118f / 255, 166f / 255, 19f / 255);
+                Color color = (h == height-1) ? biome.WallTopColor : biome.WallColor;
                 VertexPositionColor[] verts;
                 int primitivesCount = 2;
                 verts = new VertexPositionColor[4] {
@@ -45,7 +45,7 @@ namespace MazeGamePillaPilla
         }
 
 
-        public static void InitTextures(GraphicsDevice GraphicsDevice)
+        public static void InitTextures(GraphicsDevice GraphicsDevice, BiomeData.Biome biome)
         {
             BasicEffect effect = new BasicEffect(GraphicsDevice);
             RenderTarget2D canvas = new RenderTarget2D(GraphicsDevice, Size, Size*2);
@@ -62,7 +62,7 @@ namespace MazeGamePillaPilla
             {
                 GraphicsDevice.Clear(Color.Transparent);
 
-                Tileset[i].Draw(GraphicsDevice, effect);
+                Tileset[i].Draw(GraphicsDevice, effect, biome);
 
                 Color[] textureData = new Color[canvas.Width * canvas.Height];
                 canvas.GetData(textureData);
