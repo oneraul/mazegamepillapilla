@@ -20,7 +20,7 @@ namespace MazeGamePillaPilla
             gui.AddButton(new Button(100, 100, 230, 110, "create"));
             gui.AddButton(new Button(100, 250, 230, 110, "join"));
             gui.AddButton(new Button(350, 250, 115,  55, "pathfinding"));
-            gui.AddButton(new Button(490, 250, 115,  55));
+            gui.AddButton(new Button(490, 250, 115,  55, "biomes"));
             gui.AddButton(new Button(120, 400, 115,  55, "quit game"));
 
             gui.GetButton(0).NextButtonUp = gui.GetButton(4);
@@ -39,6 +39,7 @@ namespace MazeGamePillaPilla
 
             gui.GetButton(3).NextButtonLeft = gui.GetButton(2);
             gui.GetButton(3).NextButtonRight = gui.GetButton(1);
+            gui.GetButton(3).Click += (source, args) => ScreenManager.PushScreen(new BiomeDrawScreen());
 
             gui.GetButton(4).NextButtonUp = gui.GetButton(1);
             gui.GetButton(4).NextButtonDown = gui.GetButton(0);
