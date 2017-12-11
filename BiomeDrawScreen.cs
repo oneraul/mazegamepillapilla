@@ -34,6 +34,7 @@ namespace MazeGamePillaPilla
 
         Biome biome;
         Effect biomeEffect;
+        Effect biomeBackgroundEffect;
         RenderTarget2D renderTarget;
         GameWorld world;
         Rectangle floorRectangle;
@@ -95,12 +96,15 @@ namespace MazeGamePillaPilla
             {
                 // Draw Background
                 spritebatch.GraphicsDevice.Clear(Color.TransparentBlack);
-                spritebatch.Begin(SpriteSortMode.Immediate, null, SamplerState.PointWrap, null, null, null);
+
+                biomeBackgroundEffect.Parameters["u_blendMode"].SetValue((int)biome.BackgroundBlendingMode);
+                spritebatch.Begin(SpriteSortMode.Immediate, null, SamplerState.PointWrap, null, null, biomeBackgroundEffect);
                 spritebatch.Draw(biome.BackgroundOverlayTexture ?? pixel, renderTargetRectangle, renderTargetRectangle, biome.BackgroundColor);
                 spritebatch.End();
 
                 // Draw floor
-                spritebatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointWrap, null, null, null, cameraMatrix);
+                biomeBackgroundEffect.Parameters["u_blendMode"].SetValue((int)biome.FloorBlendingMode);
+                spritebatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointWrap, null, null, biomeBackgroundEffect, cameraMatrix);
                 spritebatch.Draw(biome.FloorOverlayTexture ?? pixel, floorRectangle, floorRectangle, biome.FloorColor);
                 spritebatch.End();
 
@@ -156,11 +160,12 @@ namespace MazeGamePillaPilla
                 WallTopOverlayTexture = Content.Load<Texture2D>("iceOverlay"),
 
                 BackgroundBlendingMode = Biome.BlendingMode.Normal,
-                FloorBlendingMode = Biome.BlendingMode.Normal,
+                FloorBlendingMode = Biome.BlendingMode.Reflect,
                 WallBlendingMode = Biome.BlendingMode.Reflect,
                 WallTopBlendingMode = Biome.BlendingMode.Reflect,
             };
 
+            biomeBackgroundEffect = Content.Load<Effect>("floor_shader");
             biomeEffect = Content.Load<Effect>("walls_shader");
             biomeEffect.Parameters["u_wallBlendingMode"]?.SetValue((int)this.biome.WallBlendingMode);
             biomeEffect.Parameters["u_wallColor"]?.SetValue(this.biome.WallColor.ToVector3());

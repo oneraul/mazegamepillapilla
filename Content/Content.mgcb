@@ -344,3 +344,9 @@
 /processorParam:DebugMode=Auto
 /build:walls_shader.fx
 
+#begin floor_shader.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:floor_shader.fx
+
