@@ -51,8 +51,6 @@ local fileIndex = 0
 while true do
 	local inputFile = io.open(fileIndex .. ".csv", "r")
 	if inputFile == nil then break end
-	
-	
 
 	local rawdata = {}
 	for line in inputFile:lines() do
@@ -63,13 +61,12 @@ while true do
 		end
 	end
 
-	local outputFile = io.open("correct/" .. fileIndex .. ".corrected.csv", "a")
+	local outputFile = io.open("correct/" .. fileIndex .. ".corrected.csv", "w")
 	for y, row in ipairs(rawdata) do
-		outputFile:write("{	")
 		for x, value in ipairs(row) do
-			outputFile:write(value .. ",	")
+			outputFile:write(value .. ",")
 		end
-		outputFile:write("},\n")
+		outputFile:write("\n")
 	end
 	outputFile:close()
 	
