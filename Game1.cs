@@ -16,6 +16,7 @@ namespace MazeGamePillaPilla
             graphics = new GraphicsDeviceManager(this)
             {
                 IsFullScreen = false,
+                HardwareModeSwitch = false,  // false => borderless windowed, true => fullscreen
                 PreferredBackBufferWidth = 800,
                 PreferredBackBufferHeight = 600,
                 PreferMultiSampling = false,
